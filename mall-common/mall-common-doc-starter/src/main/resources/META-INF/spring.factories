@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.salute.mall.common.doc.config.knife4jAutoConfig
