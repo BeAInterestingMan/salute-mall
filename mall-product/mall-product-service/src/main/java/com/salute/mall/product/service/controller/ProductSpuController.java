@@ -1,6 +1,6 @@
 package com.salute.mall.product.service.controller;
 
-import com.salute.mall.product.service.entity.ProductSpu;
+import com.salute.mall.product.service.pojo.entity.ProductSpu;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;

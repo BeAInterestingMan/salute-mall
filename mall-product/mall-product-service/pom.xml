@@ -23,6 +23,11 @@
         </dependency>
         <dependency>
             <groupId>com.melo</groupId>
+            <artifactId>mall-common-core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.melo</groupId>
             <artifactId>mall-common-doc-starter</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>

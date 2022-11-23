@@ -1,21 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.salute.mall.product.service.mapper.ProductSkuMapper">
+<mapper namespace="com.salute.mall.product.service.mapper.ProductSpecificationDetailMapper">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="com.salute.mall.product.service.pojo.entity.ProductSku" id="baseMap">
+    <resultMap type="com.salute.mall.product.service.pojo.entity.ProductSpecificationDetail" id="baseMap">
         <result property="id"  column="id"/>
+        <result property="specificationCode"  column="specification_code"/>
+        <result property="specificationValue"  column="specification_value"/>
         <result property="tenantCode"  column="tenant_code"/>
-        <result property="skuName"  column="sku_name"/>
-        <result property="skuCode"  column="sku_code"/>
-        <result property="spuCode"  column="spu_code"/>
-        <result property="keyword"  column="keyword"/>
-        <result property="title"  column="title"/>
-        <result property="sellPoint"  column="sell_point"/>
-        <result property="salePrice"  column="sale_price"/>
-        <result property="marketPrice"  column="market_price"/>
-        <result property="costPrice"  column="cost_price"/>
         <result property="deleteFlag"  column="delete_flag"/>
         <result property="sort"  column="sort"/>
         <result property="version"  column="version"/>
@@ -29,16 +22,9 @@
 
     <sql id="baseColumn">
         id,
+        specification_code,
+        specification_value,
         tenant_code,
-        sku_name,
-        sku_code,
-        spu_code,
-        keyword,
-        title,
-        sell_point,
-        sale_price,
-        market_price,
-        cost_price,
         delete_flag,
         sort,
         version,
@@ -47,6 +33,6 @@
         created_time,
         modifier,
         modifier_code,
-        modified_time,
+        modified_time
     </sql>
 </mapper>

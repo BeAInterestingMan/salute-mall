@@ -10,13 +10,13 @@ spring:
   datasource:
     username: root
     password: 123456
-    url: jdbc:mysql://114.116.105.15:3306/lilishop?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8&allowMultiQueries=true&allowPublicKeyRetrieval=true&useAffectedRows=true
+    url: jdbc:mysql://114.116.105.15:3306/salute?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8&allowMultiQueries=true&allowPublicKeyRetrieval=true&useAffectedRows=true
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.zaxxer.hikari.HikariDataSource
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
-  type-aliases-package: com.salute.mall.product.service.entity
+  type-aliases-package: com.salute.mall.product.service.pojo.entity
   configuration:
     map-underscore-to-camel-case: true
 
@@ -25,7 +25,7 @@ mybatis-plus:
 ## http://localhost:8080/doc.html knif4J 地址
 mall:
   swagger:
-    enable: false
+    enable: true
     basePackage: com.salute.mall.product.service.controller
     title: mall-product
     description: salute-mall商品模块接口文档

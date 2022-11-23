@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.salute.mall.product.service.mapper.ProductSkuMapper">
+<mapper namespace="com.salute.mall.product.service.mapper.ProductStockTransactionMapper">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="com.salute.mall.product.service.pojo.entity.ProductSku" id="baseMap">
+    <resultMap type="com.salute.mall.product.service.pojo.entity.ProductStockTransaction" id="baseMap">
         <result property="id"  column="id"/>
         <result property="tenantCode"  column="tenant_code"/>
-        <result property="skuName"  column="sku_name"/>
-        <result property="skuCode"  column="sku_code"/>
-        <result property="spuCode"  column="spu_code"/>
-        <result property="keyword"  column="keyword"/>
-        <result property="title"  column="title"/>
-        <result property="sellPoint"  column="sell_point"/>
-        <result property="salePrice"  column="sale_price"/>
-        <result property="marketPrice"  column="market_price"/>
-        <result property="costPrice"  column="cost_price"/>
+        <result property="operateType"  column="operate_type"/>
+        <result property="operateTime"  column="operate_time"/>
+        <result property="bizCode"  column="biz_code"/>
+        <result property="beforeRealStock"  column="before_real_stock"/>
+        <result property="afterRealStock"  column="after_real_stock"/>
+        <result property="beforeFreezeStock"  column="before_freeze_stock"/>
+        <result property="afterFreezeStock"  column="after_freeze_stock"/>
+        <result property="operateStock"  column="operate_stock"/>
         <result property="deleteFlag"  column="delete_flag"/>
         <result property="sort"  column="sort"/>
         <result property="version"  column="version"/>
@@ -30,15 +29,14 @@
     <sql id="baseColumn">
         id,
         tenant_code,
-        sku_name,
-        sku_code,
-        spu_code,
-        keyword,
-        title,
-        sell_point,
-        sale_price,
-        market_price,
-        cost_price,
+        operate_type,
+        operate_time,
+        biz_code,
+        before_real_stock,
+        after_real_stock,
+        before_freeze_stock,
+        after_freeze_stock,
+        operate_stock,
         delete_flag,
         sort,
         version,
