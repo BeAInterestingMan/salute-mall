@@ -9,16 +9,16 @@ public class BusinessException extends RuntimeException{
     private String code;
     private String msg;
 
-    protected BusinessException() {
+    public BusinessException() {
     }
 
-    protected BusinessException(String code, String msg) {
+    public BusinessException(String code, String msg) {
         super(code + "=" + msg);
         this.code = code;
         this.msg = msg;
     }
 
-    protected BusinessException(String code, String msg, Throwable e) {
+    public BusinessException(String code, String msg, Throwable e) {
         super(msg, e);
         this.code = code;
         this.msg = msg;

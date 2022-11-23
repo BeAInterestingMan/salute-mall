@@ -61,6 +61,10 @@ public class ProductSku implements Serializable {
     @TableField("cost_price")
     private BigDecimal costPrice;
 
+    @ApiModelProperty(value = "商品状态;ON上架 DOWN下架",name = "status")
+    @TableField("status")
+    private String status;
+
     @ApiModelProperty(value = "删除标志;YES-已删除 NO-正常",name = "deleteFlag")
     @TableField("delete_flag")
     private String deleteFlag;

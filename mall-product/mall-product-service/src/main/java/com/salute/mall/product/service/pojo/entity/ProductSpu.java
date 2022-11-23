@@ -47,8 +47,8 @@ public class ProductSpu implements Serializable {
     private String categoryCodeFirst;
 
     @ApiModelProperty(value = "二级分类编号",name = "categoryCodeSencond")
-    @TableField("category_code_sencond")
-    private String categoryCodeSencond;
+    @TableField("category_code_second")
+    private String categoryCodeSecond;
 
     @ApiModelProperty(value = "三级分类编号",name = "categoryCodeThird")
     @TableField("category_code_third")
@@ -61,6 +61,10 @@ public class ProductSpu implements Serializable {
     @ApiModelProperty(value = "品牌编号",name = "brandCode")
     @TableField("brand_code")
     private String brandCode;
+
+    @ApiModelProperty(value = "删除标志;YES-已删除 NO-正常",name = "deleteFlag")
+    @TableField("delete_flag")
+    private String deleteFlag;
 
     @ApiModelProperty(value = "销量",name = "saleNum")
     @TableField("sale_num")

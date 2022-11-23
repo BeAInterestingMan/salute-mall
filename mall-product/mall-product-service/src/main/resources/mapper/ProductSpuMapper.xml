@@ -12,7 +12,7 @@
         <result property="supplierCode"  column="supplier_code"/>
         <result property="supplierName"  column="supplier_name"/>
         <result property="categoryCodeFirst"  column="category_code_first"/>
-        <result property="categoryCodeSencond"  column="category_code_sencond"/>
+        <result property="categoryCodeSecond"  column="category_code_second"/>
         <result property="categoryCodeThird"  column="category_code_third"/>
         <result property="barcode"  column="barcode"/>
         <result property="brandCode"  column="brand_code"/>
@@ -35,7 +35,7 @@
         supplier_code,
         supplier_name,
         category_code_first,
-        category_code_sencond,
+        category_code_second,
         category_code_third,
         barcode,
         brand_code,
@@ -47,6 +47,6 @@
         created_time,
         modifier,
         modifier_code,
-        modified_time,
+        modified_time
     </sql>
 </mapper>
