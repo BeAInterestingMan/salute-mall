@@ -1,7 +1,6 @@
 package com.salute.mall.product.service.controller.h5;
 
 import com.salute.mall.common.core.entity.Result;
-import com.salute.mall.common.core.exception.BusinessException;
 import com.salute.mall.product.service.converter.ProductCategoryFaceConverter;
 import com.salute.mall.product.service.pojo.dto.ProductCategoryTreeDTO;
 import com.salute.mall.product.service.pojo.response.ProductCategoryResp;
