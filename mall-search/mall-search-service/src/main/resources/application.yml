@@ -1,0 +1,22 @@
+server:
+  port: 8883
+
+
+spring:
+  application:
+    name: mall-search
+es:
+  config:
+    hosts: http://114.116.105.15:9200
+    username:
+    password:
+
+## http://localhost:8080/doc.html knif4J 地址
+mall:
+  swagger:
+    enable: true
+    basePackage: com.salute.mall.search.controller
+    title: mall-search
+    description: salute-mall搜索模块接口文档
+    contact: melo-lh
+    version: 1.0

@@ -30,7 +30,7 @@
         <knife4j.version>2.0.9</knife4j.version>
         <rocketmq.version>2.1.0</rocketmq.version>
         <hutool.version>5.7.5</hutool.version>
-        <es.version>7.6.2</es.version>
+        <es.version>7.11.1</es.version>
         <minio.version>8.3.4</minio.version>
         <guava.version>30.0-jre</guava.version>
         <xxl.job.version>2.3.0</xxl.job.version>
@@ -112,6 +112,12 @@
                 <artifactId>elasticsearch</artifactId>
                 <version>${es.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.elasticsearch.client</groupId>
+                <artifactId>elasticsearch-rest-client</artifactId>
+                <version>${es.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.elasticsearch.client</groupId>
                 <artifactId>elasticsearch-rest-high-level-client</artifactId>
