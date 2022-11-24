@@ -8,3 +8,28 @@ salute-mall模块：
 ---|---|---
 salute-gatewat| 8101| 微服务网关
 salute-search| 8201 | 微服务子系统，基于elasticsearch实现的搜索服务
+
+
+
+第三方应用：
+
+服务名称 | 端口 | 描述
+---|---|---
+Nacos| 8001 |注册中心，配置中心 
+MySQL| 3306 |MySQL 数据库 
+Redis| 6379 | K-V 缓存数据库 
+Elasticsearch|9200 | 日志存储、搜索
+Logstash|4560|日志收集
+Kibana|5601|日志展示
+
+
+项目技术应用：
+
+服务名称  | 描述
+---|---
+lombok| 注册中心，配置中心 
+mapstruct| MySQL 数据库 
+Redis|  K-V 缓存数据库 
+Elasticsearch| 日志存储、搜索
+elk|日志收集
+redission|分布式锁
