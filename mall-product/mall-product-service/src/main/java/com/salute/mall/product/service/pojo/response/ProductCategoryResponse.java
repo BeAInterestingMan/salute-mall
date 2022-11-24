@@ -5,13 +5,12 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 
 @Data
 @ApiModel(value = "小程序商品分类")
-public class ProductCategoryResp implements Serializable {
+public class ProductCategoryResponse implements Serializable {
 
     @ApiModelProperty(value = "租户号",name = "tenantCode")
     private String tenantCode;
@@ -38,5 +37,5 @@ public class ProductCategoryResp implements Serializable {
     private Integer sort;
 
     @ApiModelProperty(value = "子分类",name = "childrenList")
-    private List<ProductCategoryResp> childrenList;
+    private List<ProductCategoryResponse> childrenList;
 }

@@ -7,6 +7,7 @@
         <module>mall-product</module>
         <module>mall-gateway</module>
         <module>mall-common</module>
+        <module>mall-search</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -29,7 +30,7 @@
         <knife4j.version>2.0.9</knife4j.version>
         <rocketmq.version>2.1.0</rocketmq.version>
         <hutool.version>5.7.5</hutool.version>
-        <es.version>6.8.12</es.version>
+        <es.version>7.6.2</es.version>
         <minio.version>8.3.4</minio.version>
         <guava.version>30.0-jre</guava.version>
         <xxl.job.version>2.3.0</xxl.job.version>
