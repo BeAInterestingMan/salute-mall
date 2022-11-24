@@ -27,9 +27,9 @@ Kibana|5601|日志展示
 
 服务名称  | 描述
 ---|---
-lombok| 注册中心，配置中心 
-mapstruct| MySQL 数据库 
-Redis|  K-V 缓存数据库 
-Elasticsearch| 日志存储、搜索
+lombok| 自动生成getset
+mapstruct| 实体转换
+Redis|  缓存
+Elasticsearch| 搜索
 elk|日志收集
 redission|分布式锁
