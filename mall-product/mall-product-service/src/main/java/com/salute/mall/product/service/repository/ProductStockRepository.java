@@ -3,7 +3,6 @@ package com.salute.mall.product.service.repository;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Lists;
 import com.salute.mall.product.service.mapper.ProductStockMapper;
-import com.salute.mall.product.service.pojo.entity.ProductSpu;
 import com.salute.mall.product.service.pojo.entity.ProductStock;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;

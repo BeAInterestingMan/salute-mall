@@ -1,6 +1,6 @@
 package com.salute.mall.product.service.controller;
 
-import com.salute.mall.product.service.pojo.entity.ProductSpu;
+import com.salute.mall.product.service.pojo.entity.Product;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Api(tags = "商品spu")
 @RequestMapping("/product/spu")
-public class ProductSpuController {
+public class ProductInfoController {
 
     @GetMapping
     @ApiOperation(value = "获取商品spu信息")
     @ApiImplicitParam(name = "spuCode", value = "spuCode", required = true)
-    public ProductSpu getSpuBySpuCode(String spuCode){
+    public Product getSpuBySpuCode(String spuCode){
         return null;
     }
 }

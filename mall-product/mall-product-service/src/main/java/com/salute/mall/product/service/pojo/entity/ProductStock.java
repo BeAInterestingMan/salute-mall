@@ -26,9 +26,9 @@ public class ProductStock implements Serializable {
     @TableField("tenant_code")
     private String tenantCode;
 
-    @ApiModelProperty(value = "spu编码",name = "spuCode")
-    @TableField("spu_code")
-    private String spuCode;
+    @ApiModelProperty(value = "spu编码",name = "productCode")
+    @TableField("product_code")
+    private String productCode;
 
     @ApiModelProperty(value = "sku编码",name = "skuCode")
     @TableField("sku_code")

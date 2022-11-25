@@ -14,9 +14,9 @@ import lombok.Data;
 
 
 @Data
-@TableName("product_spu")
+@TableName("product")
 @ApiModel(value = "商品spu表")
-public class ProductSpu implements Serializable {
+public class Product implements Serializable {
 
     @TableId
     @ApiModelProperty(value = "id",name = "id")
@@ -26,13 +26,25 @@ public class ProductSpu implements Serializable {
     @TableField("tenant_code")
     private String tenantCode;
 
-    @ApiModelProperty(value = "spu名称",name = "spuName")
-    @TableField("spu_name")
-    private String spuName;
+    @ApiModelProperty(value = "商品名称",name = "spuName")
+    @TableField("product_name")
+    private String productName;
 
-    @ApiModelProperty(value = "spu编码",name = "spuCode")
-    @TableField("spu_code")
-    private String spuCode;
+    @ApiModelProperty(value = "商品编码",name = "spuCode")
+    @TableField("product_code")
+    private String productCode;
+
+    @ApiModelProperty(value = "关键词",name = "keyword")
+    @TableField("keyword")
+    private String keyword;
+
+    @ApiModelProperty(value = "标题",name = "title")
+    @TableField("title")
+    private String title;
+
+    @ApiModelProperty(value = "卖点",name = "sellPoint")
+    @TableField("sell_point")
+    private String sellPoint;
 
     @ApiModelProperty(value = "供应商编码",name = "supplierCode")
     @TableField("supplier_code")

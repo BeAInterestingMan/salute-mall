@@ -3,14 +3,13 @@ package com.salute.mall.product.service.service.impl;
 import com.salute.mall.common.core.utils.SaluteAssertUtil;
 import com.salute.mall.product.service.pojo.entity.ProductCategory;
 import com.salute.mall.product.service.pojo.entity.ProductSku;
-import com.salute.mall.product.service.pojo.entity.ProductSpu;
+import com.salute.mall.product.service.pojo.entity.Product;
 import com.salute.mall.product.service.pojo.entity.ProductStock;
 import com.salute.mall.product.service.repository.ProductCategoryRepository;
 import com.salute.mall.product.service.repository.ProductSkuRepository;
 import com.salute.mall.product.service.repository.ProductSpuRepository;
 import com.salute.mall.product.service.repository.ProductStockRepository;
 import com.salute.mall.product.service.service.ProductInfoService;
-import com.salute.mall.product.service.service.ProductSpuService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,14 +44,14 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         ProductCategory productCategory = productCategoryRepository.getByCategoryCode(categoryCode);
         SaluteAssertUtil.isTrue(Objects.nonNull(productCategory), categoryCode + "分类不存在");
         SaluteAssertUtil.isTrue(Objects.equals(productCategory.getStatus(), "ENABLE"), categoryCode + "分类已禁用");
-        List<ProductSpu> productSpuList  = productSpuRepository.queryByCategoryCodeThird(categoryCode);
-        List<String> spuCodeList = productSpuList.stream().map(ProductSpu::getSpuCode).distinct().collect(Collectors.toList());
+        List<Product> productList = productSpuRepository.queryByCategoryCodeThird(categoryCode);
+        List<String> spuCodeList = productList.stream().map(Product::getProductCode).distinct().collect(Collectors.toList());
         List<ProductSku> productSkus = productSkuRepository.queryBySpuCodeList(spuCodeList);
-        List<String> skuCodeList = productSkus.stream().map(ProductSku::getSpuCode).collect(Collectors.toList());
+        List<String> skuCodeList = productSkus.stream().map(ProductSku::getProductCode).collect(Collectors.toList());
         List<ProductStock> productStockList = productStockRepository.queryBySkuCodeList(skuCodeList);
-        Map<String, List<ProductSku>> skuListMap = productSkus.stream().collect(Collectors.groupingBy(ProductSku::getSpuCode));
+        Map<String, List<ProductSku>> skuListMap = productSkus.stream().collect(Collectors.groupingBy(ProductSku::getProductCode));
         Map<String, ProductStock> stockMap = productStockList.stream().collect(Collectors.toMap(ProductStock::getSkuCode, Function.identity(), (k1, k2) -> k1));
-//        for (ProductSpu productSpu : productSpuList) {
+//        for (Product productSpu : productList) {
 //            List<ProductSku> productSkuList = skuListMap.get(productSpu.getSpuCode());
 //            productSkuList.stream().map()
 //        }

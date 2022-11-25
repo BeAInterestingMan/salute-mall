@@ -24,9 +24,9 @@ public class ProductSpecification implements Serializable {
     @TableField("tenant_code")
     private String tenantCode;
 
-    @ApiModelProperty(value = "spu编号",name = "spuCode")
-    @TableField("spu_code")
-    private String spuCode;
+    @ApiModelProperty(value = "商品编号",name = "spuCode")
+    @TableField("product_code")
+    private String productCode;
 
     @ApiModelProperty(value = "规格项编号",name = "specificationCode")
     @TableField("specification_code")

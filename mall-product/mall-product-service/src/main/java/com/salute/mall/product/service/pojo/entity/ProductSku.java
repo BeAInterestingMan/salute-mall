@@ -33,21 +33,9 @@ public class ProductSku implements Serializable {
     @TableField("sku_code")
     private String skuCode;
 
-    @ApiModelProperty(value = "spu编码",name = "spuCode")
-    @TableField("spu_code")
-    private String spuCode;
-
-    @ApiModelProperty(value = "关键词",name = "keyword")
-    @TableField("keyword")
-    private String keyword;
-
-    @ApiModelProperty(value = "标题",name = "title")
-    @TableField("title")
-    private String title;
-
-    @ApiModelProperty(value = "卖点",name = "sellPoint")
-    @TableField("sell_point")
-    private String sellPoint;
+    @ApiModelProperty(value = "商品编码",name = "productCode")
+    @TableField("product_code")
+    private String productCode;
 
     @ApiModelProperty(value = "售卖价",name = "salePrice")
     @TableField("sale_price")

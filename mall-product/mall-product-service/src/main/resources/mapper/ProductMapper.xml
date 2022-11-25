@@ -4,11 +4,11 @@
 <mapper namespace="com.salute.mall.product.service.mapper.ProductSpuMapper">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="com.salute.mall.product.service.pojo.entity.ProductSpu" id="baseMap">
+    <resultMap type="com.salute.mall.product.service.pojo.entity.Product" id="baseMap">
         <result property="id"  column="id"/>
         <result property="tenantCode"  column="tenant_code"/>
-        <result property="spuName"  column="spu_name"/>
-        <result property="spuCode"  column="spu_code"/>
+        <result property="productCode"  column="product_name"/>
+        <result property="productName"  column="product_code"/>
         <result property="supplierCode"  column="supplier_code"/>
         <result property="supplierName"  column="supplier_name"/>
         <result property="categoryCodeFirst"  column="category_code_first"/>
@@ -30,8 +30,8 @@
     <sql id="baseColumn">
         id,
         tenant_code,
-        spu_name,
-        spu_code,
+        product_name,
+        product_code,
         supplier_code,
         supplier_name,
         category_code_first,

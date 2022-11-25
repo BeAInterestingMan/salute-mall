@@ -14,17 +14,17 @@ import lombok.Data;
 
 
 @Data
-@TableName("product_spu_detail")
+@TableName("product_detail")
 @ApiModel(value = "商品spu详情表")
-public class ProductSpuDetail implements Serializable {
+public class ProductDetail implements Serializable {
 
     @TableId
     @ApiModelProperty(value = "id",name = "id")
     private Long id;
 
-    @ApiModelProperty(value = "spu编号",name = "spuCode")
-    @TableField("spu_code")
-    private String spuCode;
+    @ApiModelProperty(value = "product编号",name = "productCode")
+    @TableField("product_code")
+    private String productCode;
 
     @ApiModelProperty(value = "生成日期",name = "productTime")
     @TableField("product_time")

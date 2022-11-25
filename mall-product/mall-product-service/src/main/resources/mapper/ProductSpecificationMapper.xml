@@ -7,7 +7,7 @@
     <resultMap type="com.salute.mall.product.service.pojo.entity.ProductSpecification" id="baseMap">
         <result property="id"  column="id"/>
         <result property="tenantCode"  column="tenant_code"/>
-        <result property="spuCode"  column="spu_code"/>
+        <result property="productCode"  column="product_code"/>
         <result property="specificationCode"  column="specification_code"/>
         <result property="specificationName"  column="specification_name"/>
         <result property="status"  column="status"/>
@@ -25,7 +25,7 @@
     <sql id="baseColumn">
         id,
         tenant_code,
-        spu_code,
+        product_code,
         specification_code,
         specification_name,
         status,

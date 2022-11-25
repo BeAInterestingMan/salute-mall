@@ -4,9 +4,9 @@
 <mapper namespace="com.salute.mall.product.service.mapper.ProductSpuDetailMapper">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="com.salute.mall.product.service.pojo.entity.ProductSpuDetail" id="baseMap">
+    <resultMap type="com.salute.mall.product.service.pojo.entity.ProductDetail" id="baseMap">
         <result property="id"  column="id"/>
-        <result property="spuCode"  column="spu_code"/>
+        <result property="productCode"  column="product_code"/>
         <result property="productTime"  column="product_time"/>
         <result property="shelfLifeUnit"  column="shelf_life_unit"/>
         <result property="shelfLife"  column="shelf_life"/>
@@ -29,7 +29,7 @@
 
     <sql id="baseColumn">
         id,
-        spu_code,
+        product_code,
         product_time,
         shelf_life_unit,
         shelf_life,
