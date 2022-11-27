@@ -80,7 +80,7 @@ public class EsHelper {
      * @return void
      */
     private void buildCommonPage(SearchSourceBuilder sourceBuilder,BasePageParamDTO basePageParamDTO){
-        if(CollectionUtils.isNotEmpty(basePageParamDTO.getSortParamDTOList())){
+        if(CollectionUtils.isEmpty(basePageParamDTO.getSortParamDTOList())){
            return;
         }
         // 构建排序值

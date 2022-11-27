@@ -11,9 +11,9 @@ import java.math.BigDecimal;
 @Data
 public class QueryH5ProductPageDTO implements Serializable {
 
-    private Integer pageIndex;
+    private Integer pageIndex =1;
 
-    private Integer pageSize;
+    private Integer pageSize = 10;
 
     @ApiModelProperty(value = "搜索关键字", name = "keyword")
     @Size(max = 200, message = "关键词不能超过200")

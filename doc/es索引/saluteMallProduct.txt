@@ -1,0 +1,378 @@
+DELETE /salute_mall_product
+
+PUT /salute_mall_product
+{
+  "settings": {
+    "refresh_interval": "1s",
+    "number_of_shards": "1",
+    "analysis": {
+      "filter": {
+        "simple_pinyin_filter": {
+          "lowercase": "true",
+          "type": "pinyin",
+          "keep_full_pinyin": false,
+          "keep_joined_full_pinyin": true,
+          "keep_original": true,
+          "limit_first_letter_length": 50,
+          "remove_duplicated_term": true,
+          "none_chinese_pinyin_tokenize": false
+        },
+        "full_pinyin_filter": {
+          "lowercase": "true",
+          "none_chinese_pinyin_tokenize": "true",
+          "keep_original": "false",
+          "keep_first_letter": "false",
+          "keep_separate_first_letter": "false",
+          "type": "pinyin",
+          "limit_first_letter_length": "50",
+          "keep_full_pinyin": "true"
+        }
+      },
+      "analyzer": {
+        "ik_max_word_pinyin_analyzer": {
+          "tokenizer": "ik_max_word",
+          "filter": [
+            "simple_pinyin_filter",
+            "word_delimiter"
+          ]
+        },
+        "simple_pinyin_analyzer": {
+          "filter": [
+            "simple_pinyin_filter",
+            "lowercase"
+          ],
+          "tokenizer": "keyword"
+        },
+        "full_pinyin_analyzer": {
+          "filter": [
+            "full_pinyin_filter",
+            "lowercase"
+          ],
+          "tokenizer": "keyword"
+        }
+      }
+    },
+    "number_of_replicas": "1"
+  }
+}
+
+GET /salute_mall_product/_analyze
+{
+  "text": ["我是中国人"],
+  "analyzer": "ik_max_word_pinyin"
+}
+
+
+PUT /salute_mall_product/_mapping
+{
+  "properties": {
+    "tenantCode": {
+      "type": "keyword"
+    },
+    "productCode": {
+      "type": "keyword"
+    },
+    "productName": {
+      "type": "text",
+      "analyzer": "ik_smart",
+      "search_analyzer": "ik_max_word_pinyin_analyzer",
+      "fields": {
+        "keyword": {
+          "type": "keyword"
+        },
+        "ik_max_pinyin": {
+          "type": "text",
+          "analyzer": "ik_max_word_pinyin_analyzer",
+          "search_analyzer": "ik_max_word_pinyin_analyzer"
+        },
+        "full_pinyin": {
+          "type": "text",
+          "analyzer": "full_pinyin_analyzer",
+          "search_analyzer": "full_pinyin_analyzer"
+        },
+        "simple_pinyin": {
+          "type": "text",
+          "analyzer": "simple_pinyin_analyzer",
+          "search_analyzer": "simple_pinyin_analyzer"
+        }
+      }
+    },
+    "keyword": {
+      "type": "text",
+      "analyzer": "ik_smart",
+      "search_analyzer": "ik_max_word_pinyin_analyzer",
+      "fields": {
+        "keyword": {
+          "type": "keyword"
+        },
+        "ik_max_pinyin": {
+          "type": "text",
+          "analyzer": "ik_max_word_pinyin_analyzer",
+          "search_analyzer": "ik_max_word_pinyin_analyzer"
+        },
+        "full_pinyin": {
+          "type": "text",
+          "analyzer": "full_pinyin_analyzer",
+          "search_analyzer": "full_pinyin_analyzer"
+        },
+        "simple_pinyin": {
+          "type": "text",
+          "analyzer": "simple_pinyin_analyzer",
+          "search_analyzer": "simple_pinyin_analyzer"
+        }
+      }
+    },
+    "title": {
+      "type": "text",
+      "analyzer": "ik_smart",
+      "search_analyzer": "ik_max_word_pinyin_analyzer",
+      "fields": {
+        "keyword": {
+          "type": "keyword"
+        },
+        "ik_max_pinyin": {
+          "type": "text",
+          "analyzer": "ik_max_word_pinyin_analyzer",
+          "search_analyzer": "ik_max_word_pinyin_analyzer"
+        },
+        "full_pinyin": {
+          "type": "text",
+          "analyzer": "full_pinyin_analyzer",
+          "search_analyzer": "full_pinyin_analyzer"
+        },
+        "simple_pinyin": {
+          "type": "text",
+          "analyzer": "simple_pinyin_analyzer",
+          "search_analyzer": "simple_pinyin_analyzer"
+        }
+      }
+    },
+    "sellPoint": {
+      "type": "text",
+      "analyzer": "ik_smart",
+      "search_analyzer": "ik_max_word_pinyin_analyzer"
+    },
+    "categoryCodeFirst": {
+      "type": "keyword"
+    },
+    "categoryCodeSecond": {
+      "type": "keyword"
+    },
+    "categoryCodeThird": {
+      "type": "keyword"
+    },
+    "brandCode": {
+      "type": "keyword"
+    },
+    "brandName": {
+      "type": "text",
+      "analyzer": "ik_smart",
+      "search_analyzer": "ik_max_word_pinyin_analyzer",
+      "fields": {
+        "keyword": {
+          "type": "keyword"
+        },
+        "ik_max_pinyin": {
+          "type": "text",
+          "analyzer": "ik_max_word_pinyin_analyzer",
+          "search_analyzer": "ik_max_word_pinyin_analyzer"
+        },
+        "full_pinyin": {
+          "type": "text",
+          "analyzer": "full_pinyin_analyzer",
+          "search_analyzer": "full_pinyin_analyzer"
+        },
+        "simple_pinyin": {
+          "type": "text",
+          "analyzer": "simple_pinyin_analyzer",
+          "search_analyzer": "simple_pinyin_analyzer"
+        }
+      }
+    },
+    "shopCode": {
+      "type": "keyword"
+    },
+    "shopName": {
+      "type": "text",
+      "analyzer": "ik_smart",
+      "search_analyzer": "ik_max_word_pinyin_analyzer",
+      "fields": {
+        "keyword": {
+          "type": "keyword"
+        },
+        "ik_max_pinyin": {
+          "type": "text",
+          "analyzer": "ik_max_word_pinyin_analyzer",
+          "search_analyzer": "ik_max_word_pinyin_analyzer"
+        },
+        "full_pinyin": {
+          "type": "text",
+          "analyzer": "full_pinyin_analyzer",
+          "search_analyzer": "full_pinyin_analyzer"
+        },
+        "simple_pinyin": {
+          "type": "text",
+          "analyzer": "simple_pinyin_analyzer",
+          "search_analyzer": "simple_pinyin_analyzer"
+        }
+      }
+    },
+    "saleNum": {
+      "type": "long"
+    },
+    "status": {
+      "type": "keyword"
+    },
+    "sort": {
+      "type": "integer"
+    },
+    "creator": {
+      "type": "keyword"
+    },
+    "creatorCode": {
+      "type": "keyword"
+    },
+    "createdTime": {
+      "format": "yyyy-MM-dd HH:mm:ss||epoch_millis",
+      "type": "date"
+    },
+    "modifier": {
+      "type": "keyword"
+    },
+    "modifierCode": {
+      "type": "keyword"
+    },
+    "modifiedTime": {
+      "format": "yyyy-MM-dd HH:mm:ss||epoch_millis",
+      "type": "date"
+    },
+    "productSku": {
+      "type": "nested",
+      "properties": {
+        "skuCode": {
+          "type": "keyword"
+        },
+        "skuName": {
+          "type": "text",
+          "analyzer": "ik_smart",
+          "search_analyzer": "ik_max_word_pinyin_analyzer",
+          "fields": {
+            "keyword": {
+              "type": "keyword"
+            },
+            "ik_max_pinyin": {
+              "type": "text",
+              "analyzer": "ik_max_word_pinyin_analyzer",
+              "search_analyzer": "ik_max_word_pinyin_analyzer"
+            },
+            "full_pinyin": {
+              "type": "text",
+              "analyzer": "full_pinyin_analyzer",
+              "search_analyzer": "full_pinyin_analyzer"
+            },
+            "simple_pinyin": {
+              "type": "text",
+              "analyzer": "simple_pinyin_analyzer",
+              "search_analyzer": "simple_pinyin_analyzer"
+            }
+          }
+        },
+        "salePrice": {
+          "type": "double"
+        },
+        "marketPrice": {
+          "type": "double"
+        },
+        "costPrice": {
+          "type": "double"
+        },
+        "status": {
+          "type": "keyword"
+        },
+        "sort": {
+          "type": "integer"
+        }
+      }
+    }
+  }
+}
+
+PUT /salute_mall_product/_doc/1
+{
+  "productName":"狮子"
+}
+
+PUT /salute_mall_product/_doc/2
+{
+  "productName":"虱子"
+}
+PUT /salute_mall_product/_doc/3
+{
+  "productName":"掉入狮子笼咋办"
+}
+
+GET /salute_mall_product/_analyze
+{
+ "text": ["掉入狮子笼咋办"],
+ "analyzer": "ik_max_word_pinyin_analyzer"
+}
+GET /salute_mall_product/_doc/2
+PUT /salute_mall_product/_doc/1
+{
+  "tenantCode": "SALUTE",
+  "productCode": "12545544787551",
+  "productName": "山地自行车",
+  "keyword": "自行车，实心，复古",
+  "title": "自行车女通勤轻便单车",
+  "categoryCodeFirst": "1121545455",
+  "categoryCodeSecond": "2sa3s21545455",
+  "categoryCodeThird": "4546546466",
+  "brandCode": "saxaxqxqxq",
+  "brandName": "美的",
+  "shopCode": "sasqqq",
+  "shopName": "美的自行车店铺",
+  "status": "ON",
+  "saleNum": "100",
+  "productSku": [
+    {
+      "skuCode": "122343545544787551",
+      "productName": "山地自行车sqsqsq",
+      "salePrice": 200.36,
+      "marketPrice": 300.25,
+      "costPrice": 110.36,
+      "status": "ON"
+    }
+  ]
+}
+
+PUT /salute_mall_product/_doc/2
+{
+  "tenantCode": "SALUTE",
+  "productCode": "12545544787551",
+  "productName": "GXG男装",
+  "keyword": "男装，棒球服，绿色",
+  "title": "GXG男装商城同款绿色",
+  "categoryCodeFirst": "SASA1121545455",
+  "categoryCodeSecond": "SASA21545455",
+  "categoryCodeThird": "SASA4546546466",
+  "brandCode": "GXGDDDDxqxqxq",
+  "brandName": "GXG",
+  "shopCode": "sasqSSSSSqq",
+  "shopName": "GXG男装店铺",
+  "status": "ON",
+  "saleNum": "100",
+  "productSku": [
+    {
+      "skuCode": "122343545544787551",
+      "productName": "山地自行车sqsqsq",
+      "salePrice": 100.36,
+      "marketPrice": 300.25,
+      "costPrice": 80.36,
+      "status": "ON"
+    }
+  ]
+}
+
+
+
+
