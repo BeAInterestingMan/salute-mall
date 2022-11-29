@@ -14,18 +14,18 @@ public class Result<T> implements Serializable {
 
     private T result;
 
-    private String statusCode;
+    private String code;
 
     public static <T> Result<T> error(String statusCode, String message) {
         return new Result(message, (Object)null, statusCode);
     }
 
     public static <T> Result<T> success(T data) {
-        return new Result(true, "操作成功", data, "SYS000");
+        return new Result(true, "操作成功", data, "200");
     }
 
     public static <T> Result<T> success() {
-        return new Result(true, "操作成功", (Object)null, "SYS000");
+        return new Result(true, "操作成功", (Object)null, "200");
     }
 
     public Result() {
@@ -34,14 +34,14 @@ public class Result<T> implements Serializable {
     public Result(String message, T result, String statusCode) {
         this.message = message;
         this.result = result;
-        this.statusCode = statusCode;
+        this.code = statusCode;
     }
 
     public Result(boolean status, String message, T result, String statusCode) {
         this.status = status;
         this.message = message;
         this.result = result;
-        this.statusCode = statusCode;
+        this.code = statusCode;
     }
 
     public boolean isStatus() {
@@ -68,11 +68,11 @@ public class Result<T> implements Serializable {
         this.result = result;
     }
 
-    public String getStatusCode() {
-        return this.statusCode;
+    public String getCode() {
+        return this.code;
     }
 
-    public void setStatusCode(String statusCode) {
-        this.statusCode = statusCode;
+    public void setCode(String code) {
+        this.code = code;
     }
 }

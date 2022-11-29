@@ -5,7 +5,10 @@ server:
 spring:
   application:
     name: mall-product
-
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 114.116.105.15:8848
 
   datasource:
     username: root
@@ -20,7 +23,9 @@ mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
 
-
+logging:
+  level:
+    com.salute.mall.product.service.mapper: debug
 
 ## http://localhost:8080/doc.html knif4J 地址
 mall:

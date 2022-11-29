@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -28,7 +29,7 @@ public class ProductSearchServiceImpl implements ProductSearchService {
     private EsHelper esHelper;
 
     @Override
-    public Page<ProductEsEntity> searchProduct(QueryH5ProductPageDTO dto) {
+    public Page<List<ProductEsEntity>> searchProduct(QueryH5ProductPageDTO dto) {
         BoolQueryBuilder queryBuilder = buildBoolQuery(dto);
         BasePageParamDTO basePageParamDTO = buildProductBasePageParamDTO(dto);
         return esHelper.queryPage(queryBuilder, basePageParamDTO, ProductEsEntity.class);
@@ -76,8 +77,11 @@ public class ProductSearchServiceImpl implements ProductSearchService {
              // 至少匹配一个
              queryBuilder.minimumShouldMatch(1);
          }
+        if(StringUtils.isNotBlank(dto.getCategoryCode())){
+            queryBuilder.must(QueryBuilders.termQuery(ProductEsEntity.Fields.categoryCodeThird,dto.getCategoryCode()));
+        }
         if(StringUtils.isNotBlank(dto.getBrandCode())){
-            queryBuilder.must(QueryBuilders.termQuery(dto.getBrandCode(),ProductEsEntity.Fields.brandCode));
+            queryBuilder.must(QueryBuilders.termQuery(ProductEsEntity.Fields.brandCode,dto.getBrandCode()));
         }
         if(Objects.nonNull(dto.getStartSalePrice()) && Objects.nonNull(dto.getEndSalePrice())) {
             queryBuilder.must(QueryBuilders.rangeQuery(ProductEsEntity.Fields.productSku +"."+ ProductSkuEsDTO.Fields.salePrice).gt(dto.getStartSalePrice()).lt(dto.getEndSalePrice()));

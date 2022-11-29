@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 @Data
 @NoArgsConstructor
@@ -16,5 +17,9 @@ public class Page<T> {
 
     private Long total;
 
-    private List<T> data;
+    private T data;
+
+    public static Page emptyPage(int pageIndex,int pageSize){
+        return new Page(pageIndex,pageSize,0L,new ArrayList<>());
+    }
 }

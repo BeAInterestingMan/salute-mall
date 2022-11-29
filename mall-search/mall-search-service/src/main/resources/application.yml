@@ -5,6 +5,10 @@ server:
 spring:
   application:
     name: mall-search
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 114.116.105.15:8848
 es:
   config:
     hosts: http://114.116.105.15:9200
@@ -20,3 +24,8 @@ mall:
     description: salute-mall搜索模块接口文档
     contact: melo-lh
     version: 1.0
+
+
+feign:
+  hystrix:
+    enabled: true

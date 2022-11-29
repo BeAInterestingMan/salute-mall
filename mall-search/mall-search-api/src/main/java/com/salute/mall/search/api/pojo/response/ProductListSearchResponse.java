@@ -1,4 +1,4 @@
-package com.salute.mall.search.pojo.reponse;
+package com.salute.mall.search.api.pojo.response;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
-public class ProductListPageResponse implements Serializable {
+public class ProductListSearchResponse implements Serializable {
 
     @ApiModelProperty(value = "租户号",name = "tenantCode")
     private String tenantCode;

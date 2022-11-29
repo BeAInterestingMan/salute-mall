@@ -22,7 +22,7 @@ public class ProductStockRepository {
         }
         LambdaQueryWrapper<ProductStock> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(ProductStock::getDeleteFlag,"NO")
-                    .eq(ProductStock::getSkuCode,skuCodeList);
+                    .in(ProductStock::getSkuCode,skuCodeList);
         return  productStockMapper.selectList(queryWrapper);
     }
 }

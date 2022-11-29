@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
+
 @SpringBootTest(classes = SearchApplication.class)
 @RunWith(SpringRunner.class)
 @Slf4j
@@ -27,7 +29,7 @@ public class ProductSearchServiceTest {
 //        dto.setKeyword("男装");
         dto.setSortType("SALE_PRICE");
         dto.setSortValue("DESC");
-        Page<ProductEsEntity> esEntityPage = productSearchService.searchProduct(dto);
-        log.info("execute searchProduct info:{}", JSON.toJSONString(esEntityPage));
+        Page<List<ProductEsEntity>> listPage = productSearchService.searchProduct(dto);
+        log.info("execute searchProduct info:{}", JSON.toJSONString(listPage));
     }
 }

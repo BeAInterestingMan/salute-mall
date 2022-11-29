@@ -37,6 +37,14 @@ public class ProductSku implements Serializable {
     @TableField("product_code")
     private String productCode;
 
+    @ApiModelProperty(value = "是否是默认sku  NO-否 YES-是",name = "productCode")
+    @TableField("default_sku_flag")
+    private String defaultSkuFlag;
+
+    @ApiModelProperty(value = "sku对应规格json",name = "specificationJson")
+    @TableField("specification_json")
+    private String specificationJson;
+
     @ApiModelProperty(value = "售卖价",name = "salePrice")
     @TableField("sale_price")
     private BigDecimal salePrice;

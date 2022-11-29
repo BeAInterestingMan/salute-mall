@@ -20,10 +20,6 @@ public class ProductSpecification implements Serializable {
     @ApiModelProperty(value = "id",name = "id")
     private Long id;
 
-    @ApiModelProperty(value = "租户号",name = "tenantCode")
-    @TableField("tenant_code")
-    private String tenantCode;
-
     @ApiModelProperty(value = "商品编号",name = "spuCode")
     @TableField("product_code")
     private String productCode;
@@ -35,6 +31,10 @@ public class ProductSpecification implements Serializable {
     @ApiModelProperty(value = "规格项名称",name = "specificationName")
     @TableField("specification_name")
     private String specificationName;
+
+    @ApiModelProperty(value = "规格项值",name = "specificationValue")
+    @TableField("specification_value")
+    private String specificationValue;
 
     @ApiModelProperty(value = "状态 ENABLE-启用  DISABLE-禁用",name = "status")
     @TableField("status")

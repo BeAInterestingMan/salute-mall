@@ -44,7 +44,7 @@ public class EsHelper {
      * @date 2022/11/24 10:04
      * @return com.salute.mall.common.core.entity.Page<T>
      */
-    public <T> Page<T> queryPage(BoolQueryBuilder queryBuilder, BasePageParamDTO basePageParamDTO, Class<T> target){
+    public <T> Page<List<T>> queryPage(BoolQueryBuilder queryBuilder, BasePageParamDTO basePageParamDTO, Class<T> target){
         log.info("execute queryPage info,queryBuilder:{},basePageParamDTO:{}",queryBuilder.toString(),JSON.toJSONString(basePageParamDTO));
         SearchSourceBuilder sourceBuilder = buildSearchSourceBuilder(queryBuilder, basePageParamDTO);
         log.info("execute queryPage info,sourceBuilder:{}",sourceBuilder.toString());
@@ -55,7 +55,7 @@ public class EsHelper {
             long total = response.getHits().getTotalHits().value;
             SearchHit[] hits = response.getHits().getHits();
             List<T> list = Arrays.stream(hits).map(v -> JSON.parseObject(v.getSourceAsString(), target)).collect(Collectors.toList());
-            return new Page<>(basePageParamDTO.getPageIndex(),basePageParamDTO.getPageSize(),total,list);
+            return  new Page<>(basePageParamDTO.getPageIndex(),basePageParamDTO.getPageSize(),total,list);
         } catch (IOException e) {
             log.error("execute queryPage error,sourceBuilder:{}",sourceBuilder.toString(),e);
             throw new BusinessException("500","获取es分页异常");

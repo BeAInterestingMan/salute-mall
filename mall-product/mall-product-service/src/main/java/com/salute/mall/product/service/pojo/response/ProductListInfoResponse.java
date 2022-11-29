@@ -4,18 +4,29 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 @ApiModel("商品列表出参")
 public class ProductListInfoResponse {
 
-    @ApiModelProperty(value = "spu编号",name = "spuCode")
-    private String spuCode;
+    @ApiModelProperty(value = "商品编号",name = "productCode")
+    private String productCode;
 
-    @ApiModelProperty(value = "spu名称",name = "spuName")
-    private String spuName;
+    @ApiModelProperty(value = "商品名称",name = "productName")
+    private String productName;
+
+    @ApiModelProperty(value = "sku编号",name = "skuCode")
+    private String skuCode;
+
+    @ApiModelProperty(value = "sku名称",name = "skuName")
+    private String skuName;
 
     @ApiModelProperty(value = "商品销量",name = "saleNum")
     private Long saleNum;
+
+    @ApiModelProperty(value = "销售价",name = "salePrice")
+    private BigDecimal salePrice;
 
     @ApiModelProperty(value = "商品主图",name = "mainImage")
     private String mainImage;

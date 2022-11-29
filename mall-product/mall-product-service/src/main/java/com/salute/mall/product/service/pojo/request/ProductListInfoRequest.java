@@ -11,6 +11,12 @@ import java.math.BigDecimal;
 @ApiModel("商品列表出参")
 public class ProductListInfoRequest {
 
+    @ApiModelProperty(value = "pageSize",name = "pageSize")
+    private Integer pageSize=10;
+
+    @ApiModelProperty(value = "pageIndex",name = "pageIndex")
+    private Integer pageIndex=1;
+
     @ApiModelProperty(value = "搜索关键字",name = "keyword")
     @Size(max = 200,message = "关键词不能超过200")
     private String keyword;

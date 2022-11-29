@@ -34,6 +34,10 @@ public class Product implements Serializable {
     @TableField("product_code")
     private String productCode;
 
+    @ApiModelProperty(value = "商品主图",name = "mainImage")
+    @TableField("main_image")
+    private String mainImage;
+
     @ApiModelProperty(value = "关键词",name = "keyword")
     @TableField("keyword")
     private String keyword;
