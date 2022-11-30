@@ -38,7 +38,7 @@ public class ProductInfoH5Controller {
 
     @GetMapping("getProductByCategoryCode")
     @ApiOperation("获取小程序的商品详情信息")
-    public Result<ProductCategoryResponse> getProductBySpuCode(@NotBlank @RequestParam(name = "productCode") String productCode){
+    public Result<ProductCategoryResponse> getProductByProductCode(@NotBlank @RequestParam(name = "productCode") String productCode){
         log.info("execute getProductBySpuCode info,req:{}", JSON.toJSONString(productCode));
         ProductDetailInfoBO productDetail = productInfoService.getProductDetail(productCode);
         ProductCategoryResponse response = productInfoH5Converter.convertToProductCategoryResponse(productDetail);
