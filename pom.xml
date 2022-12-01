@@ -8,6 +8,10 @@
         <module>mall-gateway</module>
         <module>mall-common</module>
         <module>mall-search</module>
+        <module>mall-ploy</module>
+        <module>mall-order</module>
+        <module>mall-marketing</module>
+        <module>mall-pay</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

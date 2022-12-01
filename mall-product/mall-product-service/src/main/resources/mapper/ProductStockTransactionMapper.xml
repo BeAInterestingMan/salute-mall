@@ -45,6 +45,6 @@
         created_time,
         modifier,
         modifier_code,
-        modified_time,
+        modified_time
     </sql>
 </mapper>

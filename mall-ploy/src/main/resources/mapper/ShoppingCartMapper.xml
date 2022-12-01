@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.salute.mall.product.service.mapper.ProductSkuMapper">
+<mapper namespace="com.salute.mall.ploy.mapper.ShoppingCartMapper">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="com.salute.mall.product.service.pojo.entity.ProductSku" id="baseMap">
+    <resultMap type="com.salute.mall.ploy.pojo.entity.ShoppingCart" id="baseMap">
         <result property="id"  column="id"/>
-        <result property="tenantCode"  column="tenant_code"/>
-        <result property="skuName"  column="sku_name"/>
-        <result property="skuCode"  column="sku_code"/>
+        <result property="shopCode"  column="shop_code"/>
         <result property="productCode"  column="product_code"/>
-        <result property="salePrice"  column="sale_price"/>
-        <result property="marketPrice"  column="market_price"/>
-        <result property="costPrice"  column="cost_price"/>
-        <result property="deleteFlag"  column="delete_flag"/>
+        <result property="addCartPrice"  column="add_cart_price"/>
+        <result property="skuCode"  column="sku_code"/>
         <result property="sort"  column="sort"/>
         <result property="version"  column="version"/>
         <result property="creator"  column="creator"/>
@@ -26,14 +22,10 @@
 
     <sql id="baseColumn">
         id,
-        tenant_code,
-        sku_name,
-        sku_code,
+        shop_code,
         product_code,
-        sale_price,
-        market_price,
-        cost_price,
-        delete_flag,
+        add_cart_price,
+        status,
         sort,
         version,
         creator,
