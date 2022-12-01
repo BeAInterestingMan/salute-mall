@@ -1,14 +1,17 @@
-package com.salute.mall.product.service.pojo.response;
+package com.salute.mall.product.api.response;
 
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ *  @Description 商品规格信息
+ *  @author liuhu
+ *  @Date 2022/11/29 20:49
+ */
 @Data
-@ApiModel("商品规格信息")
 public class ProductSpecificationResponse implements Serializable {
 
     @ApiModelProperty(value = "商品编号",name = "spuCode")

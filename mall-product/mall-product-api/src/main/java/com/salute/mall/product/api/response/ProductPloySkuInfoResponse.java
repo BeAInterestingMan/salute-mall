@@ -1,6 +1,5 @@
-package com.salute.mall.product.service.pojo.response;
+package com.salute.mall.product.api.response;
 
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -8,7 +7,11 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
-@ApiModel("商品sku聚合信息")
+/**
+ *  @Description 商品sku聚合信息
+ *  @author liuhu
+ *  @Date 2022/11/29 20:49
+ */
 @Data
 public class ProductPloySkuInfoResponse implements Serializable {
 
@@ -17,6 +20,12 @@ public class ProductPloySkuInfoResponse implements Serializable {
 
     @ApiModelProperty(value = "sku编码",name = "skuCode")
     private String skuCode;
+
+    @ApiModelProperty(value = "门店名称",name = "shopName")
+    private String shopName;
+
+    @ApiModelProperty(value = "门店编码",name = "shopCode")
+    private String shopCode;
 
     @ApiModelProperty(value = "商品编码",name = "productCode")
     private String productCode;

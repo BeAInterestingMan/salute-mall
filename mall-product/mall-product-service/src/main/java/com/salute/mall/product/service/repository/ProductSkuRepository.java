@@ -45,4 +45,26 @@ public class ProductSkuRepository {
                 .eq(ProductSku::getProductCode,productCode);
         return   productSkuMapper.selectList(queryWrapper);
     }
+
+    public List<ProductSku> queryBySkuCodeList(List<String> skuCodeList) {
+        if(CollectionUtils.isEmpty(skuCodeList)){
+            return Lists.newArrayList();
+        }
+        LambdaQueryWrapper<ProductSku> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(ProductSku::getDeleteFlag,"NO")
+                    .eq(ProductSku::getStatus,"ON")
+                    .in(ProductSku::getSkuCode,skuCodeList);
+        return   productSkuMapper.selectList(queryWrapper);
+    }
+
+    public ProductSku getBySkuCode(String skuCode) {
+        if(StringUtils.isBlank(skuCode)){
+            return null;
+        }
+        LambdaQueryWrapper<ProductSku> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(ProductSku::getDeleteFlag,"NO")
+                .eq(ProductSku::getStatus,"ON")
+                .eq(ProductSku::getSkuCode,skuCode);
+        return   productSkuMapper.selectOne(queryWrapper);
+    }
 }

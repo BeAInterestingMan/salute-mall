@@ -25,9 +25,21 @@ public class ShoppingCart implements Serializable {
     @TableField("shop_code")
     private String shopCode;
 
+    @ApiModelProperty(value = "店铺名称",name = "shop_name")
+    @TableField("shop_name")
+    private String shopName;
+
     @ApiModelProperty(value = "商品编码",name = "productCode")
     @TableField("product_code")
     private String productCode;
+
+    @ApiModelProperty(value = "sku加购数量",name = "buyQty")
+    @TableField("buy_qty")
+    private Integer buyQty;
+
+    @ApiModelProperty(value = "sku主图",name = "mainImage")
+    @TableField("main_image")
+    private String mainImage;
 
     @ApiModelProperty(value = "商品sku编码",name = "skuCode")
     @TableField("sku_code")

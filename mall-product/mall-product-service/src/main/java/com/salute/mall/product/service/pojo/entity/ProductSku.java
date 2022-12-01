@@ -33,6 +33,10 @@ public class ProductSku implements Serializable {
     @TableField("sku_code")
     private String skuCode;
 
+    @ApiModelProperty(value = "商品主图",name = "mainImage")
+    @TableField("main_image")
+    private String mainImage;
+
     @ApiModelProperty(value = "商品编码",name = "productCode")
     @TableField("product_code")
     private String productCode;

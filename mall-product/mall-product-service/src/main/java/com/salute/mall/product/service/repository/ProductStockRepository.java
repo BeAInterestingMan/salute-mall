@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.salute.mall.product.service.mapper.ProductStockMapper;
 import com.salute.mall.product.service.pojo.entity.ProductStock;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,5 +25,15 @@ public class ProductStockRepository {
         queryWrapper.eq(ProductStock::getDeleteFlag,"NO")
                     .in(ProductStock::getSkuCode,skuCodeList);
         return  productStockMapper.selectList(queryWrapper);
+    }
+
+    public ProductStock getBySkuCode(String skuCode) {
+        if(StringUtils.isBlank(skuCode)){
+            return null;
+        }
+        LambdaQueryWrapper<ProductStock> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(ProductStock::getDeleteFlag,"NO")
+                .eq(ProductStock::getSkuCode,skuCode);
+        return  productStockMapper.selectOne(queryWrapper);
     }
 }

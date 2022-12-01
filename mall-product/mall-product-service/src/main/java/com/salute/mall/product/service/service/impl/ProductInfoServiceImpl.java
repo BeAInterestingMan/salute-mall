@@ -191,6 +191,29 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         return new Page<>(page.getPageIndex(), page.getPageSize(), page.getTotal(),productListInfoBOList);
     }
 
+    @Override
+    public List<ProductPloySkuInfoDTO> queryProductSkuDetail(List<String> skuCodeList) {
+        List<ProductSku> productSkuList = productSkuRepository.queryBySkuCodeList(skuCodeList);
+        List<ProductStock> productStockList = productStockRepository.queryBySkuCodeList(skuCodeList);
+        SaluteAssertUtil.isTrue(CollectionUtils.isNotEmpty(productSkuList),skuCodeList+"商品sku不存在");
+        SaluteAssertUtil.isTrue(CollectionUtils.isNotEmpty(productStockList),skuCodeList+"商品库存不存在");
+        //3.构建商品sku聚合信息
+        return buildSkuInfoDTOList(productSkuList, productStockList);
+    }
+
+    @Override
+    public ProductPloySkuInfoDTO getProductSkuDetail(String skuCode) {
+        ProductSku productSku = productSkuRepository.getBySkuCode(skuCode);
+        ProductStock productStock = productStockRepository.getBySkuCode(skuCode);
+        SaluteAssertUtil.isTrue(Objects.nonNull(productSku),skuCode+"商品sku不存在");
+        SaluteAssertUtil.isTrue(Objects.nonNull(productStock),skuCode+"商品库存不存在");
+        //3.构建商品sku聚合信息
+        ProductPloySkuInfoDTO dto = productInfoServiceConverter.convertToProductPloySkuInfoDTO(productSku);
+        //2.可用库存
+        dto.setAvailableStock(productStock.getAvailableStock());
+        return dto;
+    }
+
     /**
      * @Description 构建数据对象
      * @author liuhu
