@@ -1,12 +1,14 @@
 package com.salute.mall.ploy.pojo.dto;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.salute.mall.ploy.pojo.response.ProductSkuSpecificationResponse;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class ShoppingCartDetailDTO implements Serializable {
@@ -17,8 +19,8 @@ public class ShoppingCartDetailDTO implements Serializable {
     @ApiModelProperty(value = "商品状态 false 失效 true 有效",name = "productCode")
     private Boolean status;
 
-    @ApiModelProperty(value = "sku主图",name = "mainImage")
-    private String availableStock;
+    @ApiModelProperty(value = "可用库存",name = "availableStock")
+    private Integer availableStock;
 
     @ApiModelProperty(value = "sku主图",name = "mainImage")
     private String mainImage;
@@ -44,4 +46,7 @@ public class ShoppingCartDetailDTO implements Serializable {
 
     @ApiModelProperty(value = "创建时间",name = "createdTime")
     private Date createdTime;
+
+    @ApiModelProperty(value = "sku规格信息",name = "productSkuSpecificationList")
+    private List<ProductSkuSpecificationPloyDTO> productSkuSpecificationList;
 }

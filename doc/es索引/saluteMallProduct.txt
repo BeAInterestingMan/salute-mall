@@ -66,9 +66,6 @@ GET /salute_mall_product/_analyze
 PUT /salute_mall_product/_mapping
 {
   "properties": {
-    "tenantCode": {
-      "type": "keyword"
-    },
     "productCode": {
       "type": "keyword"
     },
@@ -319,7 +316,6 @@ GET /salute_mall_product/_analyze
 GET /salute_mall_product/_doc/2
 PUT /salute_mall_product/_doc/1
 {
-  "tenantCode": "SALUTE",
   "productCode": "12545544787551",
   "productName": "山地自行车",
   "keyword": "自行车，实心，复古",
@@ -347,7 +343,6 @@ PUT /salute_mall_product/_doc/1
 
 PUT /salute_mall_product/_doc/2
 {
-  "tenantCode": "SALUTE",
   "productCode": "12545544787551",
   "productName": "GXG男装",
   "keyword": "男装，棒球服，绿色",

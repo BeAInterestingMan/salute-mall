@@ -30,9 +30,6 @@ public class ProductSpecificationDetail implements Serializable {
     @TableField("specification_value")
     private String specificationValue;
 
-    @ApiModelProperty(value = "租户号",name = "tenantCode")
-    @TableField("tenant_code")
-    private String tenantCode;
 
     @ApiModelProperty(value = "删除标志;YES-已删除 NO-正常",name = "deleteFlag")
     @TableField("delete_flag")

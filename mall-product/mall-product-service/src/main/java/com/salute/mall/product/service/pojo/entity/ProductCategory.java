@@ -20,9 +20,6 @@ public class ProductCategory implements Serializable {
     @ApiModelProperty(value = "id",name = "id")
     private Long id;
 
-    @ApiModelProperty(value = "租户号",name = "tenantCode")
-    @TableField("tenant_code")
-    private String tenantCode;
 
     @ApiModelProperty(value = "分类级别",name = "categoryLevel")
     @TableField("category_level")

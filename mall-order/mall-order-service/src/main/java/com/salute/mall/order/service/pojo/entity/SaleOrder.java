@@ -1,20 +1,31 @@
 package com.salute.mall.order.service.pojo.entity;
 
-import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
 import java.io.Serializable;
+
 import java.math.BigDecimal;
+import java.io.Serializable;
 import java.util.Date;
+import lombok.Data;
 
 
 @Data
 @TableName("sale_order")
 @ApiModel(value = "订单表")
 public class SaleOrder implements Serializable {
+
+    @TableId
+    @ApiModelProperty(value = "",name = "id")
+    private Long id;
+
+    @ApiModelProperty(value = "店铺名称",name = "shopCode")
+    @TableField("shop_code")
+    private String shopCode;
 
     @ApiModelProperty(value = "订单编号",name = "saleOrderCode")
     @TableField("sale_order_code")
@@ -28,33 +39,29 @@ public class SaleOrder implements Serializable {
     @TableField("status")
     private String status;
 
-    @ApiModelProperty(value = "支付时间",name = "payTime")
-    @TableField("pay_time")
-    private Date payTime;
+    @ApiModelProperty(value = "支付类型  微信 支付宝  现金 银行卡",name = "payType")
+    @TableField("pay_type")
+    private String payType;
 
-    @ApiModelProperty(value = "支付编号",name = "payCode")
-    @TableField("pay_code")
-    private String payCode;
-
-    @ApiModelProperty(value = "支付状态 待支付 支付成功 支付失败",name = "payStatus")
-    @TableField("pay_status")
-    private String payStatus;
+    @ApiModelProperty(value = "店铺名称",name = "shopName")
+    @TableField("shop_name")
+    private String shopName;
 
     @ApiModelProperty(value = "支付方式  线上  线下",name = "payMode")
     @TableField("pay_mode")
     private String payMode;
 
-    @ApiModelProperty(value = "支付类型  微信 支付宝  现金 银行卡",name = "payType")
-    @TableField("pay_type")
-    private String payType;
+    @ApiModelProperty(value = "支付时间",name = "payTime")
+    @TableField("pay_time")
+    private Date payTime;
 
-    @ApiModelProperty(value = "店铺名称",name = "shopCode")
-    @TableField("shop_code")
-    private String shopCode;
+    @ApiModelProperty(value = "支付状态 待支付 支付成功 支付失败",name = "payStatus")
+    @TableField("pay_status")
+    private String payStatus;
 
-    @ApiModelProperty(value = "店铺名称",name = "shopName")
-    @TableField("shop_name")
-    private String shopName;
+    @ApiModelProperty(value = "支付编号",name = "payCode")
+    @TableField("pay_code")
+    private String payCode;
 
     @ApiModelProperty(value = "应付金额",name = "totalPayableAmount")
     @TableField("total_payable_amount")
@@ -76,10 +83,6 @@ public class SaleOrder implements Serializable {
     @TableField("total_sale_amount")
     private BigDecimal totalSaleAmount;
 
-    @ApiModelProperty(value = "订单备注",name = "orderRemark")
-    @TableField("order_remark")
-    private String orderRemark;
-
     @ApiModelProperty(value = "取消类型",name = "cancelType")
     @TableField("cancel_type")
     private String cancelType;
@@ -88,7 +91,12 @@ public class SaleOrder implements Serializable {
     @TableField("cancel_reason")
     private String cancelReason;
 
+    @ApiModelProperty(value = "订单备注",name = "orderRemark")
+    @TableField("order_remark")
+    private String orderRemark;
+
     @ApiModelProperty(value = "排序",name = "sort")
+    @TableField("sort")
     private Integer sort;
 
     @ApiModelProperty(value = "乐观锁",name = "version")
@@ -118,4 +126,6 @@ public class SaleOrder implements Serializable {
     @ApiModelProperty(value = "更新时间",name = "modifiedTime")
     @TableField("modified_time")
     private Date modifiedTime;
+
+
 }

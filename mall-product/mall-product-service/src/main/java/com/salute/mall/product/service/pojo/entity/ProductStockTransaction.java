@@ -22,9 +22,6 @@ public class ProductStockTransaction implements Serializable {
     @ApiModelProperty(value = "id",name = "id")
     private Long id;
 
-    @ApiModelProperty(value = "租户号",name = "tenantCode")
-    @TableField("tenant_code")
-    private String tenantCode;
 
     @ApiModelProperty(value = "操作类型",name = "operateType")
     @TableField("operate_type")

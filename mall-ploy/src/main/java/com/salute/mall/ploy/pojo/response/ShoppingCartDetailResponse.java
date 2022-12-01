@@ -7,6 +7,7 @@ import lombok.Data;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class ShoppingCartDetailResponse implements Serializable {
@@ -44,4 +45,8 @@ public class ShoppingCartDetailResponse implements Serializable {
 
     @ApiModelProperty(value = "创建时间",name = "createdTime")
     private Date createdTime;
+
+    @ApiModelProperty(value = "sku规格信息",name = "productSkuSpecificationList")
+    private List<ProductSkuSpecificationResponse> productSkuSpecificationList;
+
 }

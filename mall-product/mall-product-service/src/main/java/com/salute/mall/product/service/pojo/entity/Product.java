@@ -22,9 +22,6 @@ public class Product implements Serializable {
     @ApiModelProperty(value = "id",name = "id")
     private Long id;
 
-    @ApiModelProperty(value = "租户号",name = "tenantCode")
-    @TableField("tenant_code")
-    private String tenantCode;
 
     @ApiModelProperty(value = "商品名称",name = "spuName")
     @TableField("product_name")

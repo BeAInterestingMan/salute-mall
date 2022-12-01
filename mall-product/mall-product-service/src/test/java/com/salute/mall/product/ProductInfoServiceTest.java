@@ -25,4 +25,10 @@ public class ProductInfoServiceTest {
         ProductDetailInfoBO productDetail = productInfoService.getProductDetail("12545544787551");
         log.info("execute searchProduct info:{}", JSON.toJSONString(productDetail));
     }
+
+    @Test
+    public void getProductDetail(){
+        ProductDetailInfoBO productDetail = productInfoService.getProductDetail("122343545544787551");
+        log.info("execute searchProduct info:{}", JSON.toJSONString(productDetail));
+    }
 }

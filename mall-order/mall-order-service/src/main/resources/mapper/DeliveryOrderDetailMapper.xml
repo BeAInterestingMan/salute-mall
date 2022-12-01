@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.salute.mall.order.service.mapper.DeliveryOrderDetailMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.salute.mall.order.service.pojo.entity.DeliveryOrderDetail" id="baseMap">
+        <result property="id"  column="id"/>
+        <result property="saleOrderCode"  column="sale_order_code"/>
+        <result property="deliveryOrderCode"  column="delivery_order_code"/>
+        <result property="skuCode"  column="sku_code"/>
+        <result property="skuName"  column="sku_name"/>
+        <result property="productCode"  column="product_code"/>
+        <result property="productName"  column="product_name"/>
+        <result property="mainImage"  column="main_image"/>
+        <result property="shopCode"  column="shop_code"/>
+        <result property="shopName"  column="shop_name"/>
+        <result property="buyQty"  column="buy_qty"/>
+        <result property="orderSkuType"  column="order_sku_type"/>
+        <result property="remark"  column="remark"/>
+        <result property="deliverySkuQty"  column="delivery_sku_qty"/>
+        <result property="costPrice"  column="cost_price"/>
+        <result property="salePrice"  column="sale_price"/>
+        <result property="transactionPrice"  column="transaction_price"/>
+        <result property="marketingPrice"  column="marketing_price"/>
+        <result property="payableAmount"  column="payable_amount"/>
+        <result property="paymentAmount"  column="payment_amount"/>
+        <result property="couponAmount"  column="coupon_amount"/>
+        <result property="deliveryPayableAmount"  column="delivery_payable_amount"/>
+        <result property="deliveryPaymentAmount"  column="delivery_payment_amount"/>
+        <result property="deliveryCouponAmount"  column="delivery_coupon_amount"/>
+        <result property="sort"  column="sort"/>
+        <result property="version"  column="version"/>
+        <result property="creator"  column="creator"/>
+        <result property="creatorCode"  column="creator_code"/>
+        <result property="createdTime"  column="created_time"/>
+        <result property="modifier"  column="modifier"/>
+        <result property="modifierCode"  column="modifier_code"/>
+        <result property="modifiedTime"  column="modified_time"/>
+    </resultMap>
+
+    <sql id="baseColumn">
+        id,
+        sale_order_code,
+        delivery_order_code,
+        sku_code,
+        sku_name,
+        product_code,
+        product_name,
+        main_image,
+        shop_code,
+        shop_name,
+        buy_qty,
+        order_sku_type,
+        remark,
+        delivery_sku_qty,
+        cost_price,
+        sale_price,
+        transaction_price,
+        marketing_price,
+        payable_amount,
+        payment_amount,
+        coupon_amount,
+        delivery_payable_amount,
+        delivery_payment_amount,
+        delivery_coupon_amount,
+        sort,
+        version,
+        creator,
+        creator_code,
+        created_time,
+        modifier,
+        modifier_code,
+        modified_time
+    </sql>
+</mapper>

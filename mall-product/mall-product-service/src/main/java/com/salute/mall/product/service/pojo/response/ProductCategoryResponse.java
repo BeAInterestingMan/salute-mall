@@ -12,8 +12,6 @@ import java.util.List;
 @ApiModel(value = "小程序商品分类")
 public class ProductCategoryResponse implements Serializable {
 
-    @ApiModelProperty(value = "租户号",name = "tenantCode")
-    private String tenantCode;
 
     @ApiModelProperty(value = "分类级别",name = "categoryLevel")
     private String categoryLevel;

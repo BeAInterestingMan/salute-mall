@@ -16,8 +16,8 @@ public class ProductCategoryTreeDTO implements Serializable {
     @ApiModelProperty(value = "id",name = "id")
     private Long id;
 
-    @ApiModelProperty(value = "租户号",name = "tenantCode")
-    private String tenantCode;
+    @ApiModelProperty(value = "门店编号号",name = "shopCode")
+    private String shopCode;
 
     @ApiModelProperty(value = "分类级别",name = "categoryLevel")
     private String categoryLevel;

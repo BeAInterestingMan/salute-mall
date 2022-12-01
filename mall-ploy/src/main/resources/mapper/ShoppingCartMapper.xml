@@ -6,10 +6,14 @@
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="com.salute.mall.ploy.pojo.entity.ShoppingCart" id="baseMap">
         <result property="id"  column="id"/>
-        <result property="shopCode"  column="shop_code"/>
-        <result property="productCode"  column="product_code"/>
-        <result property="addCartPrice"  column="add_cart_price"/>
         <result property="skuCode"  column="sku_code"/>
+        <result property="skuName"  column="sku_name"/>
+        <result property="productCode"  column="product_code"/>
+        <result property="buyQty"  column="buy_qty"/>
+        <result property="shopCode"  column="shop_code"/>
+        <result property="shopName"  column="shop_name"/>
+        <result property="addCartPrice"  column="add_cart_price"/>
+        <result property="mainImage"  column="main_image"/>
         <result property="sort"  column="sort"/>
         <result property="version"  column="version"/>
         <result property="creator"  column="creator"/>
@@ -22,10 +26,14 @@
 
     <sql id="baseColumn">
         id,
-        shop_code,
+        sku_code,
+        sku_name,
         product_code,
+        buy_qty,
+        shop_code,
+        shop_name,
         add_cart_price,
-        status,
+        main_image,
         sort,
         version,
         creator,

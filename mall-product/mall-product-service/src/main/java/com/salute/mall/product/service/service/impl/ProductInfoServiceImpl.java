@@ -211,6 +211,9 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         ProductPloySkuInfoDTO dto = productInfoServiceConverter.convertToProductPloySkuInfoDTO(productSku);
         //2.可用库存
         dto.setAvailableStock(productStock.getAvailableStock());
+        //3.sku的规格信息 json存储
+        List<ProductSkuSpecificationDTO> specificationDTOList = JSON.parseArray(productSku.getSpecificationJson(), ProductSkuSpecificationDTO.class);
+        dto.setSkuSpecificationList(specificationDTOList);
         return dto;
     }
 

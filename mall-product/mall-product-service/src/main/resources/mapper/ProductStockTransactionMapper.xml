@@ -6,7 +6,6 @@
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="com.salute.mall.product.service.pojo.entity.ProductStockTransaction" id="baseMap">
         <result property="id"  column="id"/>
-        <result property="tenantCode"  column="tenant_code"/>
         <result property="operateType"  column="operate_type"/>
         <result property="operateTime"  column="operate_time"/>
         <result property="bizCode"  column="biz_code"/>

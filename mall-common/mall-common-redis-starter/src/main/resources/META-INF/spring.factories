@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.salute.mall.common.redis.config.RedisAutoConfigure,\
+com.salute.mall.common.redis.aspect.CacheAspect,\
+com.salute.mall.common.redis.config.RedissonConfig

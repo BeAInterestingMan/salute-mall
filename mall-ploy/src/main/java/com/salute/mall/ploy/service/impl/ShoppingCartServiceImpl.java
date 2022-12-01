@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.salute.mall.common.core.entity.Result;
 import com.salute.mall.common.core.utils.SaluteAssertUtil;
 import com.salute.mall.ploy.converter.ShoppingCartServiceConverter;
+import com.salute.mall.ploy.pojo.dto.ProductSkuSpecificationPloyDTO;
 import com.salute.mall.ploy.pojo.dto.ShoppingCartDetailDTO;
 import com.salute.mall.ploy.pojo.dto.ShoppingCartPloyDTO;
 import com.salute.mall.ploy.pojo.entity.ShoppingCart;
@@ -47,7 +48,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         List<String> skuCodeList = shoppingCartList.stream().map(ShoppingCart::getSkuCode).collect(Collectors.toList());
         Result<List<ProductPloySkuInfoResponse>> listResult = productDetailInfoClient.queryProductSkuDetail(skuCodeList);
         SaluteAssertUtil.isTrue(Objects.nonNull(listResult) && Objects.equals(listResult.isStatus(),Boolean.TRUE),"查询商品详情失败");
-        SaluteAssertUtil.isTrue(CollectionUtils.isEmpty(listResult.getResult()),"查询商品详情失败");
+        SaluteAssertUtil.isTrue(CollectionUtils.isNotEmpty(listResult.getResult()),"查询商品详情失败");
         List<ProductPloySkuInfoResponse> skuInfoResponseList = listResult.getResult();
         Map<String, ProductPloySkuInfoResponse> skuInfoMap = skuInfoResponseList.stream().collect(Collectors.toMap(ProductPloySkuInfoResponse::getSkuCode, Function.identity(), (k1, k2) -> k1));
         Map<String, List<ShoppingCart>> shopShoppingCartMap = shoppingCartList.stream().collect(Collectors.groupingBy(v -> v.getShopCode() + "_" + v.getShopName()));
@@ -166,6 +167,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                 log.info("当前商品库存不足，skuCode:{}",infoResponse.getSkuCode());
                 dto.setStatus(Boolean.FALSE);
             }
+            dto.setSalePrice(infoResponse.getSalePrice());
+            dto.setAvailableStock(infoResponse.getAvailableStock());
+            List<ProductSkuSpecificationPloyDTO> productSkuSpecificationList =  shoppingCartServiceConverter.convertToProductSkuSpecificationPloyDTOList(infoResponse.getSkuSpecificationList());
+            dto.setProductSkuSpecificationList(productSkuSpecificationList);
             return dto;
         }).collect(Collectors.toList());
     }

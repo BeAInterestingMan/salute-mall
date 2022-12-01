@@ -17,10 +17,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -39,9 +36,9 @@ public class ProductDetailInfoController {
     @Autowired
     private ProductInfoH5Converter productInfoH5Converter;
 
-    @GetMapping("getProductByCategoryCode")
+    @GetMapping("getProductDetail")
     @ApiOperation("获取小程序的商品详情信息")
-    public Result<ProductDetailInfoResponse> getProductByProductCode(@NotBlank @RequestParam(name = "productCode") String productCode){
+    public Result<ProductDetailInfoResponse> getProductDetail(@NotBlank @RequestParam(name = "productCode") String productCode){
         log.info("execute getProductBySpuCode info,req:{}", JSON.toJSONString(productCode));
         ProductDetailInfoBO productDetail = productInfoService.getProductDetail(productCode);
         ProductDetailInfoResponse response = productInfoH5Converter.convertToProductDetailInfoResponse(productDetail);
@@ -49,9 +46,9 @@ public class ProductDetailInfoController {
         return Result.success(response);
     }
 
-    @GetMapping("queryProductSkuDetail")
+    @PostMapping("queryProductSkuDetail")
     @ApiOperation("根据skuCodeList获取sku商品详情信息")
-    public Result<List<ProductPloySkuInfoResponse>> queryProductSkuDetail(@NotEmpty @RequestParam(name = "skuCodeList") List<String> skuCodeList){
+    public Result<List<ProductPloySkuInfoResponse>> queryProductSkuDetail(@NotEmpty @RequestBody List<String> skuCodeList){
         log.info("execute getProductBySpuCode info,req:{}", JSON.toJSONString(skuCodeList));
         List<ProductPloySkuInfoDTO> ploySkuInfoDTOS = productInfoService.queryProductSkuDetail(skuCodeList);
         List<ProductPloySkuInfoResponse> response = productInfoH5Converter.convertToProductPloySkuInfoResponseList(ploySkuInfoDTOS);
@@ -59,7 +56,7 @@ public class ProductDetailInfoController {
         return Result.success(response);
     }
 
-    @GetMapping("queryProductSkuDetail")
+    @GetMapping("getProductSkuDetail")
     @ApiOperation("根据skuCode获取sku商品详情信息")
     public Result<ProductPloySkuInfoResponse> getProductSkuDetail(@NotBlank @RequestParam(name = "skuCode") String skuCode){
         log.info("execute queryProductSkuDetail info,req:{}", JSON.toJSONString(skuCode));

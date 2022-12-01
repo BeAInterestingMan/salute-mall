@@ -21,9 +21,6 @@ public class ProductSku implements Serializable {
     @ApiModelProperty(value = "id",name = "id")
     private Long id;
 
-    @ApiModelProperty(value = "租户编号",name = "tenantCode")
-    @TableField("tenant_code")
-    private String tenantCode;
 
     @ApiModelProperty(value = "sku名称",name = "skuName")
     @TableField("sku_name")

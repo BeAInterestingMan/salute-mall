@@ -9,9 +9,6 @@ import java.util.Date;
 @Data
 public class ProductListSearchResponse implements Serializable {
 
-    @ApiModelProperty(value = "租户号",name = "tenantCode")
-    private String tenantCode;
-
     @ApiModelProperty(value = "商品名称",name = "spuName")
     private String productName;
 

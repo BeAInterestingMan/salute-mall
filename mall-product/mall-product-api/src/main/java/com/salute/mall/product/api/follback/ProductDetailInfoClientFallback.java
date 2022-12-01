@@ -21,8 +21,8 @@ public class ProductDetailInfoClientFallback implements FallbackFactory<ProductD
     public ProductDetailInfoClient create(Throwable throwable) {
         return new ProductDetailInfoClient() {
             @Override
-            public Result<ProductDetailInfoResponse> getProductByProductCode(@NotBlank String productCode) {
-                log.error("execute ProductSearchClient getProductByProductCode error,request:{}", JSON.toJSONString(productCode),throwable);
+            public Result<ProductDetailInfoResponse> getProductDetail(@NotBlank String productCode) {
+                log.error("execute ProductSearchClient getProductDetail error,request:{}", JSON.toJSONString(productCode),throwable);
                 return Result.error("500","服务繁忙");
             }
 
