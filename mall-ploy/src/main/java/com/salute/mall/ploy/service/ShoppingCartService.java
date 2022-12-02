@@ -34,4 +34,22 @@ public interface ShoppingCartService {
      * @return void
      */
     void updateShoppingCartBuyQty(String userCode, String skuCode, Integer buyQty);
+
+    /**
+     * @Description 删除购物车sku
+     * @author liuhu
+     * @param skuCodeList
+     * @date 2022/12/2 15:50
+     * @return void
+     */
+    void deleteShoppingCartSku(String userCode,List<String> skuCodeList);
+
+    /**
+     * @Description 清空购物车
+     * @author liuhu
+     * @param userCode
+     * @date 2022/12/2 16:08
+     * @return void
+     */
+    void clearShoppingCart(String userCode);
 }

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.salute.mall.common.core.utils.SaluteAssertUtil;
 import com.salute.mall.ploy.mapper.ShoppingCartMapper;
 import com.salute.mall.ploy.pojo.entity.ShoppingCart;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -51,5 +52,21 @@ public class ShoppingCartServiceRepository {
         queryWrapper.eq(ShoppingCart::getCreatorCode,updateShoppingCart.getCreatorCode())
                     .eq(ShoppingCart::getSkuCode,updateShoppingCart.getSkuCode());
         return  shoppingCartMapper.update(updateShoppingCart,queryWrapper);
+    }
+
+    public void deleteByUserCodeAndSkuCodeList(String userCode, List<String> skuCodeList) {
+        SaluteAssertUtil.isTrue(StringUtils.isNotBlank(userCode) && CollectionUtils.isNotEmpty(skuCodeList),"参数异常");
+        LambdaQueryWrapper<ShoppingCart> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(ShoppingCart::getCreatorCode,userCode)
+                 .in(ShoppingCart::getSkuCode,skuCodeList);
+        int delete = shoppingCartMapper.delete(queryWrapper);
+        SaluteAssertUtil.isTrue(delete != CollectionUtils.size(skuCodeList),"删除购物车商品异常");
+    }
+
+    public void clear(String userCode) {
+        SaluteAssertUtil.isTrue(StringUtils.isNotBlank(userCode),"用户code不能为空");
+        LambdaQueryWrapper<ShoppingCart> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(ShoppingCart::getCreatorCode,userCode);
+        shoppingCartMapper.delete(queryWrapper);
     }
 }

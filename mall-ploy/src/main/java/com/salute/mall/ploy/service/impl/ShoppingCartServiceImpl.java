@@ -79,6 +79,18 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         updateShoppingCart(existShoppingCart,updateBuyQty);
     }
 
+    @Override
+    public void deleteShoppingCartSku(String userCode,List<String> skuCodeList) {
+        SaluteAssertUtil.isTrue(StringUtils.isNotBlank(userCode) && CollectionUtils.isNotEmpty(skuCodeList),"参数异常");
+        shoppingCartServiceRepository.deleteByUserCodeAndSkuCodeList(userCode,skuCodeList);
+    }
+
+    @Override
+    public void clearShoppingCart(String userCode) {
+        SaluteAssertUtil.isTrue(StringUtils.isNotBlank(userCode),"参数异常");
+        shoppingCartServiceRepository.clear(userCode);
+    }
+
     /**
      * @Description 更新购物车数量商品
      * @author liuhu
