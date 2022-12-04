@@ -1,11 +1,13 @@
 package com.salute.mall.product.service.pojo.bo;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.salute.mall.product.service.pojo.dto.ProductTagBaseDTO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 public class ProductListInfoBO implements Serializable {
@@ -50,4 +52,6 @@ public class ProductListInfoBO implements Serializable {
     @ApiModelProperty(value = "店铺名称",name = "shopName")
     private String shopName;
 
+    @ApiModelProperty(value = "商品标签",name = "productTagList")
+    private List<ProductTagBaseDTO> productTagList;
 }

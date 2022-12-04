@@ -10,7 +10,7 @@ import java.util.List;
 
 @Data
 @ApiModel(value = "小程序商品分类")
-public class ProductCategoryResponse implements Serializable {
+public class ProductCategoryCustomerResponse implements Serializable {
 
 
     @ApiModelProperty(value = "分类级别",name = "categoryLevel")
@@ -28,12 +28,12 @@ public class ProductCategoryResponse implements Serializable {
     @ApiModelProperty(value = "分类描述",name = "categoryDesc")
     private String categoryDesc;
 
-    @ApiModelProperty(value = "分类图标",name = "icon")
-    private String icon;
+    @ApiModelProperty(value = "分类图标",name = "categoryImage")
+    private String categoryImage;
 
     @ApiModelProperty(value = "排序",name = "sort")
     private Integer sort;
 
     @ApiModelProperty(value = "子分类",name = "childrenList")
-    private List<ProductCategoryResponse> childrenList;
+    private List<ProductCategoryCustomerResponse> childrenList;
 }

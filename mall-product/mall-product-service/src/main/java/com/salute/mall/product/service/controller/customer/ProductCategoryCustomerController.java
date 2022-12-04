@@ -1,9 +1,9 @@
-package com.salute.mall.product.service.controller.h5;
+package com.salute.mall.product.service.controller.customer;
 
 import com.salute.mall.common.core.entity.Result;
-import com.salute.mall.product.service.converter.ProductCategoryFaceConverter;
+import com.salute.mall.product.service.converter.ProductCategoryCustomerFaceConverter;
 import com.salute.mall.product.service.pojo.dto.ProductCategoryTreeDTO;
-import com.salute.mall.product.service.pojo.response.ProductCategoryResponse;
+import com.salute.mall.product.service.pojo.response.ProductCategoryCustomerResponse;
 import com.salute.mall.product.service.service.ProductCategoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -15,21 +15,21 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/h5/category/")
+@RequestMapping("product/customer/category/")
 @Api(tags = "h5分类")
-public class ProductCategoryH5Controller {
+public class ProductCategoryCustomerController {
 
     @Autowired
     private ProductCategoryService productCategoryService;
 
     @Autowired
-    private ProductCategoryFaceConverter faceConverter;
+    private ProductCategoryCustomerFaceConverter faceConverter;
 
-    @GetMapping("getAll")
+    @GetMapping("getByCode")
     @ApiOperation("获取小程序的全部分类信息")
-    public Result<List<ProductCategoryResponse>> getAllCategoryInfo(){
-        List<ProductCategoryTreeDTO> productCategoryTreeDTOS = productCategoryService.queryAllCategoryInfo();
-        List<ProductCategoryResponse> productCategoryList = faceConverter.convertToProductCategoryRespList(productCategoryTreeDTOS);
+    public Result<List<ProductCategoryCustomerResponse>> getCategoryInfo(String categoryCode){
+        List<ProductCategoryTreeDTO> productCategoryTreeDTOS = productCategoryService.queryAllCategoryInfo(categoryCode);
+        List<ProductCategoryCustomerResponse> productCategoryList = faceConverter.convertToProductCategoryRespList(productCategoryTreeDTOS);
         return Result.success(productCategoryList);
     }
 }

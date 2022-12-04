@@ -1,11 +1,13 @@
 package com.salute.mall.test.search;
 
 import com.alibaba.fastjson.JSON;
-import com.salute.mall.common.core.entity.Page;
-import com.salute.mall.search.SearchApplication;
-import com.salute.mall.search.pojo.dto.product.QueryH5ProductPageDTO;
-import com.salute.mall.search.pojo.entity.ProductEsEntity;
-import com.salute.mall.search.service.ProductSearchService;
+import com.salute.mall.common.core.entity.Result;
+import com.salute.mall.search.MallSearchApplication;
+import com.salute.mall.search.api.pojo.request.ProductListSearchPageRequest;
+import com.salute.mall.search.api.pojo.request.ProductSearchAssociatedRequest;
+import com.salute.mall.search.api.pojo.response.ProductSearchAssociatedResponse;
+import com.salute.mall.search.controller.ProductSearchController;
+import com.salute.mall.search.pojo.dto.product.ProductListSearchPageDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,23 +15,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.List;
-
-@SpringBootTest(classes = SearchApplication.class)
+@SpringBootTest(classes = MallSearchApplication.class)
 @RunWith(SpringRunner.class)
 @Slf4j
 public class ProductSearchServiceTest {
 
     @Autowired
-    private ProductSearchService productSearchService;
+    private ProductSearchController productSearchController;
 
     @Test
     public void searchProduct(){
-        QueryH5ProductPageDTO dto = new QueryH5ProductPageDTO();
+        ProductSearchAssociatedRequest dto = new ProductSearchAssociatedRequest();
 //        dto.setKeyword("男装");
-        dto.setSortType("SALE_PRICE");
-        dto.setSortValue("DESC");
-        Page<List<ProductEsEntity>> listPage = productSearchService.searchProduct(dto);
-        log.info("execute searchProduct info:{}", JSON.toJSONString(listPage));
+        Result<ProductSearchAssociatedResponse> responseResult = productSearchController.searchProductAssociated(dto);
+        log.info("execute searchProduct info:{}", JSON.toJSONString(responseResult));
     }
 }

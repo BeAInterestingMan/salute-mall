@@ -1,26 +1,34 @@
 package com.salute.mall.search.helper;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
 import com.salute.mall.common.core.entity.Page;
 import com.salute.mall.common.core.exception.BusinessException;
 import com.salute.mall.search.pojo.dto.base.BasePageParamDTO;
+import com.salute.mall.search.pojo.entity.EsAggBaseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.client.core.CountRequest;
+import org.elasticsearch.client.core.CountResponse;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.script.Script;
+import org.elasticsearch.script.ScriptType;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -89,5 +97,29 @@ public class EsHelper {
         });
         // 构建分页参数 es 从0开始
         sourceBuilder.from((basePageParamDTO.getPageIndex() - 1) * basePageParamDTO.getPageSize()).size(basePageParamDTO.getPageSize());
+    }
+
+
+    public List<EsAggBaseDTO> group(String index,BoolQueryBuilder queryBuilder,String groupKey,String groupName) {
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        searchSourceBuilder.query(queryBuilder);
+        TermsAggregationBuilder aggregationBuilder = AggregationBuilders.terms(groupName).field(groupKey);
+        searchSourceBuilder.aggregation(aggregationBuilder).query(queryBuilder).size(10);
+        SearchRequest searchRequest = new SearchRequest(index);
+        searchRequest.source(searchSourceBuilder);
+        List<EsAggBaseDTO> list = new ArrayList<>();
+        try {
+            SearchResponse response = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
+            Terms oneTerm = (Terms) response.getAggregations().asMap().get(groupName);
+            for (Terms.Bucket bucket : oneTerm.getBuckets()) {
+                String[] split = bucket.getKey().toString().split("_");
+                EsAggBaseDTO baseDTO = EsAggBaseDTO.builder().code(split[0])
+                        .count(bucket.getDocCount()).build();
+                list.add(baseDTO);
+            }
+        } catch (Exception e) {
+            log.error("execute es group error",e);
+        }
+        return list;
     }
 }

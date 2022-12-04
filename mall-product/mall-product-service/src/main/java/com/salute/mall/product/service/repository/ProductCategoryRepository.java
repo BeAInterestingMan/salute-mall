@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.salute.mall.common.core.utils.SaluteAssertUtil;
 import com.salute.mall.product.service.mapper.ProductCategoryMapper;
 import com.salute.mall.product.service.pojo.entity.ProductCategory;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -37,10 +38,18 @@ public class ProductCategoryRepository {
      * @return com.salute.mall.product.service.pojo.entity.ProductCategory
      */
     public ProductCategory getByCategoryCode(String categoryCode) {
-        SaluteAssertUtil.isTrue(StringUtils.isNoneBlank(categoryCode), "分类编号不能为空");
+        SaluteAssertUtil.isTrue(StringUtils.isNotBlank(categoryCode), "分类编号不能为空");
         LambdaQueryWrapper<ProductCategory> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(ProductCategory::getDeleteFlag,"NO")
                     .eq(ProductCategory::getCategoryCode,categoryCode);
         return  productCategoryMapper.selectOne(queryWrapper);
+    }
+
+    public List<ProductCategory> queryByCategoryCode(List<String> categoryCode) {
+        SaluteAssertUtil.isTrue(CollectionUtils.isNotEmpty(categoryCode), "分类编号不能为空");
+        LambdaQueryWrapper<ProductCategory> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(ProductCategory::getDeleteFlag,"NO")
+                .in(ProductCategory::getCategoryCode,categoryCode);
+        return  productCategoryMapper.selectList(queryWrapper);
     }
 }

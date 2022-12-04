@@ -11,7 +11,7 @@
         <result property="categoryCode"  column="category_code"/>
         <result property="categoryName"   column="category_name"/>
         <result property="categoryDesc"   column="category_desc"/>
-        <result property="icon"   column="icon"/>
+        <result property="categoryImage"   column="category_image"/>
         <result property="status"   column="status"/>
         <result property="deleteFlag"   column="delete_flag"/>
         <result property="sort"   column="sort"/>
@@ -32,7 +32,7 @@
         category_code,
         category_name,
         category_desc,
-        icon,
+        category_image,
         status,
         delete_flag,
         sort,

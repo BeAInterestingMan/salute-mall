@@ -12,6 +12,7 @@
         <module>mall-order</module>
         <module>mall-marketing</module>
         <module>mall-pay</module>
+        <module>mall-mq</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

@@ -9,7 +9,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
 @Data
-public class QueryH5ProductPageDTO implements Serializable {
+public class ProductListSearchPageDTO implements Serializable {
 
     @ApiModelProperty(value = "pageSize",name = "pageSize")
     private Integer pageSize=10;
@@ -27,19 +27,19 @@ public class QueryH5ProductPageDTO implements Serializable {
     @ApiModelProperty(value = "品牌编号", name = "brandCode")
     private String brandCode;
 
-    @ApiModelProperty(value = "排序字段 SALE_NUM-按销量排序 SALE_PRICE-按价格排序", name = "brandCode")
-    private String sortType;
+    @ApiModelProperty(value = "排序字段 saleNum-按销量排序 salePrice-按价格排序",name = "sort")
+    private String sort;
 
-    @ApiModelProperty(value = "排序类型 DESC-降序 ASC-升序", name = "brandCode")
-    private String sortValue;
+    @ApiModelProperty(value = "排序类型 DESC-降序 ASC-升序",name = "order")
+    private String order;
 
-    @ApiModelProperty(value = "价格范围-起始", name = "startSalePrice")
-    @DecimalMax(value = "1000000", message = "筛选价格不能低于1000000")
-    @DecimalMin(value = "0", message = "筛选价格不能低于0")
-    private BigDecimal startSalePrice;
+    @ApiModelProperty(value = "价格范围-起始",name = "startSalePrice")
+    @DecimalMax(value = "1000000",message = "筛选价格不能低于1000000")
+    @DecimalMin(value = "0",message = "筛选价格不能低于0")
+    private BigDecimal minSalePrice;
 
-    @ApiModelProperty(value = "价格范围-终止", name = "endSalePrice")
-    @DecimalMax(value = "1000000", message = "筛选价格不能低于1000000")
-    @DecimalMin(value = "0", message = "筛选价格不能低于0")
-    private BigDecimal endSalePrice;
+    @ApiModelProperty(value = "价格范围-终止",name = "endSalePrice")
+    @DecimalMax(value = "1000000",message = "筛选价格不能低于1000000")
+    @DecimalMin(value = "0",message = "筛选价格不能低于0")
+    private BigDecimal maxSalePrice;
 }

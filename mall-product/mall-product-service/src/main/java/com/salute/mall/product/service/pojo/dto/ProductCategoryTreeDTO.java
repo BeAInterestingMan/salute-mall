@@ -34,8 +34,8 @@ public class ProductCategoryTreeDTO implements Serializable {
     @ApiModelProperty(value = "分类描述",name = "categoryDesc")
     private String categoryDesc;
 
-    @ApiModelProperty(value = "分类图标",name = "icon")
-    private String icon;
+    @ApiModelProperty(value = "分类图片",name = "categoryImage")
+    private String categoryImage;
 
     @ApiModelProperty(value = "状态",name = "status")
     private String status;

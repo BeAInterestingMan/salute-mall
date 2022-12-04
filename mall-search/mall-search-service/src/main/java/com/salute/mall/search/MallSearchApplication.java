@@ -6,8 +6,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
 @EnableFeignClients(value = "com.salute.mall.search.api.client")
-public class SearchApplication {
+public class MallSearchApplication {
     public static void main(String[] args) {
-        SpringApplication.run(SearchApplication.class,args);
+        SpringApplication.run(MallSearchApplication.class,args);
     }
 }
