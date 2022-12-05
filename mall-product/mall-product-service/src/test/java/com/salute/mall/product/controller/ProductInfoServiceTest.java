@@ -1,6 +1,7 @@
-package com.salute.mall.product;
+package com.salute.mall.product.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.salute.mall.product.MallProductApplication;
 import com.salute.mall.product.service.pojo.bo.ProductDetailInfoBO;
 import com.salute.mall.product.service.pojo.dto.ProductSkuSpecificationDTO;
 import com.salute.mall.product.service.service.ProductInfoService;

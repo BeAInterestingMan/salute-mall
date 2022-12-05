@@ -2,6 +2,7 @@ package com.salute.mall.search.converter;
 
 import com.salute.mall.common.core.entity.Page;
 import com.salute.mall.search.api.pojo.request.ProductListSearchPageRequest;
+import com.salute.mall.search.api.pojo.request.ProductSaveEsRequest;
 import com.salute.mall.search.api.pojo.request.ProductSearchAssociatedRequest;
 import com.salute.mall.search.api.pojo.response.ProductListSearchResponse;
 import com.salute.mall.search.pojo.dto.product.ProductListSearchPageDTO;
@@ -21,4 +22,6 @@ public interface ProductSearchFaceConverter {
     ProductListSearchPageDTO convertToProductListSearchPageDTO(ProductSearchAssociatedRequest request);
 
     ProductSearchAssociatedDTO convertToProductSearchAssociatedDTO(ProductSearchAssociatedRequest request);
+
+    ProductEsEntity convertToProductEsEntity(ProductSaveEsRequest request);
 }

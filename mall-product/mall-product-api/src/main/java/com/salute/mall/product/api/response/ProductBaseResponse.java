@@ -1,23 +1,28 @@
-package com.salute.mall.search.pojo.entity;
+package com.salute.mall.product.api.response;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.experimental.FieldNameConstants;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
+/**
+ *  @Description 商品基本信息
+ *  @author liuhu
+ *  @Date 2022/11/29 20:49
+ */
 @Data
-@FieldNameConstants
-public class ProductEsEntity implements Serializable {
+public class ProductBaseResponse implements Serializable {
 
     @ApiModelProperty(value = "商品名称",name = "spuName")
     private String productName;
 
     @ApiModelProperty(value = "商品编码",name = "spuCode")
     private String productCode;
+
+    @ApiModelProperty(value = "商品主图",name = "mainImage")
+    private String mainImage;
 
     @ApiModelProperty(value = "关键词",name = "keyword")
     private String keyword;
@@ -28,26 +33,47 @@ public class ProductEsEntity implements Serializable {
     @ApiModelProperty(value = "卖点",name = "sellPoint")
     private String sellPoint;
 
+    @ApiModelProperty(value = "商品条形码",name = "barcode")
+    private String barcode;
+
+    @ApiModelProperty(value = "供应商编码",name = "supplierCode")
+    private String supplierCode;
+
+    @ApiModelProperty(value = "供应商名称",name = "supplierName")
+    private String supplierName;
+
+    @ApiModelProperty(value = "销售价",name = "salePrice")
+    private BigDecimal salePrice;
+
+    @ApiModelProperty(value = "市场价",name = "marketPrice")
+    private BigDecimal marketPrice;
+
+    @ApiModelProperty(value = "成本价",name = "costPrice")
+    private BigDecimal costPrice;
+
     @ApiModelProperty(value = "一级分类编号",name = "categoryCodeFirst")
     private String categoryCodeFirst;
+
+    @ApiModelProperty(value = "一级分类编号",name = "categoryCodeFirst")
+    private String categoryNameFirst;
 
     @ApiModelProperty(value = "二级分类编号",name = "categoryCodeSencond")
     private String categoryCodeSecond;
 
+    @ApiModelProperty(value = "二级分类编号",name = "categoryNameSecond")
+    private String categoryNameSecond;
+
     @ApiModelProperty(value = "三级分类编号",name = "categoryCodeThird")
     private String categoryCodeThird;
+
+    @ApiModelProperty(value = "三级分类编号",name = "categoryNameThird")
+    private String categoryNameThird;
 
     @ApiModelProperty(value = "品牌编号",name = "brandCode")
     private String brandCode;
 
-    @ApiModelProperty(value = "品牌名称",name = "brandCode")
-    private String brandName;
-
     @ApiModelProperty(value = "销量",name = "saleNum")
     private Integer saleNum;
-
-    @ApiModelProperty(value = "排序",name = "sort")
-    private Long sort;
 
     @ApiModelProperty(value = "商品状态;ON上架 DOWN下架",name = "status")
     private String status;
@@ -70,26 +96,5 @@ public class ProductEsEntity implements Serializable {
     @ApiModelProperty(value = "更新时间",name = "modifiedTime")
     private Date modifiedTime;
 
-    //--- 商品详情字段 //
-    @ApiModelProperty(value = "生成日期",name = "productTime")
-    private Date productTime;
 
-    @ApiModelProperty(value = "商品保质期单位",name = "shelfLifeUnit")
-    private String shelfLifeUnit;
-
-    @ApiModelProperty(value = "商品保质期",name = "shelfLife")
-    private Integer shelfLife;
-
-    @ApiModelProperty(value = "产地",name = "originPlace")
-    private String originPlace;
-
-    @ApiModelProperty(value = "重量（g）",name = "weight")
-    private Integer weight;
-
-    // 商品sku
-    @ApiModelProperty(value = "sku",name = "productSku")
-    private List<ProductSkuEsEntity> productSku;
-
-    @ApiModelProperty(value = "商品标签",name = "productTag")
-    private List<ProductTagEsEntity> productTag;
 }

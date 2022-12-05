@@ -1,4 +1,4 @@
-package com.salute.mall.product.service.pojo.dto;
+package com.salute.mall.product.api.response;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -12,7 +12,7 @@ import java.util.Date;
  *  @Date 2022/11/29 20:49
  */
 @Data
-public class ProductDetailInfoDTO implements Serializable {
+public class ProductDetailBaseResponse implements Serializable {
 
     @ApiModelProperty(value = "product编号",name = "productCode")
     private String productCode;

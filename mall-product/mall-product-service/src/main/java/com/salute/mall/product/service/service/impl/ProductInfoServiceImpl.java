@@ -17,13 +17,10 @@ import com.salute.mall.product.service.pojo.bo.ProductListInfoBO;
 import com.salute.mall.product.service.pojo.dto.*;
 import com.salute.mall.product.service.pojo.entity.*;
 import com.salute.mall.product.service.repository.*;
-import com.salute.mall.product.service.service.ProductCategoryService;
 import com.salute.mall.product.service.service.ProductInfoService;
-import com.salute.mall.search.api.pojo.response.ProductSearchAssociatedResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
@@ -31,7 +28,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -86,10 +82,13 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         CompletableFuture<ProductDetail> productDetailFuture = CompletableFuture.supplyAsync(() -> productDetailRepository.getByProductCode(productCode),executor);
         CompletableFuture<List<ProductSpecification>> productSpecificationsFuture = CompletableFuture.supplyAsync(() -> productSpecificationRepository.queryByProductCode(productCode),executor);
         CompletableFuture<List<ProductTag>> productTagsFuture = CompletableFuture.supplyAsync(() ->  productTagRepository.getByProductCode(productCode),executor);
-
+        CompletableFuture<List<ProductCategory>> categoryCompletableFuture = CompletableFuture.supplyAsync(() -> productCategoryRepository.queryByCategoryCode(Lists.newArrayList(product.getCategoryCodeFirst(), product.getCategoryCodeSecond(), product.getCategoryCodeThird())), executor);
         CompletableFutureUtil.allOf("异步获取商品附加信息异常",baseProductFuture,skuListFuture);
         //3.构建数据
-        return buildProductH5DetailInfoBO(product, productSkus, productStockListFuture.join(), productDetailFuture.join(), productSpecificationsFuture.join(),productTagsFuture.join());
+        return  buildProductDetailInfoBO(product, productSkus,
+                productStockListFuture.join(), productDetailFuture.join(),
+                productSpecificationsFuture.join(),productTagsFuture.join(),
+                categoryCompletableFuture.join());
     }
 
     /**
@@ -103,27 +102,29 @@ public class ProductInfoServiceImpl implements ProductInfoService {
      * @date 2022/11/29 20:42
      * @return com.salute.mall.product.service.pojo.bo.ProductDetailInfoBO
      */
-    private ProductDetailInfoBO buildProductH5DetailInfoBO(Product product, List<ProductSku> productSkus,
+    private ProductDetailInfoBO buildProductDetailInfoBO(Product product, List<ProductSku> productSkus,
                                             List<ProductStock> productStockList,
                                             ProductDetail productDetail,
                                             List<ProductSpecification> productSpecifications,
-                                            List<ProductTag> productTagList) {
+                                            List<ProductTag> productTagList,
+                                                         List<ProductCategory> productCategoryList) {
         SaluteAssertUtil.isTrue(CollectionUtils.isNotEmpty(productStockList),product.getProductCode()+"商品库存不存在");
         SaluteAssertUtil.isTrue(Objects.nonNull(productDetail),product.getProductCode()+"商品详情不存在");
         SaluteAssertUtil.isTrue(CollectionUtils.isNotEmpty(productSpecifications),product.getProductCode()+"商品规格不存在");
+        SaluteAssertUtil.isTrue(CollectionUtils.isNotEmpty(productCategoryList),product.getProductCode()+"商品分类信息不存在");
         ProductDetailInfoBO productDetailInfoBO = new ProductDetailInfoBO();
         //1.构建商品基本信息
-        ProductBaseInfoDTO baseInfoDTO = buildProductBaseInfoDTO(product, productSkus);
+        ProductBaseDTO baseInfoDTO = buildProductBaseInfoDTO(product, productSkus,productCategoryList);
         //2.构建商品图文详情信息
-        ProductDetailInfoDTO productDetailInfoDTO = productInfoServiceConverter.convertToProductDetailInfoDTO(productDetail);
+        ProductDetailBaseDTO productDetailBaseDTO = productInfoServiceConverter.convertToProductDetailInfoDTO(productDetail);
         //3.构建商品sku聚合信息
-        List<ProductPloySkuInfoDTO> ploySkuInfoDTOS = buildSkuInfoDTOList(productSkus, productStockList);
+        List<ProductSkuDTO> skuDTOList = buildSkuInfoDTOList(productSkus, productStockList);
         //4.构建商品规格信息
         List<ProductSpecificationDTO> productSpecificationDTOS = buildSpecificationDTOList(productSpecifications);
         List<ProductTagBaseDTO> productTagBaseDTOList =  productInfoServiceConverter.convertToProductTagBaseDTOList(productTagList);
         productDetailInfoBO.setProductBaseInfo(baseInfoDTO);
-        productDetailInfoBO.setProductDetailInfo(productDetailInfoDTO);
-        productDetailInfoBO.setProductPloySkuInfoList(ploySkuInfoDTOS);
+        productDetailInfoBO.setProductDetail(productDetailBaseDTO);
+        productDetailInfoBO.setProductSkuList(skuDTOList);
         productDetailInfoBO.setProductSpecificationList(productSpecificationDTOS);
         productDetailInfoBO.setProductTagBaseList(productTagBaseDTOList);
         return productDetailInfoBO;
@@ -158,14 +159,14 @@ public class ProductInfoServiceImpl implements ProductInfoService {
      * @param productSkus
      * @param productStockList
      * @date 2022/11/29 20:16
-     * @return java.util.List<com.salute.mall.product.service.pojo.dto.ProductPloySkuInfoDTO>
+     * @return java.util.List<com.salute.mall.product.service.pojo.dto.ProductSkuDTO>
      */
-    private List<ProductPloySkuInfoDTO> buildSkuInfoDTOList(List<ProductSku> productSkus,
-                                                            List<ProductStock> productStockList) {
+    private List<ProductSkuDTO> buildSkuInfoDTOList(List<ProductSku> productSkus,
+                                                    List<ProductStock> productStockList) {
         Map<String, ProductStock> stockMap = productStockList.stream().collect(Collectors.toMap(ProductStock::getSkuCode, Function.identity(), (k1, k2) -> k1));
         return  productSkus.stream().map(sku->{
             //1.基本sku信息
-            ProductPloySkuInfoDTO dto = productInfoServiceConverter.convertToProductPloySkuInfoDTO(sku);
+            ProductSkuDTO dto = productInfoServiceConverter.convertToProductPloySkuInfoDTO(sku);
             ProductStock productStock = stockMap.get(sku.getSkuCode());
             SaluteAssertUtil.isTrue(Objects.nonNull(productStock),sku.getSkuCode()+"sku库存信息不存在");
             //2.可用库存
@@ -184,10 +185,18 @@ public class ProductInfoServiceImpl implements ProductInfoService {
      * @param product
      * @param productSkus
      * @date 2022/11/29 20:16
-     * @return com.salute.mall.product.service.pojo.dto.ProductBaseInfoDTO
+     * @return com.salute.mall.product.service.pojo.dto.ProductBaseDTO
      */
-    private ProductBaseInfoDTO buildProductBaseInfoDTO(Product product, List<ProductSku> productSkus) {
-        ProductBaseInfoDTO baseInfoDTO =  productInfoServiceConverter.convertToProductBaseInfoDTO(product);
+    private ProductBaseDTO buildProductBaseInfoDTO(Product product, List<ProductSku> productSkus,
+                                                   List<ProductCategory> productCategoryList) {
+        ProductBaseDTO baseInfoDTO =  productInfoServiceConverter.convertToProductBaseInfoDTO(product);
+        Map<String, ProductCategory> categoryMap = productCategoryList.stream().collect(Collectors.toMap(ProductCategory::getCategoryCode, Function.identity(), (k1, k2) -> k1));
+        ProductCategory first = categoryMap.get(product.getCategoryCodeFirst());
+        ProductCategory second = categoryMap.get(product.getCategoryCodeFirst());
+        ProductCategory third = categoryMap.get(product.getCategoryCodeFirst());
+        baseInfoDTO.setCategoryNameFirst(Objects.nonNull(first)?first.getCategoryName():"");
+        baseInfoDTO.setCategoryNameSecond(Objects.nonNull(second)?second.getCategoryName():"");
+        baseInfoDTO.setCategoryNameThird(Objects.nonNull(third)?third.getCategoryName():"");
         ProductSku defaultSku = getDefaultSku(productSkus);
         baseInfoDTO.setSalePrice(defaultSku.getSalePrice());
         baseInfoDTO.setCostPrice(defaultSku.getCostPrice());
@@ -203,16 +212,37 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         }
         List<String> productCodeList = page.getData().stream().map(ProductListSearchResDTO::getProductCode).collect(Collectors.toList());
         List<Product> productList = productRepository.queryByProductCodeList(productCodeList);
+        List<Product> sortedProductList = resortedProductList(productCodeList,productList);
         List<ProductSku> productSkus = productSkuRepository.queryByProductCodeList(productCodeList);
         List<ProductTag> productTags = productTagRepository.queryByProductCodeList(productCodeList);
         Map<String, List<ProductTag>> productTagMap = productTags.stream().collect(Collectors.groupingBy(ProductTag::getProductCode));
         Map<String, List<ProductSku>> skuMap = productSkus.stream().collect(Collectors.groupingBy(ProductSku::getProductCode));
-        List<ProductListInfoBO> productListInfoBOList = productList.stream().map(v -> buildProduct(v, skuMap,productTagMap)).filter(Objects::nonNull).collect(Collectors.toList());
+        List<ProductListInfoBO> productListInfoBOList = sortedProductList.stream().map(v -> buildProduct(v, skuMap,productTagMap)).filter(Objects::nonNull).collect(Collectors.toList());
         return new Page<>(page.getPageIndex(), page.getPageSize(), page.getTotal(),productListInfoBOList);
     }
 
+    /**
+     * @Description 数据库的排序按照ES排序填充
+     * @author liuhu
+     * @param productCodeList
+     * @param productList
+     * @date 2022/12/5 13:35
+     * @return java.util.List<com.salute.mall.product.service.pojo.entity.Product>
+     */
+    private List<Product> resortedProductList(List<String> productCodeList, List<Product> productList) {
+        Map<String, Product> productMap = productList.stream().collect(Collectors.toMap(Product::getProductCode, Function.identity(), (k1, k2) -> k1));
+       return productCodeList.stream().map(productCode->{
+            Product product = productMap.get(productCode);
+            if(Objects.isNull(product)){
+                log.warn("当前商品编号查询不到商品信息，productCode：{}",productCode);
+                return null;
+            }
+            return product;
+        }).collect(Collectors.toList());
+    }
+
     @Override
-    public List<ProductPloySkuInfoDTO> queryProductSkuDetail(List<String> skuCodeList) {
+    public List<ProductSkuDTO> queryProductSkuDetail(List<String> skuCodeList) {
         List<ProductSku> productSkuList = productSkuRepository.queryBySkuCodeList(skuCodeList);
         List<ProductStock> productStockList = productStockRepository.queryBySkuCodeList(skuCodeList);
         SaluteAssertUtil.isTrue(CollectionUtils.isNotEmpty(productSkuList),skuCodeList+"商品sku不存在");
@@ -222,13 +252,13 @@ public class ProductInfoServiceImpl implements ProductInfoService {
     }
 
     @Override
-    public ProductPloySkuInfoDTO getProductSkuDetail(String skuCode) {
+    public ProductSkuDTO getProductSkuDetail(String skuCode) {
         ProductSku productSku = productSkuRepository.getBySkuCode(skuCode);
         ProductStock productStock = productStockRepository.getBySkuCode(skuCode);
         SaluteAssertUtil.isTrue(Objects.nonNull(productSku),skuCode+"商品sku不存在");
         SaluteAssertUtil.isTrue(Objects.nonNull(productStock),skuCode+"商品库存不存在");
         //3.构建商品sku聚合信息
-        ProductPloySkuInfoDTO dto = productInfoServiceConverter.convertToProductPloySkuInfoDTO(productSku);
+        ProductSkuDTO dto = productInfoServiceConverter.convertToProductPloySkuInfoDTO(productSku);
         //2.可用库存
         dto.setAvailableStock(productStock.getAvailableStock());
         //3.sku的规格信息 json存储

@@ -9,11 +9,11 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ProductInfoServiceConverter {
 
-    ProductBaseInfoDTO convertToProductBaseInfoDTO(Product product);
+    ProductBaseDTO convertToProductBaseInfoDTO(Product product);
 
-    ProductDetailInfoDTO convertToProductDetailInfoDTO(ProductDetail productDetail);
+    ProductDetailBaseDTO convertToProductDetailInfoDTO(ProductDetail productDetail);
 
-    ProductPloySkuInfoDTO convertToProductPloySkuInfoDTO(ProductSku sku);
+    ProductSkuDTO convertToProductPloySkuInfoDTO(ProductSku sku);
 
     List<ProductTagBaseDTO> convertToProductTagBaseDTOList(List<ProductTag> tags);
 

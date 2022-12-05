@@ -5,6 +5,7 @@ import com.salute.mall.common.core.entity.Page;
 import com.salute.mall.common.core.entity.Result;
 import com.salute.mall.search.api.client.ProductSearchClient;
 import com.salute.mall.search.api.pojo.request.ProductListSearchPageRequest;
+import com.salute.mall.search.api.pojo.request.ProductSaveEsRequest;
 import com.salute.mall.search.api.pojo.request.ProductSearchAssociatedRequest;
 import com.salute.mall.search.api.pojo.response.ProductListSearchResponse;
 import com.salute.mall.search.api.pojo.response.ProductSearchAssociatedResponse;
@@ -30,6 +31,12 @@ public class ProductSearchClientFallback implements FallbackFactory<ProductSearc
           @Override
           public Result<ProductSearchAssociatedResponse> searchProductAssociated(@Valid ProductSearchAssociatedRequest request) {
               log.error("execute ProductSearchClient searchProductAssociated error,request:{}", JSON.toJSONString(request),throwable);
+              return Result.error("500","服务繁忙");
+          }
+
+          @Override
+          public Result<Void> saveEsProduct(@Valid ProductSaveEsRequest request) {
+              log.error("execute ProductSearchClient saveEsProduct error,request:{}", JSON.toJSONString(request),throwable);
               return Result.error("500","服务繁忙");
           }
       };

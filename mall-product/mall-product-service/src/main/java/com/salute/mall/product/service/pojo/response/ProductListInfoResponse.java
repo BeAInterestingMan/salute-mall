@@ -1,6 +1,6 @@
 package com.salute.mall.product.service.pojo.response;
 
-import com.salute.mall.product.api.response.ProductTagInfoResponse;
+import com.salute.mall.product.api.response.ProductTagResponse;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -43,5 +43,5 @@ public class ProductListInfoResponse {
     private String shopName;
 
     @ApiModelProperty(value = "商品标签",name = "productTagList")
-    private List<ProductTagInfoResponse> productTagList;
+    private List<ProductTagResponse> productTagList;
 }

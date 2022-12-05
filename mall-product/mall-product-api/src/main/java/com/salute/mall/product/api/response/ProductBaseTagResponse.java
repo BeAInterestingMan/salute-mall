@@ -6,7 +6,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-public class ProductTagInfoResponse implements Serializable {
+public class ProductBaseTagResponse implements Serializable {
 
     @ApiModelProperty(value = "商品编码",name = "productCode")
     private String productCode;

@@ -5,14 +5,14 @@ import com.google.common.collect.Lists;
 import com.salute.mall.common.core.entity.Page;
 import com.salute.mall.common.core.entity.Result;
 import com.salute.mall.product.api.response.ProductDetailInfoResponse;
-import com.salute.mall.product.api.response.ProductPloySkuInfoResponse;
+import com.salute.mall.product.api.response.ProductSkuResponse;
 import com.salute.mall.product.service.converter.ProductDetailInfoFaceConverter;
 import com.salute.mall.product.service.pojo.bo.ProductDetailInfoBO;
 import com.salute.mall.product.service.pojo.bo.ProductListInfoBO;
 import com.salute.mall.product.service.pojo.dto.ProductAssociatedDTO;
 import com.salute.mall.product.service.pojo.dto.ProductAssociatedQueryDTO;
 import com.salute.mall.product.service.pojo.dto.ProductCustomerInfoQueryDTO;
-import com.salute.mall.product.service.pojo.dto.ProductPloySkuInfoDTO;
+import com.salute.mall.product.service.pojo.dto.ProductSkuDTO;
 import com.salute.mall.product.service.pojo.request.ProductAssociatedRequest;
 import com.salute.mall.product.service.pojo.request.ProductCustomerInfoRequest;
 import com.salute.mall.product.service.pojo.response.ProductAssociatedResponse;
@@ -53,20 +53,20 @@ public class ProductDetailInfoController {
 
     @PostMapping("queryProductSkuDetail")
     @ApiOperation("根据skuCodeList获取sku商品详情信息")
-    public Result<List<ProductPloySkuInfoResponse>> queryProductSkuDetail(@NotEmpty @RequestBody List<String> skuCodeList){
+    public Result<List<ProductSkuResponse>> queryProductSkuDetail(@NotEmpty @RequestBody List<String> skuCodeList){
         log.info("execute getProductBySpuCode info,req:{}", JSON.toJSONString(skuCodeList));
-        List<ProductPloySkuInfoDTO> ploySkuInfoDTOS = productInfoService.queryProductSkuDetail(skuCodeList);
-        List<ProductPloySkuInfoResponse> response = productDetailInfoFaceConverter.convertToProductPloySkuInfoResponseList(ploySkuInfoDTOS);
+        List<ProductSkuDTO> ploySkuInfoDTOS = productInfoService.queryProductSkuDetail(skuCodeList);
+        List<ProductSkuResponse> response = productDetailInfoFaceConverter.convertToProductPloySkuInfoResponseList(ploySkuInfoDTOS);
         log.info("execute getProductBySpuCode info,req:{},resp:{}", JSON.toJSONString(skuCodeList), JSON.toJSONString(response));
         return Result.success(response);
     }
 
     @GetMapping("getProductSkuDetail")
     @ApiOperation("根据skuCode获取sku商品详情信息")
-    public Result<ProductPloySkuInfoResponse> getProductSkuDetail(@NotBlank @RequestParam(name = "skuCode") String skuCode){
+    public Result<ProductSkuResponse> getProductSkuDetail(@NotBlank @RequestParam(name = "skuCode") String skuCode){
         log.info("execute queryProductSkuDetail info,req:{}", JSON.toJSONString(skuCode));
-        ProductPloySkuInfoDTO ploySkuInfoDTO = productInfoService.getProductSkuDetail(skuCode);
-        ProductPloySkuInfoResponse response = productDetailInfoFaceConverter.convertToProductPloySkuInfoResponse(ploySkuInfoDTO);
+        ProductSkuDTO ploySkuInfoDTO = productInfoService.getProductSkuDetail(skuCode);
+        ProductSkuResponse response = productDetailInfoFaceConverter.convertToProductPloySkuInfoResponse(ploySkuInfoDTO);
         log.info("execute queryProductSkuDetail info,req:{},resp:{}", JSON.toJSONString(skuCode), JSON.toJSONString(response));
         return Result.success(response);
     }

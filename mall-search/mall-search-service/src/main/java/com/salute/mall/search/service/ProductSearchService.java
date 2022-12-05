@@ -28,4 +28,14 @@ public interface ProductSearchService {
      * @return java.util.List<com.salute.mall.search.pojo.entity.EsAggBaseDTO>
      */
     List<EsAggBaseDTO>  searchProductAssociated(ProductSearchAssociatedDTO dto, String groupKey, String groupName);
+
+
+    /**
+     * @Description 保存商品Es数据
+     * @author liuhu
+     * @param entity
+     * @date 2022/12/5 16:46
+     * @return void
+     */
+    void upsertProduct(ProductEsEntity entity);
 }

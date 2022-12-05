@@ -4,6 +4,7 @@ import com.salute.mall.common.core.entity.Page;
 import com.salute.mall.common.core.entity.Result;
 import com.salute.mall.search.api.follback.ProductSearchClientFallback;
 import com.salute.mall.search.api.pojo.request.ProductListSearchPageRequest;
+import com.salute.mall.search.api.pojo.request.ProductSaveEsRequest;
 import com.salute.mall.search.api.pojo.request.ProductSearchAssociatedRequest;
 import com.salute.mall.search.api.pojo.response.ProductListSearchResponse;
 import com.salute.mall.search.api.pojo.response.ProductSearchAssociatedResponse;
@@ -22,4 +23,7 @@ public interface ProductSearchClient {
 
     @PostMapping("/search/product/associated")
     Result<ProductSearchAssociatedResponse> searchProductAssociated(@Valid @RequestBody ProductSearchAssociatedRequest request);
+
+    @PostMapping("/search/product/saveEsProduct")
+    Result<Void> saveEsProduct(@Valid @RequestBody ProductSaveEsRequest request);
 }

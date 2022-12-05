@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.salute.mall.common.core.entity.Result;
 import com.salute.mall.product.api.client.ProductDetailInfoClient;
 import com.salute.mall.product.api.response.ProductDetailInfoResponse;
-import com.salute.mall.product.api.response.ProductPloySkuInfoResponse;
+import com.salute.mall.product.api.response.ProductSkuResponse;
 import feign.hystrix.FallbackFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -27,13 +27,13 @@ public class ProductDetailInfoClientFallback implements FallbackFactory<ProductD
             }
 
             @Override
-            public Result<List<ProductPloySkuInfoResponse>> queryProductSkuDetail(@NotEmpty List<String> skuCodeList) {
+            public Result<List<ProductSkuResponse>> queryProductSkuDetail(@NotEmpty List<String> skuCodeList) {
                 log.error("execute ProductSearchClient queryProductSkuDetail error,request:{}", JSON.toJSONString(skuCodeList),throwable);
                 return Result.error("500","服务繁忙");
             }
 
             @Override
-            public Result<ProductPloySkuInfoResponse> getProductSkuDetail(@NotBlank String skuCode) {
+            public Result<ProductSkuResponse> getProductSkuDetail(@NotBlank String skuCode) {
                 log.error("execute ProductSearchClient getProductSkuDetail error,request:{}", JSON.toJSONString(skuCode),throwable);
                 return Result.error("500","服务繁忙");
             }

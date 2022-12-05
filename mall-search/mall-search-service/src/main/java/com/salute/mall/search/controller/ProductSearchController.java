@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.salute.mall.common.core.entity.Page;
 import com.salute.mall.common.core.entity.Result;
 import com.salute.mall.search.api.pojo.request.ProductListSearchPageRequest;
+import com.salute.mall.search.api.pojo.request.ProductSaveEsRequest;
 import com.salute.mall.search.api.pojo.request.ProductSearchAssociatedRequest;
 import com.salute.mall.search.api.pojo.response.ProductAssociatedBrandResponse;
 import com.salute.mall.search.api.pojo.response.ProductAssociatedCategoryResponse;
@@ -76,5 +77,13 @@ public class ProductSearchController {
         response.setBrandList(productAssociatedBrandResponseList);
         response.setCategoryList(productAssociatedCategoryResponseList);
         return response;
+    }
+
+    @PostMapping("saveEsProduct")
+    public Result<Void> saveEsProduct(@Valid @RequestBody ProductSaveEsRequest request){
+        log.info("execute saveEsProduct info,req:{}", JSON.toJSONString(request));
+        ProductEsEntity entity = productSearchFaceConverter.convertToProductEsEntity(request);
+        productSearchService.upsertProduct(entity);
+        return Result.success();
     }
 }

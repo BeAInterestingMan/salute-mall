@@ -1,22 +1,23 @@
-package com.salute.mall.search.pojo.entity;
+package com.salute.mall.search.api.pojo.request;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.FieldNameConstants;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
 @Data
 @FieldNameConstants
-public class ProductEsEntity implements Serializable {
+public class ProductSaveEsRequest implements Serializable {
 
     @ApiModelProperty(value = "商品名称",name = "spuName")
     private String productName;
 
     @ApiModelProperty(value = "商品编码",name = "spuCode")
+    @NotBlank
     private String productCode;
 
     @ApiModelProperty(value = "关键词",name = "keyword")
@@ -88,8 +89,8 @@ public class ProductEsEntity implements Serializable {
 
     // 商品sku
     @ApiModelProperty(value = "sku",name = "productSku")
-    private List<ProductSkuEsEntity> productSku;
+    private List<ProductSkuSaveEsRequest> productSku;
 
     @ApiModelProperty(value = "商品标签",name = "productTag")
-    private List<ProductTagEsEntity> productTag;
+    private List<ProductTagSaveEsRequest> productTag;
 }

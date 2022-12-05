@@ -1,5 +1,7 @@
 package com.salute.mall.search.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.google.common.collect.Lists;
 import com.salute.mall.common.core.entity.Page;
 import com.salute.mall.search.converter.ProductSearchServiceConverter;
@@ -11,10 +13,15 @@ import com.salute.mall.search.pojo.dto.product.ProductListSearchPageDTO;
 import com.salute.mall.search.pojo.dto.product.ProductSearchAssociatedDTO;
 import com.salute.mall.search.pojo.entity.EsAggBaseDTO;
 import com.salute.mall.search.pojo.entity.ProductEsEntity;
-import com.salute.mall.search.pojo.entity.ProductSkuEsDTO;
+import com.salute.mall.search.pojo.entity.ProductSkuEsEntity;
 import com.salute.mall.search.service.ProductSearchService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.update.UpdateRequest;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +41,9 @@ public class ProductSearchServiceImpl implements ProductSearchService {
     @Autowired
     private ProductSearchServiceConverter productSearchServiceConverter;
 
+    @Autowired
+    private RestHighLevelClient restHighLevelClient;
+
     @Override
     public Page<List<ProductEsEntity>> searchProduct(ProductListSearchPageDTO dto) {
         BoolQueryBuilder queryBuilder = buildBoolQuery(dto);
@@ -46,6 +56,11 @@ public class ProductSearchServiceImpl implements ProductSearchService {
         ProductListSearchPageDTO searchPageDTO =  productSearchServiceConverter.convertToProductListSearchPageDTO(dto);
         BoolQueryBuilder queryBuilder = buildBoolQuery(searchPageDTO);
         return esHelper.group(EsIndexEnums.PRODUCT.getName(), queryBuilder,groupKey,"brand");
+    }
+
+    @Override
+    public void upsertProduct(ProductEsEntity productEsEntity) {
+        esHelper.upsert(productEsEntity.getProductCode(), JSON.toJSONString(productEsEntity),EsIndexEnums.PRODUCT.getName());
     }
 
     /**
@@ -65,7 +80,7 @@ public class ProductSearchServiceImpl implements ProductSearchService {
         }
         if(Objects.equals("salePrice",dto.getSort())){
             SortParamDTO paramDTO = SortParamDTO.builder()
-                    .sortColumn(ProductEsEntity.Fields.productSku+"."+ProductSkuEsDTO.Fields.salePrice)
+                    .sortColumn(ProductEsEntity.Fields.productSku+"."+ProductSkuEsEntity.Fields.salePrice)
                     .desc(Objects.equals(dto.getOrder(),"desc")).build();
             sortParamDTOS.add(paramDTO);
         }
@@ -102,7 +117,7 @@ public class ProductSearchServiceImpl implements ProductSearchService {
             queryBuilder.must(QueryBuilders.termQuery(ProductEsEntity.Fields.brandCode,dto.getBrandCode()));
         }
         if(Objects.nonNull(dto.getMinSalePrice()) && Objects.nonNull(dto.getMaxSalePrice())) {
-            queryBuilder.must(QueryBuilders.rangeQuery(ProductEsEntity.Fields.productSku +"."+ ProductSkuEsDTO.Fields.salePrice).gt(dto.getMinSalePrice()).lt(dto.getMaxSalePrice()));
+            queryBuilder.must(QueryBuilders.rangeQuery(ProductEsEntity.Fields.productSku +"."+ ProductSkuEsEntity.Fields.salePrice).gt(dto.getMinSalePrice()).lt(dto.getMaxSalePrice()));
         }
         return queryBuilder;
     }

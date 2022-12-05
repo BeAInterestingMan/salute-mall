@@ -1,13 +1,12 @@
 package com.salute.mall.product.service.service;
 
 import com.salute.mall.common.core.entity.Page;
-import com.salute.mall.product.service.adapt.dto.ProductSearchAssociatedDTO;
 import com.salute.mall.product.service.pojo.bo.ProductDetailInfoBO;
 import com.salute.mall.product.service.pojo.bo.ProductListInfoBO;
 import com.salute.mall.product.service.pojo.dto.ProductAssociatedDTO;
 import com.salute.mall.product.service.pojo.dto.ProductAssociatedQueryDTO;
 import com.salute.mall.product.service.pojo.dto.ProductCustomerInfoQueryDTO;
-import com.salute.mall.product.service.pojo.dto.ProductPloySkuInfoDTO;
+import com.salute.mall.product.service.pojo.dto.ProductSkuDTO;
 
 import java.util.List;
 
@@ -36,18 +35,18 @@ public interface ProductInfoService {
      * @author liuhu
      * @param skuCodeList
      * @date 2022/12/1 15:59
-     * @return java.util.List<com.salute.mall.product.service.pojo.dto.ProductPloySkuInfoDTO>
+     * @return java.util.List<com.salute.mall.product.service.pojo.dto.ProductSkuDTO>
      */
-    List<ProductPloySkuInfoDTO> queryProductSkuDetail(List<String> skuCodeList);
+    List<ProductSkuDTO> queryProductSkuDetail(List<String> skuCodeList);
 
     /**
      * @Description skuCode查询商品详情
      * @author liuhu
      * @param skuCode
      * @date 2022/12/1 16:52
-     * @return com.salute.mall.product.service.pojo.dto.ProductPloySkuInfoDTO
+     * @return com.salute.mall.product.service.pojo.dto.ProductSkuDTO
      */
-    ProductPloySkuInfoDTO getProductSkuDetail(String skuCode);
+    ProductSkuDTO getProductSkuDetail(String skuCode);
 
     /**
      * @Description 获取搜索商品关联信息
