@@ -1,0 +1,42 @@
+server:
+  port: 8000
+
+spring:
+  application:
+    name: mall-gateway
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 114.116.105.15:8848
+
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowed-headers: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - OPTIONS
+              - DELETE
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: mall-product
+          uri: lb://mall-product
+          predicates:
+            - Path=/mall_product/**
+          filters:
+            - StripPrefix=1
+
+        - id: mall-search
+          uri: lb://mall-search
+          predicates:
+            - Path=/mall_search/**
+          filters:
+            - StripPrefix=1

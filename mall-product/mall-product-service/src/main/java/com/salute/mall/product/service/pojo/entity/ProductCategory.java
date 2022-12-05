@@ -37,13 +37,13 @@ public class ProductCategory implements Serializable {
     @TableField("category_name")
     private String categoryName;
 
+    @ApiModelProperty(value = "分类图片",name = "categoryImage")
+    @TableField("category_image")
+    private String categoryImage;
+
     @ApiModelProperty(value = "分类描述",name = "categoryDesc")
     @TableField("category_desc")
     private String categoryDesc;
-
-    @ApiModelProperty(value = "分类图标",name = "icon")
-    @TableField("icon")
-    private String icon;
 
     @ApiModelProperty(value = "状态",name = "status")
     @TableField("status")

@@ -12,5 +12,5 @@ public interface ProductCategoryService {
      * @date 2022/11/23 13:42
      * @return java.util.List<com.salute.mall.product.service.pojo.dto.ProductCategoryDTO>
      */
-    List<ProductCategoryTreeDTO> queryAllCategoryInfo();
+    List<ProductCategoryTreeDTO> queryAllCategoryInfo(String categoryCode);
 }

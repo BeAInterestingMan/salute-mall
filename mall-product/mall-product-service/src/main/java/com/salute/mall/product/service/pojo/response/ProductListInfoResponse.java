@@ -1,13 +1,15 @@
 package com.salute.mall.product.service.pojo.response;
 
+import com.salute.mall.product.api.response.ProductTagInfoResponse;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
-@ApiModel("商品列表出参")
+@ApiModel("小程序搜索商品列表出参")
 public class ProductListInfoResponse {
 
     @ApiModelProperty(value = "商品编号",name = "productCode")
@@ -39,4 +41,7 @@ public class ProductListInfoResponse {
 
     @ApiModelProperty(value = "店铺名称",name = "shopName")
     private String shopName;
+
+    @ApiModelProperty(value = "商品标签",name = "productTagList")
+    private List<ProductTagInfoResponse> productTagList;
 }

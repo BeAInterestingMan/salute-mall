@@ -1,17 +1,16 @@
 package com.salute.mall.product.service.pojo.dto;
 
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Data
-@ApiModel("商品列表出参")
-public class ProductListInfoDTO {
+public class ProductAssociatedQueryDTO implements Serializable {
 
     @ApiModelProperty(value = "pageSize",name = "pageSize")
     private Integer pageSize=10;
@@ -38,11 +37,11 @@ public class ProductListInfoDTO {
     @ApiModelProperty(value = "价格范围-起始",name = "startSalePrice")
     @DecimalMax(value = "1000000",message = "筛选价格不能低于1000000")
     @DecimalMin(value = "0",message = "筛选价格不能低于0")
-    private BigDecimal startSalePrice;
+    private BigDecimal minSalePrice;
 
     @ApiModelProperty(value = "价格范围-终止",name = "endSalePrice")
     @DecimalMax(value = "1000000",message = "筛选价格不能低于1000000")
     @DecimalMin(value = "0",message = "筛选价格不能低于0")
-    private BigDecimal endSalePrice;
+    private BigDecimal maxSalePrice;
 
 }

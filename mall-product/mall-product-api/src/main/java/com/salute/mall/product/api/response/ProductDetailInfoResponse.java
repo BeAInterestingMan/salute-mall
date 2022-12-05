@@ -21,4 +21,7 @@ public class ProductDetailInfoResponse implements Serializable {
      @ApiModelProperty(value = "商品规格信息",name = "productSpecificationList")
      private List<ProductSpecificationResponse> productSpecificationList;
 
+     @ApiModelProperty(value = "商品标签信息",name = "productTagBaseList")
+     private List<ProductTagInfoResponse> productTagBaseList;
+
 }

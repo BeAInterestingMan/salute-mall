@@ -24,9 +24,9 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     private ProductCategoryServiceConverter categoryServiceConverter;
 
     @Override
-    public List<ProductCategoryTreeDTO> queryAllCategoryInfo() {
+    public List<ProductCategoryTreeDTO> queryAllCategoryInfo(String categoryCode) {
         List<ProductCategory> allCategoryList = productCategoryRepository.queryAllEnableCategoryList();
-        List<ProductCategoryTreeDTO> categoryTreeDTOS = allCategoryList.stream().filter(productCategory -> Objects.equals(productCategory.getParentCategoryCode(), "0" ))
+        List<ProductCategoryTreeDTO> categoryTreeDTOS = allCategoryList.stream().filter(productCategory -> Objects.equals(productCategory.getParentCategoryCode(), categoryCode ))
                 .map(parentCategory -> {
                     ProductCategoryTreeDTO parentCategoryTreeDTO = categoryServiceConverter.convertToProductCategoryTreeDTO(parentCategory);
                     // 递归获取一级分类的子分类

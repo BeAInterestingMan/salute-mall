@@ -9,7 +9,6 @@ spring:
     nacos:
       discovery:
         server-addr: 114.116.105.15:8848
-
   datasource:
     username: root
     password: 123456
