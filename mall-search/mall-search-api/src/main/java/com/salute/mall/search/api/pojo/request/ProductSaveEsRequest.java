@@ -32,11 +32,20 @@ public class ProductSaveEsRequest implements Serializable {
     @ApiModelProperty(value = "一级分类编号",name = "categoryCodeFirst")
     private String categoryCodeFirst;
 
-    @ApiModelProperty(value = "二级分类编号",name = "categoryCodeSencond")
+    @ApiModelProperty(value = "一级分类编号",name = "categoryCodeFirst")
+    private String categoryNameFirst;
+
+    @ApiModelProperty(value = "二级分类编号",name = "categoryCodeSecond")
     private String categoryCodeSecond;
+
+    @ApiModelProperty(value = "二级分类编号",name = "categoryNameSecond")
+    private String categoryNameSecond;
 
     @ApiModelProperty(value = "三级分类编号",name = "categoryCodeThird")
     private String categoryCodeThird;
+
+    @ApiModelProperty(value = "三级分类编号",name = "categoryCodeThird")
+    private String categoryNameThird;
 
     @ApiModelProperty(value = "品牌编号",name = "brandCode")
     private String brandCode;

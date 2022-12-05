@@ -33,4 +33,7 @@ public class ProductSkuSaveEsRequest implements Serializable {
 
     @ApiModelProperty(value = "可用库存",name = "availableStock")
     private Integer availableStock;
+
+    @ApiModelProperty(value = "排序",name = "sort")
+    private Integer sort;
 }

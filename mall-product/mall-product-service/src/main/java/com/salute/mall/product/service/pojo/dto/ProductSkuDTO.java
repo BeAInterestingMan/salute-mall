@@ -35,6 +35,12 @@ public class ProductSkuDTO implements Serializable {
     @ApiModelProperty(value = "成本价",name = "costPrice")
     private BigDecimal costPrice;
 
+    @ApiModelProperty(value = "状态",name = "status")
+    private String status;
+
+    @ApiModelProperty(value = "排序",name = "sort")
+    private Integer sort;
+
     @ApiModelProperty(value = "可用库存",name = "availableStock")
     private Integer availableStock;
 

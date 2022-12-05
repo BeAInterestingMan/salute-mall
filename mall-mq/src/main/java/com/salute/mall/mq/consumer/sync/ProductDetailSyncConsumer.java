@@ -2,7 +2,7 @@ package com.salute.mall.mq.consumer.sync;
 
 import com.salute.mall.common.core.entity.Result;
 import com.salute.mall.mq.consumer.converter.ProductDetailSyncFaceConverter;
-import com.salute.mall.product.api.client.ProductDetailInfoClient;
+import com.salute.mall.product.api.client.ProductCommonApiClient;
 import com.salute.mall.product.api.response.*;
 import com.salute.mall.search.api.client.ProductSearchClient;
 import com.salute.mall.search.api.pojo.request.ProductSaveEsRequest;
@@ -18,7 +18,7 @@ import java.util.Objects;
 public class ProductDetailSyncConsumer {
 
     @Autowired
-    private ProductDetailInfoClient productDetailInfoClient;
+    private ProductCommonApiClient commonApiClient;
 
     @Autowired
     private ProductSearchClient productSearchClient;
@@ -28,26 +28,26 @@ public class ProductDetailSyncConsumer {
 
     public void execute(List<String> arrayList){
         for (String code : arrayList) {
-            Result<ProductDetailInfoResponse> result = productDetailInfoClient.getProductDetail(code);
+            Result<ProductInfoResponse> result = commonApiClient.getProductDetail(code);
             if(Objects.isNull(result) || Objects.equals(result.isStatus(),Boolean.FALSE)){
                 return;
             }
-            ProductDetailInfoResponse productDetailInfoResponse = result.getResult();
-            ProductSaveEsRequest request =  buildProductSaveEsRequest(productDetailInfoResponse);
+            ProductInfoResponse productInfoResponse = result.getResult();
+            ProductSaveEsRequest request =  buildProductSaveEsRequest(productInfoResponse);
             productSearchClient.saveEsProduct(request);
         }
     }
 
-    private ProductSaveEsRequest buildProductSaveEsRequest(ProductDetailInfoResponse productDetailInfoResponse) {
-         ProductBaseInfoResponse productBaseInfo = productDetailInfoResponse.getProductBaseInfo();
-        ProductSaveEsRequest request = productDetailSyncFaceConverter.convertToProductSaveEsRequest(productBaseInfo);
-        fillProductDetailInfo(request,productDetailInfoResponse.getProductDetailInfo());
-        fillProductSkuInfoList(request,productDetailInfoResponse.getProductSkuList());
-        fillProductTagList(request,productDetailInfoResponse.getProductTagBaseList());
+    private ProductSaveEsRequest buildProductSaveEsRequest( ProductInfoResponse productInfoResponse) {
+        ProductBaseResponse productBaseResponse = productInfoResponse.getProductBaseInfo();
+        ProductSaveEsRequest request = productDetailSyncFaceConverter.convertToProductSaveEsRequest(productBaseResponse);
+        fillProductDetailInfo(request,productInfoResponse.getProductDetail());
+        fillProductSkuInfoList(request,productInfoResponse.getProductSkuList());
+        fillProductTagList(request,productInfoResponse.getProductTagBaseList());
         return request;
     }
 
-    private void fillProductTagList(ProductSaveEsRequest request, List<ProductTagResponse> productTagBaseList) {
+    private void fillProductTagList(ProductSaveEsRequest request, List<ProductBaseTagResponse> productTagBaseList) {
         List<ProductTagSaveEsRequest> list =  productDetailSyncFaceConverter.convertToProductTagSaveEsRequestList(productTagBaseList);
         request.setProductTag(list);
     }
@@ -57,7 +57,7 @@ public class ProductDetailSyncConsumer {
        request.setProductSku(list);
     }
 
-    private void fillProductDetailInfo(ProductSaveEsRequest request, ProductDetailResponse productDetailInfo) {
+    private void fillProductDetailInfo(ProductSaveEsRequest request, ProductDetailBaseResponse productDetailInfo) {
         if(Objects.isNull(productDetailInfo)){
             return;
         }

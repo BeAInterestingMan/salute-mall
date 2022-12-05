@@ -13,7 +13,7 @@ public class ProductInfoResponse implements Serializable {
      private ProductBaseResponse productBaseInfo;
 
      @ApiModelProperty(value = "商品图文详情",name = "productDetailInfo")
-     private ProductDetailBaseResponse productDetailInfo;
+     private ProductDetailBaseResponse productDetail;
 
      @ApiModelProperty(value = "商品sku信息",name = "productSkuList")
      private List<ProductSkuResponse> productSkuList;

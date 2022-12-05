@@ -45,6 +45,12 @@ public class ProductSkuResponse implements Serializable {
     @ApiModelProperty(value = "可用库存",name = "availableStock")
     private Integer availableStock;
 
+    @ApiModelProperty(value = "状态",name = "status")
+    private String status;
+
+    @ApiModelProperty(value = "排序",name = "sort")
+    private Integer sort;
+
     @ApiModelProperty(value = "sku规格信息",name = "skuSpecificationList")
     private List<ProductSkuSpecificationResponse> skuSpecificationList;
 }

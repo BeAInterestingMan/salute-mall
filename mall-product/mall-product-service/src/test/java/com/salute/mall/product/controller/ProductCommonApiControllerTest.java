@@ -5,6 +5,7 @@ import com.salute.mall.common.core.entity.Page;
 import com.salute.mall.common.core.entity.Result;
 import com.salute.mall.product.MallProductApplication;
 import com.salute.mall.product.api.request.QueryProductPageRequest;
+import com.salute.mall.product.api.response.ProductInfoResponse;
 import com.salute.mall.product.service.controller.api.ProductCommonApiController;
 import com.salute.mall.product.api.response.ProductResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -31,5 +32,11 @@ public class ProductCommonApiControllerTest {
         request.setPageSize(10);
         Result<Page<List<ProductResponse>>> result = commonApiController.queryProductPage(request);
         log.info(JSON.toJSONString(result));
+    }
+
+    @Test
+    public void getProductDetail(){
+        Result<ProductInfoResponse> productDetail = commonApiController.getProductDetail("1376373278360207360");
+        log.info(JSON.toJSONString(productDetail));
     }
 }

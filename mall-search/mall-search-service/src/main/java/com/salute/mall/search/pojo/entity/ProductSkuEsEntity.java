@@ -28,4 +28,7 @@ public class ProductSkuEsEntity implements Serializable {
 
     @ApiModelProperty(value = "商品状态;ON上架 DOWN下架",name = "status")
     private String status;
+
+    @ApiModelProperty(value = "商品排序",name = "sort")
+    private Integer sort;
 }

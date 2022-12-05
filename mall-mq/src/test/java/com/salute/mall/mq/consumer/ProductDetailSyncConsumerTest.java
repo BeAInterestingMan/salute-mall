@@ -21,7 +21,7 @@ public class ProductDetailSyncConsumerTest {
 
     @Test
     public void searchProduct(){
-        productDetailSyncConsumer.execute(Lists.newArrayList("1478982463892156418"));
+        productDetailSyncConsumer.execute(Lists.newArrayList("1376373278360207360","1376529925690884096"));
         log.info(JSON.toJSONString(""));
     }
 
