@@ -31,7 +31,7 @@ public class ProductStockApiController {
     @ApiOperation("操作商品冻结库存")
     public Result<Void> operateFreezeStock(@Valid @RequestBody OperateFreezeStockRequest request){
         log.info("execute operateFreezeStock info,req:{}", JSON.toJSONString(request));
-        OperateFreezeStockDTO dto = productStockFaceConverter.convertTooperateFreezeStockDTO(request);
+        OperateFreezeStockDTO dto = productStockFaceConverter.convertToOperateFreezeStockDTO(request);
         productStockService.operateFreezeStock(dto);
         log.info("execute operateFreezeStock info,req:{},resp:{}", JSON.toJSONString(request), JSON.toJSONString(""));
         return Result.success();

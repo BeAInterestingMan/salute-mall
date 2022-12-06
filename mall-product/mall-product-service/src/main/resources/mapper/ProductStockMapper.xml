@@ -40,4 +40,42 @@
         modifier_code,
         modified_time
     </sql>
+
+    <update id="batchOperateFreezeStock" parameterType="java.util.List">
+        update product_stock
+        <trim prefix="set" suffixOverrides=",">
+            freeze_stock =
+            <foreach collection="itemList" item="item" open="case " close=" end,">
+                when sku_code = #{item.skuCode} then freeze_stock + #{item.stockNum}
+            </foreach>
+            available_stock =
+            <foreach collection="itemList" item="item" open="case " close=" end,">
+                when sku_code = #{item.skuCode} then real_stock - freeze_stock
+            </foreach>
+            modified_time =now()
+        </trim>
+        <where>
+            <foreach collection="itemList" item="item" open="( " separator=") or (" close=" )">
+                sku_code = #{item.skuCode} AND available_stock>=#{item.stockNum}
+            </foreach>
+        </where>
+    </update>
+
+    <update id="doOperateFreezeStock" parameterType="java.util.List">
+        update product_stock
+        <set>
+            <trim suffixOverrides=",">
+                <if test=" item.stockNum != null">
+                    freeze_stock = freeze_stock + #{item.stockNum},
+                </if>
+                <if test="item.stockNum != null">
+                    available_stock = real_stock - freeze_stock,
+                </if>
+            </trim>
+            ,modified_time = now()
+        </set>
+        <where>
+            sku_code = #{item.skuCode} AND available_stock>=#{item.stockNum}
+        </where>
+    </update>
 </mapper>

@@ -51,6 +51,14 @@ public class ProductStockTransaction implements Serializable {
     @TableField("after_freeze_stock")
     private Integer afterFreezeStock;
 
+    @ApiModelProperty(value = "操作前冻结库存",name = "beforeFreezeStock")
+    @TableField("before_available_stock")
+    private Integer beforeAvailableStock;
+
+    @ApiModelProperty(value = "操作后冻结库存",name = "afterFreezeStock")
+    @TableField("after_available_stock")
+    private Integer afterAvailableStock;
+
     @ApiModelProperty(value = "操作库存数量",name = "operateStock")
     @TableField("operate_stock")
     private Integer operateStock;

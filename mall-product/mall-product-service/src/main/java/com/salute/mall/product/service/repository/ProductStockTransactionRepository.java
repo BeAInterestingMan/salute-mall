@@ -1,11 +1,27 @@
 package com.salute.mall.product.service.repository;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.salute.mall.common.core.utils.SaluteAssertUtil;
+import com.salute.mall.common.datasource.helper.MybatisBatchHelper;
+import com.salute.mall.product.service.mapper.ProductStockTransactionMapper;
+import com.salute.mall.product.service.pojo.entity.ProductStockTransaction;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class ProductStockTransactionRepository {
 
     @Autowired
-    private ProductStockTransactionRepository transactionRepository;
+    private ProductStockTransactionMapper stockTransactionMapper;
+
+    @Autowired
+    private MybatisBatchHelper batchHelper;
+
+    public int batchInsert(List<ProductStockTransaction> stockTransactions) {
+        SaluteAssertUtil.isTrue(CollectionUtils.isNotEmpty(stockTransactions),"批量新增库存流水异常");
+        return batchHelper.batchInsertOrUpdate(stockTransactions, ProductStockTransactionMapper.class, BaseMapper::insert);
+    }
 }

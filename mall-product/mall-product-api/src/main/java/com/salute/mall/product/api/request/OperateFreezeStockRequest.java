@@ -8,6 +8,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 public class OperateFreezeStockRequest implements Serializable {
@@ -24,4 +25,7 @@ public class OperateFreezeStockRequest implements Serializable {
     @ApiModelProperty(value = "操作人编号",name = "operateCode")
     @NotBlank
     private String operateCode;
+
+    @ApiModelProperty(value = "商品信息",name = "skuStockList")
+    private List<OperateFreezeStockSkuRequest> skuStockList;
 }

@@ -8,9 +8,9 @@ public interface ProductStockService {
     /**
      * @Description 操作冻结库存
      * @author liuhu
-     * @param dtoList
+     * @param dto
      * @date 2022/12/6 16:47
      * @return void
      */
-    void operateFreezeStock(List<OperateFreezeStockDTO> dtoList);
+    void operateFreezeStock(OperateFreezeStockDTO dto);
 }

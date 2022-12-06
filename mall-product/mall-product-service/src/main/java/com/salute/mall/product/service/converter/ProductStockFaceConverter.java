@@ -6,5 +6,5 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface ProductStockFaceConverter {
-    OperateFreezeStockDTO convertTooperateFreezeStockDTO(OperateFreezeStockRequest request);
+    OperateFreezeStockDTO convertToOperateFreezeStockDTO(OperateFreezeStockRequest request);
 }

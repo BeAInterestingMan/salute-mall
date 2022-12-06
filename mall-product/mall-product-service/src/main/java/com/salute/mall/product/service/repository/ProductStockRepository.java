@@ -2,7 +2,9 @@ package com.salute.mall.product.service.repository;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Lists;
+import com.salute.mall.common.datasource.helper.MybatisBatchHelper;
 import com.salute.mall.product.service.mapper.ProductStockMapper;
+import com.salute.mall.product.service.pojo.dto.stock.OperateFreezeStockDaoDTO;
 import com.salute.mall.product.service.pojo.entity.ProductStock;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -16,6 +18,9 @@ public class ProductStockRepository {
 
     @Autowired
     private ProductStockMapper productStockMapper;
+
+    @Autowired
+    private MybatisBatchHelper batchHelper;
 
     public List<ProductStock> queryBySkuCodeList(List<String> skuCodeList) {
         if(CollectionUtils.isEmpty(skuCodeList)){
@@ -35,5 +40,15 @@ public class ProductStockRepository {
         queryWrapper.eq(ProductStock::getDeleteFlag,"NO")
                 .eq(ProductStock::getSkuCode,skuCode);
         return  productStockMapper.selectOne(queryWrapper);
+    }
+
+
+    public int batchOperateFreezeStock(List<OperateFreezeStockDaoDTO> dtoList) {
+       return batchHelper.batchInsertOrUpdate(dtoList, ProductStockMapper.class, ProductStockMapper::doOperateFreezeStock);
+    }
+
+
+    public int doOperateFreezeStock(List<OperateFreezeStockDaoDTO> dtoList) {
+       return productStockMapper.batchOperateFreezeStock(dtoList);
     }
 }
