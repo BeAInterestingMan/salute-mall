@@ -53,7 +53,7 @@ public class SaleOrderDetail implements Serializable {
 
     @ApiModelProperty(value = "购买数量",name = "buyQty")
     @TableField("buy_qty")
-    private BigDecimal buyQty;
+    private Integer buyQty;
 
     @ApiModelProperty(value = "商品主图",name = "mainImage")
     @TableField("main_image")

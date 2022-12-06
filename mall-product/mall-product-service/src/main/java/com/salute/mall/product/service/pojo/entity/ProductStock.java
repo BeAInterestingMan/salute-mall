@@ -22,7 +22,6 @@ public class ProductStock implements Serializable {
     @ApiModelProperty(value = "id",name = "id")
     private Long id;
 
-
     @ApiModelProperty(value = "spu编码",name = "productCode")
     @TableField("product_code")
     private String productCode;
@@ -30,6 +29,10 @@ public class ProductStock implements Serializable {
     @ApiModelProperty(value = "sku编码",name = "skuCode")
     @TableField("sku_code")
     private String skuCode;
+
+    @ApiModelProperty(value = "sku名称",name = "skuName")
+    @TableField("sku_name")
+    private String skuName;
 
     @ApiModelProperty(value = "真实库存",name = "realStock")
     @TableField("real_stock")

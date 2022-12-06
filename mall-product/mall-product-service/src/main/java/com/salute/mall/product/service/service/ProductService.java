@@ -10,7 +10,7 @@ import com.salute.mall.product.service.pojo.dto.ProductSkuDTO;
 
 import java.util.List;
 
-public interface ProductInfoService {
+public interface ProductService {
 
     /**
      * @Description 获取小程序商品详情

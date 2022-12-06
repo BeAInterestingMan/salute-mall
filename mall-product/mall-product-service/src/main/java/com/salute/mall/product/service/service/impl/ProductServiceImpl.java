@@ -11,13 +11,13 @@ import com.salute.mall.product.service.adapt.dto.ProductListSearchResDTO;
 import com.salute.mall.product.service.adapt.dto.ProductSearchAssociatedBrandDTO;
 import com.salute.mall.product.service.adapt.dto.ProductSearchAssociatedCategoryDTO;
 import com.salute.mall.product.service.adapt.dto.ProductSearchAssociatedDTO;
-import com.salute.mall.product.service.converter.ProductInfoServiceConverter;
+import com.salute.mall.product.service.converter.ProductServiceConverter;
 import com.salute.mall.product.service.pojo.bo.ProductDetailInfoBO;
 import com.salute.mall.product.service.pojo.bo.ProductListInfoBO;
 import com.salute.mall.product.service.pojo.dto.*;
 import com.salute.mall.product.service.pojo.entity.*;
 import com.salute.mall.product.service.repository.*;
-import com.salute.mall.product.service.service.ProductInfoService;
+import com.salute.mall.product.service.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class ProductInfoServiceImpl implements ProductInfoService {
+public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductRepository productRepository;
@@ -51,7 +51,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
     private ProductSpecificationRepository productSpecificationRepository;
 
     @Autowired
-    private ProductInfoServiceConverter productInfoServiceConverter;
+    private ProductServiceConverter productServiceConverter;
 
     @Autowired
     private ProductSearchAdapt productSearchAdapt;
@@ -116,12 +116,12 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         //1.构建商品基本信息
         ProductBaseDTO baseInfoDTO = buildProductBaseInfoDTO(product, productSkus,productCategoryList);
         //2.构建商品图文详情信息
-        ProductDetailBaseDTO productDetailBaseDTO = productInfoServiceConverter.convertToProductDetailInfoDTO(productDetail);
+        ProductDetailBaseDTO productDetailBaseDTO = productServiceConverter.convertToProductDetailInfoDTO(productDetail);
         //3.构建商品sku聚合信息
         List<ProductSkuDTO> skuDTOList = buildSkuInfoDTOList(productSkus, productStockList);
         //4.构建商品规格信息
         List<ProductSpecificationDTO> productSpecificationDTOS = buildSpecificationDTOList(productSpecifications);
-        List<ProductTagBaseDTO> productTagBaseDTOList =  productInfoServiceConverter.convertToProductTagBaseDTOList(productTagList);
+        List<ProductTagBaseDTO> productTagBaseDTOList =  productServiceConverter.convertToProductTagBaseDTOList(productTagList);
         productDetailInfoBO.setProductBaseInfo(baseInfoDTO);
         productDetailInfoBO.setProductDetail(productDetailBaseDTO);
         productDetailInfoBO.setProductSkuList(skuDTOList);
@@ -166,7 +166,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         Map<String, ProductStock> stockMap = productStockList.stream().collect(Collectors.toMap(ProductStock::getSkuCode, Function.identity(), (k1, k2) -> k1));
         return  productSkus.stream().map(sku->{
             //1.基本sku信息
-            ProductSkuDTO dto = productInfoServiceConverter.convertToProductPloySkuInfoDTO(sku);
+            ProductSkuDTO dto = productServiceConverter.convertToProductPloySkuInfoDTO(sku);
             ProductStock productStock = stockMap.get(sku.getSkuCode());
             SaluteAssertUtil.isTrue(Objects.nonNull(productStock),sku.getSkuCode()+"sku库存信息不存在");
             //2.可用库存
@@ -189,11 +189,11 @@ public class ProductInfoServiceImpl implements ProductInfoService {
      */
     private ProductBaseDTO buildProductBaseInfoDTO(Product product, List<ProductSku> productSkus,
                                                    List<ProductCategory> productCategoryList) {
-        ProductBaseDTO baseInfoDTO =  productInfoServiceConverter.convertToProductBaseInfoDTO(product);
+        ProductBaseDTO baseInfoDTO =  productServiceConverter.convertToProductBaseInfoDTO(product);
         Map<String, ProductCategory> categoryMap = productCategoryList.stream().collect(Collectors.toMap(ProductCategory::getCategoryCode, Function.identity(), (k1, k2) -> k1));
         ProductCategory first = categoryMap.get(product.getCategoryCodeFirst());
-        ProductCategory second = categoryMap.get(product.getCategoryCodeFirst());
-        ProductCategory third = categoryMap.get(product.getCategoryCodeFirst());
+        ProductCategory second = categoryMap.get(product.getCategoryCodeSecond());
+        ProductCategory third = categoryMap.get(product.getCategoryCodeThird());
         baseInfoDTO.setCategoryNameFirst(Objects.nonNull(first)?first.getCategoryName():"");
         baseInfoDTO.setCategoryNameSecond(Objects.nonNull(second)?second.getCategoryName():"");
         baseInfoDTO.setCategoryNameThird(Objects.nonNull(third)?third.getCategoryName():"");
@@ -258,7 +258,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         SaluteAssertUtil.isTrue(Objects.nonNull(productSku),skuCode+"商品sku不存在");
         SaluteAssertUtil.isTrue(Objects.nonNull(productStock),skuCode+"商品库存不存在");
         //3.构建商品sku聚合信息
-        ProductSkuDTO dto = productInfoServiceConverter.convertToProductPloySkuInfoDTO(productSku);
+        ProductSkuDTO dto = productServiceConverter.convertToProductPloySkuInfoDTO(productSku);
         //2.可用库存
         dto.setAvailableStock(productStock.getAvailableStock());
         //3.sku的规格信息 json存储
@@ -287,7 +287,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         if(CollectionUtils.isNotEmpty(associatedDTO.getCategoryList())){
             List<String> categoryCodeThirdList = associatedDTO.getCategoryList().stream().map(ProductSearchAssociatedCategoryDTO::getCategoryCodeThirdCode).collect(Collectors.toList());
             List<ProductCategory> productCategoryList = productCategoryRepository.queryByCategoryCode(categoryCodeThirdList);
-            List<ProductAssociatedCategoryDTO> dtoList = productInfoServiceConverter.convertToProductAssociatedCategoryDTOList(productCategoryList);
+            List<ProductAssociatedCategoryDTO> dtoList = productServiceConverter.convertToProductAssociatedCategoryDTOList(productCategoryList);
             productAssociatedDTO.setCategoryList(dtoList);
         }
         return productAssociatedDTO;
@@ -324,7 +324,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         productListInfoBO.setSkuCode(defaultSku.getSkuCode());
         productListInfoBO.setSkuName(defaultSku.getSkuName());
         List<ProductTag> tags = productTagMap.get(product.getProductCode());
-        List<ProductTagBaseDTO> productTagBaseDTOList =   productInfoServiceConverter.convertToProductTagBaseDTOList(tags);
+        List<ProductTagBaseDTO> productTagBaseDTOList =   productServiceConverter.convertToProductTagBaseDTOList(tags);
         productListInfoBO.setProductTagList(productTagBaseDTOList);
         return productListInfoBO;
     }

@@ -2,7 +2,7 @@ package com.salute.mall.product.api.follback;
 
 import com.alibaba.fastjson.JSON;
 import com.salute.mall.common.core.entity.Result;
-import com.salute.mall.product.api.client.ProductDetailInfoClient;
+import com.salute.mall.product.api.client.ProductClient;
 import com.salute.mall.product.api.response.ProductDetailInfoResponse;
 import com.salute.mall.product.api.response.ProductSkuResponse;
 import feign.hystrix.FallbackFactory;
@@ -15,11 +15,11 @@ import java.util.List;
 
 @Component
 @Slf4j
-public class ProductDetailInfoClientFallback implements FallbackFactory<ProductDetailInfoClient> {
+public class ProductDetailInfoClientFallback implements FallbackFactory<ProductClient> {
 
     @Override
-    public ProductDetailInfoClient create(Throwable throwable) {
-        return new ProductDetailInfoClient() {
+    public ProductClient create(Throwable throwable) {
+        return new ProductClient() {
             @Override
             public Result<ProductDetailInfoResponse> getProductDetail(@NotBlank String productCode) {
                 log.error("execute ProductSearchClient getProductDetail error,request:{}", JSON.toJSONString(productCode),throwable);

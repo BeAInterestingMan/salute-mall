@@ -6,7 +6,7 @@ import com.salute.mall.common.core.entity.Result;
 import com.salute.mall.product.MallProductApplication;
 import com.salute.mall.product.api.request.QueryProductPageRequest;
 import com.salute.mall.product.api.response.ProductInfoResponse;
-import com.salute.mall.product.service.controller.api.ProductCommonApiController;
+import com.salute.mall.product.service.controller.product.ProductApiController;
 import com.salute.mall.product.api.response.ProductResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -23,7 +23,7 @@ import java.util.List;
 public class ProductCommonApiControllerTest {
 
     @Autowired
-    private ProductCommonApiController commonApiController;
+    private ProductApiController commonApiController;
 
     @Test
     public void searchProduct(){

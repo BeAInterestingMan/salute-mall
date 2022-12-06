@@ -23,10 +23,6 @@ public class SaleOrder implements Serializable {
     @ApiModelProperty(value = "",name = "id")
     private Long id;
 
-    @ApiModelProperty(value = "店铺名称",name = "shopCode")
-    @TableField("shop_code")
-    private String shopCode;
-
     @ApiModelProperty(value = "订单编号",name = "saleOrderCode")
     @TableField("sale_order_code")
     private String saleOrderCode;
@@ -42,10 +38,6 @@ public class SaleOrder implements Serializable {
     @ApiModelProperty(value = "支付类型  微信 支付宝  现金 银行卡",name = "payType")
     @TableField("pay_type")
     private String payType;
-
-    @ApiModelProperty(value = "店铺名称",name = "shopName")
-    @TableField("shop_name")
-    private String shopName;
 
     @ApiModelProperty(value = "支付方式  线上  线下",name = "payMode")
     @TableField("pay_mode")
@@ -75,9 +67,13 @@ public class SaleOrder implements Serializable {
     @TableField("total_coupon_amount")
     private BigDecimal totalCouponAmount;
 
-    @ApiModelProperty(value = "成本价总额",name = "totalCostAmount")
+    @ApiModelProperty(value = "成本价总额（进货的价格）",name = "totalCostAmount")
     @TableField("total_cost_amount")
     private BigDecimal totalCostAmount;
+
+    @ApiModelProperty(value = "市场价总额(建议零售价)",name = "totalSaleAmount")
+    @TableField("total_marketing_amount")
+    private BigDecimal totalMarketingAmount;
 
     @ApiModelProperty(value = "未参与营销的总额",name = "totalSaleAmount")
     @TableField("total_sale_amount")

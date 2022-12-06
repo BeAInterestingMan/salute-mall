@@ -1,4 +1,4 @@
-package com.salute.mall.product.service.controller.customer;
+package com.salute.mall.product.service.controller.category;
 
 import com.salute.mall.common.core.entity.Result;
 import com.salute.mall.product.service.converter.ProductCategoryCustomerFaceConverter;

@@ -1,8 +1,7 @@
-package com.salute.mall.order.service.pojo.request;
+package com.salute.mall.order.service.pojo.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.ApiOperation;
 import lombok.Data;
 
 import javax.validation.constraints.*;
@@ -12,7 +11,7 @@ import java.util.List;
 
 @Data
 @ApiModel("创建订单入参")
-public class CreateSaleOrderRequest implements Serializable {
+public class CreateSaleOrderDTO implements Serializable {
 
     @ApiModelProperty(value = "订单编号",name = "saleOrderCode")
     @NotBlank
@@ -61,5 +60,5 @@ public class CreateSaleOrderRequest implements Serializable {
 
     @ApiModelProperty(value = "sku信息",name = "productSkuList")
     @NotEmpty
-    private List<CreateSaleOrderProductSkuRequest> productSkuList;
+    private List<CreateSaleOrderProductSkuDTO> productSkuList;
 }

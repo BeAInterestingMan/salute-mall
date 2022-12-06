@@ -2,7 +2,7 @@ package com.salute.mall.mq.consumer.sync;
 
 import com.salute.mall.common.core.entity.Result;
 import com.salute.mall.mq.consumer.converter.ProductDetailSyncFaceConverter;
-import com.salute.mall.product.api.client.ProductCommonApiClient;
+import com.salute.mall.product.api.client.ProductApiClient;
 import com.salute.mall.product.api.response.*;
 import com.salute.mall.search.api.client.ProductSearchClient;
 import com.salute.mall.search.api.pojo.request.ProductSaveEsRequest;
@@ -18,7 +18,7 @@ import java.util.Objects;
 public class ProductDetailSyncConsumer {
 
     @Autowired
-    private ProductCommonApiClient commonApiClient;
+    private ProductApiClient commonApiClient;
 
     @Autowired
     private ProductSearchClient productSearchClient;

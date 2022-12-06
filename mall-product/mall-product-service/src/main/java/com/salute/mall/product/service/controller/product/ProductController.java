@@ -1,4 +1,4 @@
-package com.salute.mall.product.service.controller.customer;
+package com.salute.mall.product.service.controller.product;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
@@ -6,7 +6,7 @@ import com.salute.mall.common.core.entity.Page;
 import com.salute.mall.common.core.entity.Result;
 import com.salute.mall.product.api.response.ProductDetailInfoResponse;
 import com.salute.mall.product.api.response.ProductSkuResponse;
-import com.salute.mall.product.service.converter.ProductDetailInfoFaceConverter;
+import com.salute.mall.product.service.converter.ProductFaceConverter;
 import com.salute.mall.product.service.pojo.bo.ProductDetailInfoBO;
 import com.salute.mall.product.service.pojo.bo.ProductListInfoBO;
 import com.salute.mall.product.service.pojo.dto.ProductAssociatedDTO;
@@ -17,7 +17,7 @@ import com.salute.mall.product.service.pojo.request.ProductAssociatedRequest;
 import com.salute.mall.product.service.pojo.request.ProductCustomerInfoRequest;
 import com.salute.mall.product.service.pojo.response.ProductAssociatedResponse;
 import com.salute.mall.product.service.pojo.response.ProductListInfoResponse;
-import com.salute.mall.product.service.service.ProductInfoService;
+import com.salute.mall.product.service.service.ProductService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -30,23 +30,23 @@ import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @RestController
-@RequestMapping("/product/customer/product/")
-@Api(tags = "h5商品详情")
+@RequestMapping("/product/customer/")
+@Api(tags = "小程序商品控制器")
 @Slf4j
-public class ProductDetailInfoController {
+public class ProductController {
 
     @Autowired
-    private ProductInfoService productInfoService;
+    private ProductService productService;
 
     @Autowired
-    private ProductDetailInfoFaceConverter productDetailInfoFaceConverter;
+    private ProductFaceConverter productFaceConverter;
 
     @GetMapping("getProductDetail")
     @ApiOperation("获取小程序的商品详情信息")
     public Result<ProductDetailInfoResponse> getProductDetail(@NotBlank @RequestParam(name = "productCode") String productCode){
         log.info("execute getProductBySpuCode info,req:{}", JSON.toJSONString(productCode));
-        ProductDetailInfoBO productDetail = productInfoService.getProductDetail(productCode);
-        ProductDetailInfoResponse response = productDetailInfoFaceConverter.convertToProductDetailInfoResponse(productDetail);
+        ProductDetailInfoBO productDetail = productService.getProductDetail(productCode);
+        ProductDetailInfoResponse response = productFaceConverter.convertToProductDetailInfoResponse(productDetail);
         log.info("execute getProductBySpuCode info,req:{},resp:{}", JSON.toJSONString(productCode), JSON.toJSONString(response));
         return Result.success(response);
     }
@@ -55,8 +55,8 @@ public class ProductDetailInfoController {
     @ApiOperation("根据skuCodeList获取sku商品详情信息")
     public Result<List<ProductSkuResponse>> queryProductSkuDetail(@NotEmpty @RequestBody List<String> skuCodeList){
         log.info("execute getProductBySpuCode info,req:{}", JSON.toJSONString(skuCodeList));
-        List<ProductSkuDTO> ploySkuInfoDTOS = productInfoService.queryProductSkuDetail(skuCodeList);
-        List<ProductSkuResponse> response = productDetailInfoFaceConverter.convertToProductPloySkuInfoResponseList(ploySkuInfoDTOS);
+        List<ProductSkuDTO> ploySkuInfoDTOS = productService.queryProductSkuDetail(skuCodeList);
+        List<ProductSkuResponse> response = productFaceConverter.convertToProductPloySkuInfoResponseList(ploySkuInfoDTOS);
         log.info("execute getProductBySpuCode info,req:{},resp:{}", JSON.toJSONString(skuCodeList), JSON.toJSONString(response));
         return Result.success(response);
     }
@@ -65,8 +65,8 @@ public class ProductDetailInfoController {
     @ApiOperation("根据skuCode获取sku商品详情信息")
     public Result<ProductSkuResponse> getProductSkuDetail(@NotBlank @RequestParam(name = "skuCode") String skuCode){
         log.info("execute queryProductSkuDetail info,req:{}", JSON.toJSONString(skuCode));
-        ProductSkuDTO ploySkuInfoDTO = productInfoService.getProductSkuDetail(skuCode);
-        ProductSkuResponse response = productDetailInfoFaceConverter.convertToProductPloySkuInfoResponse(ploySkuInfoDTO);
+        ProductSkuDTO ploySkuInfoDTO = productService.getProductSkuDetail(skuCode);
+        ProductSkuResponse response = productFaceConverter.convertToProductPloySkuInfoResponse(ploySkuInfoDTO);
         log.info("execute queryProductSkuDetail info,req:{},resp:{}", JSON.toJSONString(skuCode), JSON.toJSONString(response));
         return Result.success(response);
     }
@@ -75,9 +75,9 @@ public class ProductDetailInfoController {
     @ApiOperation("获取小程序商品列表详情")
     public Result<Page<List<ProductListInfoResponse>>> queryProductList(@Valid ProductCustomerInfoRequest request){
         log.info("execute queryProductList info,req:{}", JSON.toJSONString(request));
-        ProductCustomerInfoQueryDTO infoDTO = productDetailInfoFaceConverter.convertToProductCustomerInfoDTO(request);
-        Page<List<ProductListInfoBO>> page = productInfoService.queryProductList(infoDTO);
-        Page<List<ProductListInfoResponse>> responsePage =  productDetailInfoFaceConverter.convertToProductListInfoResponsePage(page);
+        ProductCustomerInfoQueryDTO infoDTO = productFaceConverter.convertToProductCustomerInfoDTO(request);
+        Page<List<ProductListInfoBO>> page = productService.queryProductList(infoDTO);
+        Page<List<ProductListInfoResponse>> responsePage =  productFaceConverter.convertToProductListInfoResponsePage(page);
         log.info("execute queryProductList info,req:{},resp:{}", JSON.toJSONString(request), JSON.toJSONString(responsePage));
         return Result.success(responsePage);
     }
@@ -92,9 +92,9 @@ public class ProductDetailInfoController {
     @GetMapping("related")
     @ApiOperation("获取小程序搜索商品列表-相关的筛选分类 品牌")
     public Result<ProductAssociatedResponse> queryProductAssociatedInfo(@Valid ProductAssociatedRequest request){
-        ProductAssociatedQueryDTO infoDTO = productDetailInfoFaceConverter.convertToProductAssociatedQueryDTO(request);
-        ProductAssociatedDTO associatedDTO = productInfoService.queryProductAssociatedInfo(infoDTO);
-        ProductAssociatedResponse response = productDetailInfoFaceConverter.convertToProductAssociatedDTO(associatedDTO);
+        ProductAssociatedQueryDTO infoDTO = productFaceConverter.convertToProductAssociatedQueryDTO(request);
+        ProductAssociatedDTO associatedDTO = productService.queryProductAssociatedInfo(infoDTO);
+        ProductAssociatedResponse response = productFaceConverter.convertToProductAssociatedDTO(associatedDTO);
         return Result.success(response);
     }
 }

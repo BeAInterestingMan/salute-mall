@@ -18,7 +18,7 @@ import org.mapstruct.Mapper;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public interface ProductDetailInfoFaceConverter {
+public interface ProductFaceConverter {
 
     Page<List<ProductListInfoResponse>> convertToProductListInfoResponsePage(Page<List<ProductListInfoBO>> page);
 

@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.salute.mall.common.core.utils.SaluteAssertUtil;
 import com.salute.mall.product.service.mapper.ProductMapper;
+import com.salute.mall.product.service.pojo.dto.ProductBaseDTO;
 import com.salute.mall.product.service.pojo.dto.QueryProductPageDTO;
 import com.salute.mall.product.service.pojo.entity.Product;
 import org.apache.commons.collections.CollectionUtils;

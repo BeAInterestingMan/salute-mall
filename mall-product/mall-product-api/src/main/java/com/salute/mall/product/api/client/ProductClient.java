@@ -15,18 +15,18 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
-@FeignClient(value = "mall-product", contextId = "saluteProductDetailClient", fallbackFactory = ProductDetailInfoClientFallback.class)
-public interface ProductDetailInfoClient {
+@FeignClient(value = "mall-product", contextId = "saluteProductClient", fallbackFactory = ProductDetailInfoClientFallback.class)
+public interface ProductClient {
 
-    @GetMapping("/product/customer/product/getProductDetail")
+    @GetMapping("/product/customer/getProductDetail")
     @ApiOperation("获取小程序的商品详情信息")
     Result<ProductDetailInfoResponse> getProductDetail(@NotBlank @RequestParam(name = "productCode") String productCode);
 
-    @PostMapping("/product/customer/product/queryProductSkuDetail")
+    @PostMapping("/product/customer/queryProductSkuDetail")
     @ApiOperation("根据skuCodeList获取sku商品详情信息")
     Result<List<ProductSkuResponse>> queryProductSkuDetail(@NotEmpty @RequestBody List<String> skuCodeList);
 
-    @GetMapping("/product/customer/product/getProductSkuDetail")
+    @GetMapping("/product/customer/getProductSkuDetail")
     @ApiOperation("根据skuCode获取sku商品详情信息")
     Result<ProductSkuResponse> getProductSkuDetail(@NotEmpty @RequestParam(name = "skuCode") String skuCode);
 }
