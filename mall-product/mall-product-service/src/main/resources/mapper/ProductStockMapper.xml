@@ -61,7 +61,7 @@
         </where>
     </update>
 
-    <update id="doOperateFreezeStock" parameterType="java.util.List">
+    <update id="doOperateFreezeStock" parameterType="com.salute.mall.product.service.pojo.dto.stock.OperateFreezeStockDaoDTO">
         update product_stock
         <set>
             <trim suffixOverrides=",">
@@ -70,6 +70,15 @@
                 </if>
                 <if test="item.stockNum != null">
                     available_stock = real_stock - freeze_stock,
+                </if>
+                <if test="item.bizCode != null">
+                    biz_code = #{item.bizCode},
+                </if>
+                <if test="item.modifier_code != null">
+                    modifier_code = #{item.operateCode},
+                </if>
+                <if test="item.modifier_code != null">
+                    modifier = #{item.operator},
                 </if>
             </trim>
             ,modified_time = now()

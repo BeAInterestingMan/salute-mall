@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.salute.mall.common.core.constants.RedisConstants;
 import com.salute.mall.common.core.exception.BusinessException;
 import com.salute.mall.product.service.converter.ProductStockServiceConverter;
+import com.salute.mall.product.service.enums.StockTransactionOperateTypeEnum;
 import com.salute.mall.product.service.pojo.dto.stock.OperateFreezeStockDTO;
 import com.salute.mall.product.service.pojo.dto.stock.OperateFreezeStockDaoDTO;
 import com.salute.mall.product.service.pojo.dto.stock.OperateFreezeStockSkuDTO;
@@ -81,11 +82,11 @@ public class ProductStockServiceImpl implements ProductStockService {
      * @return void
      */
     private void doOperateFreezeStock(OperateFreezeStockDTO dto) {
-       List<OperateFreezeStockDaoDTO> daoDTO =  buildOperateFreezeStockDaoDTO(dto);
-      // 开启事务 update 如果where条件命中索引则是行级锁
+      List<OperateFreezeStockDaoDTO> daoDTO =  buildOperateFreezeStockDaoDTO(dto);
       transactionTemplate.execute(ts->{
-          int rows =  productStockRepository.batchOperateFreezeStock(daoDTO);
           int transactionRows = saveProductStockTransaction(dto);
+          // 开启事务 update 如果where条件命中索引则是行级锁
+          int rows =  productStockRepository.batchOperateFreezeStock(daoDTO);
           if(rows != CollectionUtils.size(dto.getSkuStockList())){
               ts.setRollbackOnly();
               log.error("库存扣减失败,req:{}",JSON.toJSONString(dto));
@@ -108,7 +109,6 @@ public class ProductStockServiceImpl implements ProductStockService {
      * @return int
      */
     private int saveProductStockTransaction(OperateFreezeStockDTO dto) {
-        // TODO库存流水不准
         List<String> skuCodeList = dto.getSkuStockList().stream().map(OperateFreezeStockSkuDTO::getSkuCode).collect(Collectors.toList());
         List<ProductStock> productStocks = productStockRepository.queryBySkuCodeList(skuCodeList);
         List<ProductStockTransaction> stockTransactions = buildInsertProductStockTransaction(dto, productStocks);
@@ -133,7 +133,7 @@ public class ProductStockServiceImpl implements ProductStockService {
             ProductStockTransaction productStockTransaction = new ProductStockTransaction();
             productStockTransaction.setBizCode(dto.getBizCode());
             productStockTransaction.setOperateTime(new Date());
-            productStockTransaction.setOperateType("FreezeD");
+            productStockTransaction.setOperateType(StockTransactionOperateTypeEnum.FREEZING_STOCK.getValue());
             productStockTransaction.setOperateStock(skuStock.getStockNum());
             productStockTransaction.setBeforeRealStock(stock.getRealStock());
             productStockTransaction.setAfterRealStock(stock.getRealStock());

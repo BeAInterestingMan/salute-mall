@@ -42,7 +42,13 @@ public class ProductStockRepository {
         return  productStockMapper.selectOne(queryWrapper);
     }
 
-
+   /**
+    * @Description 批量冻结库存
+    * @author liuhu
+    * @param dtoList
+    * @date 2022/12/7 20:13
+    * @return int
+    */
     public int batchOperateFreezeStock(List<OperateFreezeStockDaoDTO> dtoList) {
        return batchHelper.batchInsertOrUpdate(dtoList, ProductStockMapper.class, ProductStockMapper::doOperateFreezeStock);
     }

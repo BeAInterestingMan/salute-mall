@@ -10,8 +10,13 @@ import com.salute.mall.order.service.pojo.dto.CreateSaleOrderDTO;
 import com.salute.mall.order.service.pojo.dto.CreateSaleOrderProductSkuDTO;
 import com.salute.mall.order.service.pojo.entity.SaleOrder;
 import com.salute.mall.order.service.pojo.entity.SaleOrderDetail;
+import com.salute.mall.order.service.repository.SaleOrderDetailRepository;
+import com.salute.mall.order.service.repository.SaleOrderRepository;
 import com.salute.mall.order.service.service.SaleOrderCustomerService;
 import com.salute.mall.product.api.client.ProductApiClient;
+import com.salute.mall.product.api.client.ProductStockApiClient;
+import com.salute.mall.product.api.request.OperateFreezeStockRequest;
+import com.salute.mall.product.api.request.OperateFreezeStockSkuRequest;
 import com.salute.mall.product.api.response.ProductSkuResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
@@ -39,7 +44,16 @@ public class SaleOrderCustomerServiceImpl implements SaleOrderCustomerService {
     private ProductApiClient productApiClient;
 
     @Autowired
+    private ProductStockApiClient productStockApiClient;
+
+    @Autowired
     private TransactionTemplate transactionTemplate;
+
+    @Autowired
+    private SaleOrderDetailRepository saleOrderDetailRepository;
+
+    @Autowired
+    private SaleOrderRepository saleOrderRepository;
 
     @Override
     public String getSaleOrderCode() {
@@ -77,22 +91,57 @@ public class SaleOrderCustomerServiceImpl implements SaleOrderCustomerService {
         List<ProductSkuResponse> skuResponses = result.getResult();
         //1.业务校验
         validOrderBusinessAvailable(dto,skuResponses);
-        //2.使用优惠券
-        usedCoupon(dto);
-        //3.创建订单扣库存
-        createOrderAndOperateStock(dto);
+        try {
+            //2.使用优惠券
+            usedCoupon(dto);
+            //3.扣库存
+            operateStock(dto);
+            //4.创建订单
+            saveSaleOrder(dto,skuResponses);
+        } catch (Exception e) {
+            // TODO 丢消息 异步归还
+        }
     }
 
-    private void createOrderAndOperateStock(CreateSaleOrderDTO dto,List<ProductSkuResponse> skuResponses) {
+    private void operateStock(CreateSaleOrderDTO dto){
+        OperateFreezeStockRequest request = buildOperateFreezeStockRequest(dto);
+        Result<Void> result = productStockApiClient.operateFreezeStock(request);
+        if(Objects.isNull(result) || !Objects.equals(result.isStatus(),Boolean.TRUE)){
+            throw new BusinessException("500","扣减优惠券异常");
+        }
+    }
+
+    private void saveSaleOrder(CreateSaleOrderDTO dto,List<ProductSkuResponse> skuResponses) {
         List<SaleOrderDetail> saleOrderDetails = buildInsertSaleOrderDetail(dto, skuResponses);
         SaleOrder saleOrder = buildInsertSaleOrder(dto, saleOrderDetails);
-        buildOperateStockDTO(dto, saleOrderDetails);
         transactionTemplate.execute(ts->{
-          return null;
-        })
+            try {
+                saleOrderDetailRepository.insertBatch(saleOrderDetails);
+                saleOrderRepository.insert(saleOrder);
+            } catch (Exception e) {
+                ts.setRollbackOnly();
+                log.error("创建订单异常，req:{}",JSON.toJSONString(dto),e);
+                throw new BusinessException("500","创建订单异常");
+            }
+            return null;
+        });
     }
 
-    private void buildOperateStockDTO(CreateSaleOrderDTO dto, List<SaleOrderDetail> saleOrderDetails) {
+    private OperateFreezeStockRequest buildOperateFreezeStockRequest(CreateSaleOrderDTO dto) {
+        OperateFreezeStockRequest request = new OperateFreezeStockRequest();
+        request.setOperateCode("");
+        request.setOperator("");
+        request.setBizCode(dto.getSaleOrderCode());
+        List<OperateFreezeStockSkuRequest> skuRequests = dto.getProductSkuList().stream().map(productSkuDTO -> {
+            OperateFreezeStockSkuRequest stockSkuRequest = new OperateFreezeStockSkuRequest();
+            stockSkuRequest.setSkuName(productSkuDTO.getSkuName());
+            stockSkuRequest.setSkuCode(productSkuDTO.getSkuCode());
+            stockSkuRequest.setStockNum(productSkuDTO.getBuyQty());
+            stockSkuRequest.setProductCode(productSkuDTO.getProductCode());
+            return stockSkuRequest;
+        }).collect(Collectors.toList());
+        request.setSkuStockList(skuRequests);
+        return request;
     }
 
     private SaleOrder buildInsertSaleOrder(CreateSaleOrderDTO dto, List<SaleOrderDetail> saleOrderDetails) {
@@ -112,7 +161,8 @@ public class SaleOrderCustomerServiceImpl implements SaleOrderCustomerService {
     }
 
 
-    private List<SaleOrderDetail> buildInsertSaleOrderDetail(CreateSaleOrderDTO dto, List<ProductSkuResponse> skuResponses) {
+    private List<SaleOrderDetail> buildInsertSaleOrderDetail(CreateSaleOrderDTO dto,
+                                                             List<ProductSkuResponse> skuResponses) {
         Map<String, ProductSkuResponse> skuResponseMap = skuResponses.stream().collect(Collectors.toMap(ProductSkuResponse::getSkuCode, Function.identity(), (k1, k2) -> k1));
         return  dto.getProductSkuList().stream().map(productSku->{
             ProductSkuResponse skuResponse = skuResponseMap.get(productSku.getSkuCode());

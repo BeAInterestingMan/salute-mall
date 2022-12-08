@@ -1,6 +1,7 @@
 package com.salute.mall.product.service.controller.product;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.google.common.collect.Lists;
 import com.salute.mall.common.core.entity.Page;
 import com.salute.mall.common.core.entity.Result;
@@ -41,6 +42,7 @@ public class ProductController {
     @Autowired
     private ProductFaceConverter productFaceConverter;
 
+
     @GetMapping("getProductDetail")
     @ApiOperation("获取小程序的商品详情信息")
     public Result<ProductDetailInfoResponse> getProductDetail(@NotBlank @RequestParam(name = "productCode") String productCode){
@@ -70,6 +72,7 @@ public class ProductController {
         log.info("execute queryProductSkuDetail info,req:{},resp:{}", JSON.toJSONString(skuCode), JSON.toJSONString(response));
         return Result.success(response);
     }
+
 
     @GetMapping("searchProduct")
     @ApiOperation("获取小程序商品列表详情")

@@ -16,6 +16,10 @@ import java.math.BigDecimal;
 @ApiModel("创建订单商品详情入参")
 public class CreateSaleOrderProductSkuDTO implements Serializable {
 
+    @ApiModelProperty(value = "sku编号",name = "productCode")
+    @NotBlank
+    private String productCode;
+
     @ApiModelProperty(value = "sku编号",name = "skuCode")
     @NotBlank
     private String skuCode;
