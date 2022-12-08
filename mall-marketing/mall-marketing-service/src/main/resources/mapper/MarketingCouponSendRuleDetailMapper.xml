@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.salute.mall.marketing.mapper.MarketingCouponSendRuleDetailMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.salute.mall.marketing.pojo.entity.MarketingCouponSendRuleDetail" id="baseMap">
+        <result property="id"  column="id"/>
+        <result property="couponActivityCode"  column="coupon_activity_code"/>
+        <result property="specificType"  column="specific_type"/>
+        <result property="specificCode"  column="specific_code"/>
+        <result property="specificName"  column="specific_name"/>
+        <result property="sort"  column="sort"/>
+        <result property="creator"  column="creator"/>
+        <result property="creatorCode"  column="creator_code"/>
+        <result property="createdTime"  column="created_time"/>
+        <result property="modifier"  column="modifier"/>
+        <result property="modifierCode"  column="modifier_code"/>
+        <result property="modifiedTime"  column="modified_time"/>
+    </resultMap>
+
+    <sql id="baseColumn">
+        id,
+        coupon_activity_code,
+        specific_type,
+        specific_code,
+        specific_name,
+        sort,
+        creator,
+        creator_code,
+        created_time,
+        modifier,
+        modifier_code,
+        modified_time
+    </sql>
+</mapper>

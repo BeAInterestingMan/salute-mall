@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.salute.mall.marketing.mapper.MarketingCouponStockMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.salute.mall.marketing.pojo.entity.MarketingCouponStock" id="baseMap">
+        <result property="id"  column="id"/>
+        <result property="creator"  column="creator"/>
+        <result property="creatorCode"  column="creator_code"/>
+        <result property="createdTime"  column="created_time"/>
+        <result property="modifier"  column="modifier"/>
+        <result property="modifierCode"  column="modifier_code"/>
+        <result property="modifiedTime"  column="modified_time"/>
+        <result property="couponActivityCode"  column="coupon_activity_code"/>
+        <result property="realStock"  column="real_stock"/>
+        <result property="sendStock"  column="send_stock"/>
+        <result property="availableStock"  column="available_stock"/>
+    </resultMap>
+
+    <sql id="baseColumn">
+        id,
+        creator,
+        creator_code,
+        created_time,
+        modifier,
+        modifier_code,
+        modified_time,
+        coupon_activity_code,
+        real_stock,
+        send_stock,
+        available_stock
+    </sql>
+</mapper>
