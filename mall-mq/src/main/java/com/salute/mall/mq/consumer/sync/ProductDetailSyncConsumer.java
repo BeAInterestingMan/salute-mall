@@ -29,7 +29,7 @@ public class ProductDetailSyncConsumer {
     public void execute(List<String> arrayList){
         for (String code : arrayList) {
             Result<ProductInfoResponse> result = commonApiClient.getProductDetail(code);
-            if(Objects.isNull(result) || Objects.equals(result.isStatus(),Boolean.FALSE)){
+            if(Objects.isNull(result) || Objects.equals(result.isSuccess(),Boolean.FALSE)){
                 return;
             }
             ProductInfoResponse productInfoResponse = result.getResult();

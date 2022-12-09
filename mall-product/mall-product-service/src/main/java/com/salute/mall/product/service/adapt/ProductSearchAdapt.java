@@ -43,7 +43,7 @@ public class ProductSearchAdapt {
         log.info("execute searchProduct info,req:{}",JSON.toJSONString(infoDTO));
         ProductListSearchPageRequest request = productSearchAdaptConverter.convertToProductListSearchPageRequest(infoDTO);
         Result<Page<List<ProductListSearchResponse>>> result = productSearchClient.searchProduct(request);
-        if(Objects.isNull(result) || Objects.equals(result.isStatus(),Boolean.FALSE)){
+        if(Objects.isNull(result) || Objects.equals(result.isSuccess(),Boolean.FALSE)){
             log.error("execute searchProduct info,req:{},resp:{}", JSON.toJSONString(request),JSON.toJSONString(result));
             return new Page(infoDTO.getPageIndex(),infoDTO.getPageSize(),0L, Lists.newArrayList());
         }
@@ -60,7 +60,7 @@ public class ProductSearchAdapt {
         log.info("execute searchProductAssociated info,req:{}",JSON.toJSONString(infoDTO));
         ProductSearchAssociatedRequest request = productSearchAdaptConverter.convertToProductSearchAssociatedRequest(infoDTO);
         Result<ProductSearchAssociatedResponse> result = productSearchClient.searchProductAssociated(request);
-        if(Objects.isNull(result) || Objects.equals(result.isStatus(),Boolean.FALSE)){
+        if(Objects.isNull(result) || Objects.equals(result.isSuccess(),Boolean.FALSE)){
             log.error("execute searchProductAssociated info,req:{},resp:{}", JSON.toJSONString(request),JSON.toJSONString(result));
             return null;
         }

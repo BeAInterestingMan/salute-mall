@@ -46,7 +46,8 @@ public class MybatisBatchHelper {
                  // 执行biConsumer方法
                  biConsumer.accept(sessionMapper,record);
             }
-            // 输出sql
+            // 输出sql  batchResults 如果sql完全一样，只是值不一样则batchResults size为1
+            // 如果sql 不一样 比如update table set entity where id = ? 如果entity中有属性为null则会导致sql不一样 则batchResults size会有多个
             List<BatchResult> batchResults = sqlSession.flushStatements();
             int batchUpdateCounts = batchResults.stream().flatMapToInt(v -> Arrays.stream(v.getUpdateCounts())).sum();
             updateCounts+=batchUpdateCounts;

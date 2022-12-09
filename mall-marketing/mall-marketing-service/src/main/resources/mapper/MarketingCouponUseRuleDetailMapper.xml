@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.salute.mall.marketing.mapper.MarketingCouponUseRuleDetailMapper">
+<mapper namespace="com.salute.mall.marketing.service.mapper.MarketingCouponUseRuleDetailMapper">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="com.salute.mall.marketing.pojo.entity.MarketingCouponUseRuleDetail" id="baseMap">
+    <resultMap type="com.salute.mall.marketing.service.pojo.entity.MarketingCouponUseRuleDetail" id="baseMap">
         <result property="id"  column="id"/>
         <result property="couponActivityCode"  column="coupon_activity_code"/>
         <result property="specificType"  column="specific_type"/>

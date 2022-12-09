@@ -47,7 +47,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         }
         List<String> skuCodeList = shoppingCartList.stream().map(ShoppingCart::getSkuCode).collect(Collectors.toList());
         Result<List<ProductSkuResponse>> listResult = productClient.queryProductSkuDetail(skuCodeList);
-        SaluteAssertUtil.isTrue(Objects.nonNull(listResult) && Objects.equals(listResult.isStatus(),Boolean.TRUE),"查询商品详情失败");
+        SaluteAssertUtil.isTrue(Objects.nonNull(listResult) && Objects.equals(listResult.isSuccess(),Boolean.TRUE),"查询商品详情失败");
         SaluteAssertUtil.isTrue(CollectionUtils.isNotEmpty(listResult.getResult()),"查询商品详情失败");
         List<ProductSkuResponse> skuInfoResponseList = listResult.getResult();
         Map<String, ProductSkuResponse> skuInfoMap = skuInfoResponseList.stream().collect(Collectors.toMap(ProductSkuResponse::getSkuCode, Function.identity(), (k1, k2) -> k1));
@@ -59,7 +59,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public void addShoppingCart(String userCode, String skuCode, Integer buyQty) {
         SaluteAssertUtil.isTrue(!StringUtils.isAnyBlank(userCode,skuCode) && Objects.nonNull(buyQty),"参数异常");
         Result<ProductSkuResponse> result = productClient.getProductSkuDetail(skuCode);
-        SaluteAssertUtil.isTrue(Objects.nonNull(result) && Objects.equals(result.isStatus(),Boolean.TRUE),"查询商品详情失败");
+        SaluteAssertUtil.isTrue(Objects.nonNull(result) && Objects.equals(result.isSuccess(),Boolean.TRUE),"查询商品详情失败");
         ProductSkuResponse ploySkuInfoResponse = result.getResult();
         SaluteAssertUtil.isTrue(Objects.nonNull(ploySkuInfoResponse),"商品已失效");
         SaluteAssertUtil.isTrue(ploySkuInfoResponse.getAvailableStock()>=buyQty,"商品库存不足");
@@ -72,7 +72,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         ShoppingCart existShoppingCart = shoppingCartServiceRepository.getByUserCodeAndSkuCode(userCode,skuCode);
         SaluteAssertUtil.isTrue(Objects.nonNull(existShoppingCart) ,"购物车不存在该商品");
         Result<ProductSkuResponse> result = productClient.getProductSkuDetail(skuCode);
-        SaluteAssertUtil.isTrue(Objects.nonNull(result) && Objects.equals(result.isStatus(),Boolean.TRUE),"查询商品详情失败");
+        SaluteAssertUtil.isTrue(Objects.nonNull(result) && Objects.equals(result.isSuccess(),Boolean.TRUE),"查询商品详情失败");
         ProductSkuResponse ploySkuInfoResponse = result.getResult();
         SaluteAssertUtil.isTrue(Objects.nonNull(ploySkuInfoResponse),"商品已失效");
         SaluteAssertUtil.isTrue(ploySkuInfoResponse.getAvailableStock()>=updateBuyQty,"商品库存不足");

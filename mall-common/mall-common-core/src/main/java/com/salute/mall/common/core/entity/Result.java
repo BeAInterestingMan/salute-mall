@@ -8,8 +8,6 @@ import java.io.Serializable;
  */
 public class Result<T> implements Serializable {
 
-    private boolean status = false;
-
     private String message;
 
     private T result;
@@ -23,11 +21,11 @@ public class Result<T> implements Serializable {
     }
 
     public static <T> Result<T> success(T data) {
-        return new Result(true, true,"操作成功", data, "200");
+        return new Result( true,"操作成功", data, "200");
     }
 
     public static <T> Result<T> success() {
-        return new Result(true,true, "操作成功", (Object)null, "200");
+        return new Result(true, "操作成功", (Object)null, "200");
     }
 
     public Result() {
@@ -39,9 +37,8 @@ public class Result<T> implements Serializable {
         this.code = statusCode;
     }
 
-    public Result(boolean status,boolean success, String message, T result, String statusCode) {
+    public Result(boolean success, String message, T result, String statusCode) {
         this.success = success;
-        this.status = status;
         this.message = message;
         this.result = result;
         this.code = statusCode;
@@ -49,14 +46,6 @@ public class Result<T> implements Serializable {
 
     public boolean isSuccess() {
         return success;
-    }
-
-    public boolean isStatus() {
-        return this.status;
-    }
-
-    public void setStatus(boolean status) {
-        this.status = status;
     }
 
     public String getMessage() {

@@ -23,7 +23,7 @@ spring:
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
-  type-aliases-package: com.salute.mall.marketing.pojo.entity
+  type-aliases-package: com.salute.mall.marketing.xx.pojo.entity
   configuration:
     map-underscore-to-camel-case: true
 
@@ -35,7 +35,7 @@ logging:
 mall:
   swagger:
     enable: true
-    basePackage: com.salute.mall.marketing.controller
+    basePackage: com.salute.mall.marketing.xx.controller
     title: mall-marketing
     description: salute-mall营销模块接口文档
     contact: melo-lh
