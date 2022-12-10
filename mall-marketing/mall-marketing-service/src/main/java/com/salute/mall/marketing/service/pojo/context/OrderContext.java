@@ -5,15 +5,10 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
-import java.math.BigDecimal;
+import java.util.List;
+
 @Data
 public class OrderContext implements Serializable {
-
-    @ApiModelProperty(value = "订单号",name = "saleOrderCode")
-    private String saleOrderCode;
-
-    @ApiModelProperty(value = "订单总金额",name = "orderAmount")
-    private BigDecimal orderAmount;
 
     @ApiModelProperty(value = "操作人",name = "operator")
     @NotBlank
@@ -22,4 +17,7 @@ public class OrderContext implements Serializable {
     @ApiModelProperty(value = "操作人编号",name = "operateCode")
     @NotBlank
     private String userCode;
+
+    @ApiModelProperty(value = "商品详情",name = "orderDetailContextList")
+    private List<OrderDetailContext> orderDetailContextList;
 }

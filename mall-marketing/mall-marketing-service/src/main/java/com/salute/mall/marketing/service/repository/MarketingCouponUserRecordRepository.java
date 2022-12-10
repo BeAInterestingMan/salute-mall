@@ -88,4 +88,21 @@ public class MarketingCouponUserRecordRepository {
                      .ge(MarketingCouponUserRecord::getEndTime,new Date());
         return marketingCouponUserRecordMapper.selectList(queryWrapper);
     }
+
+    /**
+     * @Description 查询用户有效的优惠券
+     * @author liuhu
+     * @param userCode
+     * @date 2022/12/9 20:43
+     * @return java.util.List<com.salute.mall.marketing.service.pojo.entity.MarketingCouponUserRecord>
+     */
+    public List<MarketingCouponUserRecord> queryByUseCodeAndStatus(String userCode) {
+        SaluteAssertUtil.isTrue(StringUtils.isAnyBlank(userCode),"参数异常");
+        LambdaQueryWrapper<MarketingCouponUserRecord> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(MarketingCouponUserRecord::getUserCode,userCode)
+                .eq(MarketingCouponUserRecord::getStatus, CouponUserRecordStatusEnum.RECEIVED.getValue())
+                .le(MarketingCouponUserRecord::getStartTime,new Date())
+                .ge(MarketingCouponUserRecord::getEndTime,new Date());
+        return marketingCouponUserRecordMapper.selectList(queryWrapper);
+    }
 }

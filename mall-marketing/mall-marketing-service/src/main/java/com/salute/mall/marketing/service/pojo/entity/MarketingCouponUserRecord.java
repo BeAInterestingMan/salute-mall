@@ -48,6 +48,14 @@ public class MarketingCouponUserRecord implements Serializable {
     @TableField("end_time")
     private Date endTime;
 
+    @ApiModelProperty(value = "用户编号",name = "userCode")
+    @TableField("user_code")
+    private String userCode;
+
+    @ApiModelProperty(value = "用户姓名",name = "userName")
+    @TableField("user_name")
+    private String userName;
+
     @ApiModelProperty(value = "创建人",name = "creator")
     @TableField("creator")
     private String creator;

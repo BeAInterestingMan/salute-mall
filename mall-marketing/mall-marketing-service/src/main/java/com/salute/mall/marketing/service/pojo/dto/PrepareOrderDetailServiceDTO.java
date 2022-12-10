@@ -9,6 +9,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 @Data
 @ApiModel("提交订单计算优惠-详情入参")
@@ -24,7 +25,10 @@ public class PrepareOrderDetailServiceDTO implements Serializable {
 
     @ApiModelProperty(value = "商品金额",name = "salePrice")
     @NotBlank
-    private String salePrice;
+    private BigDecimal salePrice;
+
+    @ApiModelProperty(value = "商品三级分类",name = "categoryCodeThird")
+    private String categoryCodeThird;
 
     @ApiModelProperty(value = "商品购买数量",name = "bugQty")
     @NotNull

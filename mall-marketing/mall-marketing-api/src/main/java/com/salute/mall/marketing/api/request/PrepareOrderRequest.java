@@ -13,11 +13,6 @@ import java.util.List;
 @ApiModel("提交订单计算优惠入参")
 public class PrepareOrderRequest implements Serializable {
 
-    /**业务单哈*/
-    @ApiModelProperty(value = "业务单号",name = "bizCode")
-    @NotBlank
-    private String bizCode;
-
     @ApiModelProperty(value = "优惠券单号（推荐时不传  用户可手动选择其他优惠券）",name = "couponCode")
     private String couponCode;
 

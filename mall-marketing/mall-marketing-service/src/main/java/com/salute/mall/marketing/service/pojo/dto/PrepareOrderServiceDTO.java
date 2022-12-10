@@ -13,21 +13,16 @@ import java.util.List;
 @ApiModel("提交订单计算优惠入参")
 public class PrepareOrderServiceDTO implements Serializable {
 
-    /**业务单哈*/
-    @ApiModelProperty(value = "业务单号",name = "bizCode")
-    @NotBlank
-    private String bizCode;
-
     @ApiModelProperty(value = "优惠券单号（推荐时不传  用户可手动选择其他优惠券）",name = "couponCode")
     private String couponCode;
 
-    @ApiModelProperty(value = "操作人",name = "operator")
+    @ApiModelProperty(value = "用户名称",name = "userName")
     @NotBlank
-    private String operator;
+    private String userName;
 
-    @ApiModelProperty(value = "操作人编号",name = "operateCode")
+    @ApiModelProperty(value = "用户编号",name = "userCode")
     @NotBlank
-    private String operateCode;
+    private String userCode;
 
     @ApiModelProperty(value = "商品详情",name = "detailList")
     @NotEmpty

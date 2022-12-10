@@ -18,8 +18,8 @@ public class OrderDetailContext implements Serializable {
     @ApiModelProperty(value = "商品金额",name = "salePrice")
     private BigDecimal salePrice;
 
-    @ApiModelProperty(value = "商品购买数量",name = "bugQty")
-    private Integer bugQty;
+    @ApiModelProperty(value = "商品购买数量",name = "buyQty")
+    private Integer buyQty;
 
     @ApiModelProperty(value = "商品购买数量",name = "bugQty")
     private String categoryCodeThird;

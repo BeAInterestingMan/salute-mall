@@ -2,24 +2,24 @@ package com.salute.mall.marketing.service.enums;
 
 import java.util.Objects;
 
-public enum CouponUserRecordUseTypeEnum {
+public enum CouponUseRuleCouponTypeEnum {
 
-    PRODUCT("指定商品可用","PRODUCT"),
-    CATEGORY("指定分类可用","CATEGORY"),
-    ALL_PRODUCT("全部商品可用","ALL_PRODUCT"),
+    ALL("无门槛","ALL"),
+
+    AMOUNT_SATISFY("满足指定金额","AMOUNT_SATISFY")
     ;
 
     private final String name;
 
     private final String value;
 
-    CouponUserRecordUseTypeEnum(String name, String value) {
+    CouponUseRuleCouponTypeEnum(String name, String value) {
         this.name = name;
         this.value = value;
     }
 
-    public static CouponUserRecordUseTypeEnum getByValue(String value){
-        for (CouponUserRecordUseTypeEnum typeEnum : CouponUserRecordUseTypeEnum.values()) {
+    public static CouponUseRuleCouponTypeEnum getByValue(String value){
+        for (CouponUseRuleCouponTypeEnum typeEnum : CouponUseRuleCouponTypeEnum.values()) {
             if(Objects.equals(typeEnum.getValue(),value)){
                 return typeEnum;
             }

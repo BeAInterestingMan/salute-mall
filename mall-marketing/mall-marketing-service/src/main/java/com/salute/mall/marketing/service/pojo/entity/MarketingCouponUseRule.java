@@ -34,9 +34,9 @@ public class MarketingCouponUseRule implements Serializable {
     @TableField("use_type")
     private String useType;
 
-    @ApiModelProperty(value = "订单满减金额",name = "orderFullAmount")
-    @TableField("order_full_amount")
-    private BigDecimal orderFullAmount;
+    @ApiModelProperty(value = "优惠券使用门槛金额",name = "couponFullAmount")
+    @TableField("coupon_full_amount")
+    private BigDecimal couponFullAmount;
 
     @ApiModelProperty(value = "是否与其他活动互斥",name = "mutexFlag")
     @TableField("mutex_flag")
