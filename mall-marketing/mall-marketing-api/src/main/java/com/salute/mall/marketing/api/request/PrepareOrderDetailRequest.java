@@ -29,9 +29,9 @@ public class PrepareOrderDetailRequest implements Serializable {
     @Min(0)
     private BigDecimal salePrice;
 
-    @ApiModelProperty(value = "商品购买数量",name = "bugQty")
+    @ApiModelProperty(value = "商品购买数量",name = "buyQty")
     @NotNull
     @Max(10000)
     @Min(1)
-    private Integer bugQty;
+    private Integer buyQty;
 }
