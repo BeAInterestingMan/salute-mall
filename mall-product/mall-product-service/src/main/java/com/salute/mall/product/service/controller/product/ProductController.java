@@ -1,11 +1,11 @@
 package com.salute.mall.product.service.controller.product;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
 import com.google.common.collect.Lists;
 import com.salute.mall.common.core.entity.Page;
 import com.salute.mall.common.core.entity.Result;
-import com.salute.mall.product.api.response.ProductDetailInfoResponse;
+import com.salute.mall.product.api.response.ProductCustomInfoResponse;
+import com.salute.mall.product.api.response.ProductDetailCustomInfoResponse;
 import com.salute.mall.product.api.response.ProductSkuResponse;
 import com.salute.mall.product.service.converter.ProductFaceConverter;
 import com.salute.mall.product.service.pojo.bo.ProductDetailInfoBO;
@@ -22,6 +22,7 @@ import com.salute.mall.product.service.service.ProductService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,10 +46,10 @@ public class ProductController {
 
     @GetMapping("getProductDetail")
     @ApiOperation("获取小程序的商品详情信息")
-    public Result<ProductDetailInfoResponse> getProductDetail(@NotBlank @RequestParam(name = "productCode") String productCode){
+    public Result<ProductDetailCustomInfoResponse> getProductDetail(@NotBlank @RequestParam(name = "productCode") String productCode){
         log.info("execute getProductBySpuCode info,req:{}", JSON.toJSONString(productCode));
         ProductDetailInfoBO productDetail = productService.getProductDetail(productCode);
-        ProductDetailInfoResponse response = productFaceConverter.convertToProductDetailInfoResponse(productDetail);
+        ProductDetailCustomInfoResponse response = productFaceConverter.convertToProductDetailInfoResponse(productDetail);
         log.info("execute getProductBySpuCode info,req:{},resp:{}", JSON.toJSONString(productCode), JSON.toJSONString(response));
         return Result.success(response);
     }

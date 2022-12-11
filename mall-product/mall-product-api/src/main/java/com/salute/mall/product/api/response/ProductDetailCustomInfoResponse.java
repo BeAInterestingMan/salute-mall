@@ -7,13 +7,10 @@ import java.io.Serializable;
 import java.util.List;
 
 @Data
-public class ProductDetailInfoResponse implements Serializable {
+public class ProductDetailCustomInfoResponse implements Serializable {
 
-     @ApiModelProperty(value = "商品基本信息",name = "productBaseInfo")
-     private ProductBaseInfoResponse productBaseInfo;
-
-     @ApiModelProperty(value = "商品图文详情",name = "productDetailInfo")
-     private ProductDetailResponse productDetailInfo;
+     @ApiModelProperty(value = "商品基本信息",name = "productDetail")
+     private ProductCustomInfoResponse productDetail;
 
      @ApiModelProperty(value = "商品sku信息",name = "productSkuList")
      private List<ProductSkuResponse> productSkuList;

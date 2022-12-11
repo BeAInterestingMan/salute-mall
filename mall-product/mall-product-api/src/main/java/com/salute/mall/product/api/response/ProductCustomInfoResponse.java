@@ -1,4 +1,4 @@
-package com.salute.mall.product.service.pojo.dto;
+package com.salute.mall.product.api.response;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -8,13 +8,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-/**
- *  @Description 商品基本信息
- *  @author liuhu
- *  @Date 2022/11/29 20:49
- */
 @Data
-public class ProductBaseDTO implements Serializable {
+public class ProductCustomInfoResponse implements Serializable {
 
     @ApiModelProperty(value = "商品名称",name = "spuName")
     private String productName;
@@ -22,11 +17,8 @@ public class ProductBaseDTO implements Serializable {
     @ApiModelProperty(value = "商品编码",name = "spuCode")
     private String productCode;
 
-    @ApiModelProperty(value = "店铺编号",name = "shopCode")
-    private String shopCode;
-
-    @ApiModelProperty(value = "店铺名称",name = "shopName")
-    private String shopName;
+    @ApiModelProperty(value = "商品编码",name = "spuCode")
+    private String skuCode="1387977447487569920";
 
     @ApiModelProperty(value = "商品主图",name = "mainImage")
     private String mainImage;
@@ -42,6 +34,12 @@ public class ProductBaseDTO implements Serializable {
 
     @ApiModelProperty(value = "商品条形码",name = "barcode")
     private String barcode;
+
+    @ApiModelProperty(value = "店铺编号",name = "shopCode")
+    private String shopCode;
+
+    @ApiModelProperty(value = "店铺名称",name = "shopName")
+    private String shopName;
 
     @ApiModelProperty(value = "销售价",name = "salePrice")
     private BigDecimal salePrice;
@@ -73,32 +71,8 @@ public class ProductBaseDTO implements Serializable {
     @ApiModelProperty(value = "品牌编号",name = "brandCode")
     private String brandCode;
 
-    @ApiModelProperty(value = "品牌名称",name = "brandName")
-    private String brandName;
-
     @ApiModelProperty(value = "销量",name = "saleNum")
     private Integer saleNum;
-
-    @ApiModelProperty(value = "商品状态;ON上架 DOWN下架",name = "status")
-    private String status;
-
-    @ApiModelProperty(value = "创建人",name = "creator")
-    private String creator;
-
-    @ApiModelProperty(value = "创建人编号",name = "creatorCode")
-    private String creatorCode;
-
-    @ApiModelProperty(value = "创建时间",name = "createdTime")
-    private Date createdTime;
-
-    @ApiModelProperty(value = "更新人",name = "modifier")
-    private String modifier;
-
-    @ApiModelProperty(value = "更新人编号",name = "modifierCode")
-    private String modifierCode;
-
-    @ApiModelProperty(value = "更新时间",name = "modifiedTime")
-    private Date modifiedTime;
 
     // 详情
     @ApiModelProperty(value = "生成日期",name = "productTime")

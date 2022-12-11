@@ -2,7 +2,7 @@ package com.salute.mall.product.api.client;
 
 import com.salute.mall.common.core.entity.Result;
 import com.salute.mall.product.api.follback.ProductDetailInfoClientFallback;
-import com.salute.mall.product.api.response.ProductDetailInfoResponse;
+import com.salute.mall.product.api.response.ProductDetailCustomInfoResponse;
 import com.salute.mall.product.api.response.ProductSkuResponse;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -20,7 +20,7 @@ public interface ProductClient {
 
     @GetMapping("/product/customer/getProductDetail")
     @ApiOperation("获取小程序的商品详情信息")
-    Result<ProductDetailInfoResponse> getProductDetail(@NotBlank @RequestParam(name = "productCode") String productCode);
+    Result<ProductDetailCustomInfoResponse> getProductDetail(@NotBlank @RequestParam(name = "productCode") String productCode);
 
     @PostMapping("/product/customer/queryProductSkuDetail")
     @ApiOperation("根据skuCodeList获取sku商品详情信息")

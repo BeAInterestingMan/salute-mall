@@ -10,11 +10,8 @@ import java.util.List;
 @Data
 public class ProductDetailInfoBO implements Serializable {
 
-     @ApiModelProperty(value = "商品基本信息",name = "productBaseInfo")
-     private ProductBaseDTO productBaseInfo;
-
-     @ApiModelProperty(value = "商品图文详情",name = "productDetail")
-     private ProductDetailBaseDTO productDetail;
+     @ApiModelProperty(value = "商品信息",name = "productDetail")
+     private ProductBaseDTO productDetail;
 
      @ApiModelProperty(value = "商品sku信息",name = "productSkuList")
      private List<ProductSkuDTO> productSkuList;

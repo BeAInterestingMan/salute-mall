@@ -21,6 +21,7 @@ import com.salute.mall.product.service.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
@@ -103,10 +104,10 @@ public class ProductServiceImpl implements ProductService {
      * @return com.salute.mall.product.service.pojo.bo.ProductDetailInfoBO
      */
     private ProductDetailInfoBO buildProductDetailInfoBO(Product product, List<ProductSku> productSkus,
-                                            List<ProductStock> productStockList,
-                                            ProductDetail productDetail,
-                                            List<ProductSpecification> productSpecifications,
-                                            List<ProductTag> productTagList,
+                                                         List<ProductStock> productStockList,
+                                                         ProductDetail productDetail,
+                                                         List<ProductSpecification> productSpecifications,
+                                                         List<ProductTag> productTagList,
                                                          List<ProductCategory> productCategoryList) {
         SaluteAssertUtil.isTrue(CollectionUtils.isNotEmpty(productStockList),product.getProductCode()+"商品库存不存在");
         SaluteAssertUtil.isTrue(Objects.nonNull(productDetail),product.getProductCode()+"商品详情不存在");
@@ -114,16 +115,13 @@ public class ProductServiceImpl implements ProductService {
         SaluteAssertUtil.isTrue(CollectionUtils.isNotEmpty(productCategoryList),product.getProductCode()+"商品分类信息不存在");
         ProductDetailInfoBO productDetailInfoBO = new ProductDetailInfoBO();
         //1.构建商品基本信息
-        ProductBaseDTO baseInfoDTO = buildProductBaseInfoDTO(product, productSkus,productCategoryList);
-        //2.构建商品图文详情信息
-        ProductDetailBaseDTO productDetailBaseDTO = productServiceConverter.convertToProductDetailInfoDTO(productDetail);
+        ProductBaseDTO baseInfoDTO = buildProductBaseInfoDTO(product, productSkus,productCategoryList,productDetail);
         //3.构建商品sku聚合信息
         List<ProductSkuDTO> skuDTOList = buildSkuInfoDTOList(productSkus, productStockList);
         //4.构建商品规格信息
         List<ProductSpecificationDTO> productSpecificationDTOS = buildSpecificationDTOList(productSpecifications);
         List<ProductTagBaseDTO> productTagBaseDTOList =  productServiceConverter.convertToProductTagBaseDTOList(productTagList);
-        productDetailInfoBO.setProductBaseInfo(baseInfoDTO);
-        productDetailInfoBO.setProductDetail(productDetailBaseDTO);
+        productDetailInfoBO.setProductDetail(baseInfoDTO);
         productDetailInfoBO.setProductSkuList(skuDTOList);
         productDetailInfoBO.setProductSpecificationList(productSpecificationDTOS);
         productDetailInfoBO.setProductTagBaseList(productTagBaseDTOList);
@@ -187,9 +185,12 @@ public class ProductServiceImpl implements ProductService {
      * @date 2022/11/29 20:16
      * @return com.salute.mall.product.service.pojo.dto.ProductBaseDTO
      */
-    private ProductBaseDTO buildProductBaseInfoDTO(Product product, List<ProductSku> productSkus,
-                                                   List<ProductCategory> productCategoryList) {
+    private ProductBaseDTO buildProductBaseInfoDTO(Product product,
+                                                   List<ProductSku> productSkus,
+                                                   List<ProductCategory> productCategoryList,
+                                                   ProductDetail productDetail) {
         ProductBaseDTO baseInfoDTO =  productServiceConverter.convertToProductBaseInfoDTO(product);
+        BeanUtils.copyProperties(productDetail,baseInfoDTO);
         Map<String, ProductCategory> categoryMap = productCategoryList.stream().collect(Collectors.toMap(ProductCategory::getCategoryCode, Function.identity(), (k1, k2) -> k1));
         ProductCategory first = categoryMap.get(product.getCategoryCodeFirst());
         ProductCategory second = categoryMap.get(product.getCategoryCodeSecond());
@@ -201,6 +202,9 @@ public class ProductServiceImpl implements ProductService {
         baseInfoDTO.setSalePrice(defaultSku.getSalePrice());
         baseInfoDTO.setCostPrice(defaultSku.getCostPrice());
         baseInfoDTO.setMarketPrice(defaultSku.getMarketPrice());
+        List<String> skuImageList = productSkus.stream().map(ProductSku::getMainImage).collect(Collectors.toList());
+        baseInfoDTO.setProductImageList(skuImageList);
+        baseInfoDTO.setAvailableStock(100);
         return baseInfoDTO;
     }
 
@@ -313,7 +317,7 @@ public class ProductServiceImpl implements ProductService {
         ProductSku defaultSku = getDefaultSku(skuList);
         productListInfoBO.setProductCode(product.getProductCode());
         productListInfoBO.setProductName(product.getProductName());
-        productListInfoBO.setMainImage(product.getMainImage());
+        productListInfoBO.setMainImage(defaultSku.getMainImage());
         productListInfoBO.setEvaluationNum(0L);
         productListInfoBO.setSaleNum(0L);
         productListInfoBO.setShopCode("TESH-SHOP-CODE");

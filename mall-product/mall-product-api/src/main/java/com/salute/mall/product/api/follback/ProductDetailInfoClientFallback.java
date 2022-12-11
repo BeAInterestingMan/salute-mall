@@ -3,7 +3,7 @@ package com.salute.mall.product.api.follback;
 import com.alibaba.fastjson.JSON;
 import com.salute.mall.common.core.entity.Result;
 import com.salute.mall.product.api.client.ProductClient;
-import com.salute.mall.product.api.response.ProductDetailInfoResponse;
+import com.salute.mall.product.api.response.ProductDetailCustomInfoResponse;
 import com.salute.mall.product.api.response.ProductSkuResponse;
 import feign.hystrix.FallbackFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ public class ProductDetailInfoClientFallback implements FallbackFactory<ProductC
     public ProductClient create(Throwable throwable) {
         return new ProductClient() {
             @Override
-            public Result<ProductDetailInfoResponse> getProductDetail(@NotBlank String productCode) {
+            public Result<ProductDetailCustomInfoResponse> getProductDetail(@NotBlank String productCode) {
                 log.error("execute ProductSearchClient getProductDetail error,request:{}", JSON.toJSONString(productCode),throwable);
                 return Result.error("500","服务繁忙");
             }

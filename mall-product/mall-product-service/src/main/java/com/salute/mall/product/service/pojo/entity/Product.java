@@ -31,10 +31,6 @@ public class Product implements Serializable {
     @TableField("product_code")
     private String productCode;
 
-    @ApiModelProperty(value = "商品主图",name = "mainImage")
-    @TableField("main_image")
-    private String mainImage;
-
     @ApiModelProperty(value = "关键词",name = "keyword")
     @TableField("keyword")
     private String keyword;
@@ -46,14 +42,6 @@ public class Product implements Serializable {
     @ApiModelProperty(value = "卖点",name = "sellPoint")
     @TableField("sell_point")
     private String sellPoint;
-
-    @ApiModelProperty(value = "供应商编码",name = "supplierCode")
-    @TableField("supplier_code")
-    private String supplierCode;
-
-    @ApiModelProperty(value = "供应商名称",name = "supplierName")
-    @TableField("supplier_name")
-    private String supplierName;
 
     @ApiModelProperty(value = "一级分类编号",name = "categoryCodeFirst")
     @TableField("category_code_first")
@@ -71,9 +59,21 @@ public class Product implements Serializable {
     @TableField("barcode")
     private String barcode;
 
-    @ApiModelProperty(value = "品牌编号",name = "brandCode")
+    @ApiModelProperty(value = "店铺编号",name = "shopCode")
+    @TableField("shop_code")
+    private String shopCode;
+
+    @ApiModelProperty(value = "店铺名称",name = "shopName")
+    @TableField("shop_code")
+    private String shopName;
+
+    @ApiModelProperty(value = "品牌名称",name = "brandCode")
     @TableField("brand_code")
     private String brandCode;
+
+    @ApiModelProperty(value = "品牌编号",name = "brandCode")
+    @TableField("brand_code")
+    private String brandName;
 
     @ApiModelProperty(value = "删除标志;YES-已删除 NO-正常",name = "deleteFlag")
     @TableField("delete_flag")

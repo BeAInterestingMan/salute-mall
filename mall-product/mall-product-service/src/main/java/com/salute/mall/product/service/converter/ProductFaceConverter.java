@@ -1,14 +1,12 @@
 package com.salute.mall.product.service.converter;
 
 import com.salute.mall.common.core.entity.Page;
-import com.salute.mall.product.api.response.ProductDetailInfoResponse;
+import com.salute.mall.product.api.response.ProductCustomInfoResponse;
+import com.salute.mall.product.api.response.ProductDetailCustomInfoResponse;
 import com.salute.mall.product.api.response.ProductSkuResponse;
 import com.salute.mall.product.service.pojo.bo.ProductDetailInfoBO;
 import com.salute.mall.product.service.pojo.bo.ProductListInfoBO;
-import com.salute.mall.product.service.pojo.dto.ProductAssociatedDTO;
-import com.salute.mall.product.service.pojo.dto.ProductAssociatedQueryDTO;
-import com.salute.mall.product.service.pojo.dto.ProductCustomerInfoQueryDTO;
-import com.salute.mall.product.service.pojo.dto.ProductSkuDTO;
+import com.salute.mall.product.service.pojo.dto.*;
 import com.salute.mall.product.service.pojo.request.ProductAssociatedRequest;
 import com.salute.mall.product.service.pojo.request.ProductCustomerInfoRequest;
 import com.salute.mall.product.service.pojo.response.ProductAssociatedResponse;
@@ -22,7 +20,7 @@ public interface ProductFaceConverter {
 
     Page<List<ProductListInfoResponse>> convertToProductListInfoResponsePage(Page<List<ProductListInfoBO>> page);
 
-    ProductDetailInfoResponse convertToProductDetailInfoResponse(ProductDetailInfoBO productDetail);
+    ProductDetailCustomInfoResponse convertToProductDetailInfoResponse(ProductDetailInfoBO productDetail);
 
     List<ProductSkuResponse> convertToProductPloySkuInfoResponseList(List<ProductSkuDTO> ploySkuInfoDTOS);
 
@@ -33,4 +31,6 @@ public interface ProductFaceConverter {
     ProductCustomerInfoQueryDTO convertToProductCustomerInfoDTO(ProductCustomerInfoRequest request);
 
     ProductAssociatedQueryDTO convertToProductAssociatedQueryDTO(ProductAssociatedRequest request);
+
+    ProductCustomInfoResponse convertToProductCustomInfoResponse(ProductBaseDTO productBaseInfo);
 }
