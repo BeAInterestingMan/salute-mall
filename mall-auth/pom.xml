@@ -9,19 +9,18 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>mall-common</artifactId>
+    <artifactId>mall-auth</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>mall-common-core</module>
-        <module>mall-common-doc-starter</module>
-        <module>mall-common-datasource-starter</module>
-        <module>mall-common-redis-starter</module>
-        <module>mall-common-security-starter</module>
+        <module>mall-auth-api</module>
+        <module>mall-auth-service</module>
     </modules>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
+    <dependencies>
 
+    </dependencies>
 </project>
