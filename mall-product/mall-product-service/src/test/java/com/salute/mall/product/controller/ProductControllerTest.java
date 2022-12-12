@@ -26,12 +26,4 @@ public class ProductControllerTest {
         Result<ProductSkuResponse> skuDetail = productController.getProductSkuDetail("122343545544787551");
         log.info("execute searchProduct info:{}", JSON.toJSONString(skuDetail));
     }
-
-
-    @Test
-    public void getProductSkuDetail(){
-        Result<ProductDetailCustomInfoResponse> detail = productController.getProductDetail("1376373278360207360");
-        log.info("execute searchProduct info:{}", JSON.toJSONString(detail));
-    }
-
 }

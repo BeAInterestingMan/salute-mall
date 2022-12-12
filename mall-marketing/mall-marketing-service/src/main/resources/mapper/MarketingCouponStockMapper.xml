@@ -31,4 +31,10 @@
         send_stock,
         available_stock
     </sql>
+    <update id="updateCouponNum">
+        UPDATE marketing_coupon_stock SET
+            send_stock = send_stock+#{sendQty},
+            available_stock = real_stock - send_stock
+        WHERE coupon_activity_code=#{couponActivityCode} and  available_stock>=#{sendQty}
+    </update>
 </mapper>

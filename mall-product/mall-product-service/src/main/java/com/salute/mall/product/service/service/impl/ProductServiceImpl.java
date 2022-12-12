@@ -67,8 +67,8 @@ public class ProductServiceImpl implements ProductService {
     private ProductCategoryRepository productCategoryRepository;
 
     @Override
-    public ProductDetailInfoBO getProductDetail(String productCode) {
-        SaluteAssertUtil.isTrue(StringUtils.isNoneBlank(productCode), "商品编号不能为空");
+    public ProductDetailInfoBO getProductDetail(String productCode,String skuCode) {
+        SaluteAssertUtil.isTrue(StringUtils.isNotBlank(productCode), "商品编号不能为空");
         //1.查询商品基本信息和sku信息放一个流程中同时完成
         CompletableFuture<Product> baseProductFuture = CompletableFuture.supplyAsync(() -> productRepository.getByProductCode(productCode),executor);
         CompletableFuture<List<ProductSku>> skuListFuture = CompletableFuture.supplyAsync(() -> productSkuRepository.queryByProductCode(productCode),executor);
@@ -77,6 +77,8 @@ public class ProductServiceImpl implements ProductService {
         List<ProductSku> productSkus = skuListFuture.join();
         SaluteAssertUtil.isTrue(Objects.nonNull(product),productCode+"商品不存在");
         SaluteAssertUtil.isTrue(CollectionUtils.isNotEmpty(productSkus),productCode+"商品sku不存在");
+        ProductSku currentProductSku = productSkus.stream().filter(productSku -> Objects.equals(productSku.getSkuCode(), skuCode)).findFirst().orElse(null);
+        SaluteAssertUtil.isTrue(Objects.nonNull(currentProductSku),skuCode+"商品不存在");
         //2.查询库存需要依赖与skuCodeList 其他的放一个流程中完成
         List<String> skuCodeList = productSkus.stream().map(ProductSku::getSkuCode).collect(Collectors.toList());
         CompletableFuture<List<ProductStock>> productStockListFuture = CompletableFuture.supplyAsync(() -> productStockRepository.queryBySkuCodeList(skuCodeList),executor);
@@ -85,7 +87,6 @@ public class ProductServiceImpl implements ProductService {
         CompletableFuture<List<ProductTag>> productTagsFuture = CompletableFuture.supplyAsync(() ->  productTagRepository.getByProductCode(productCode),executor);
         CompletableFuture<List<ProductCategory>> categoryCompletableFuture = CompletableFuture.supplyAsync(() -> productCategoryRepository.queryByCategoryCode(Lists.newArrayList(product.getCategoryCodeFirst(), product.getCategoryCodeSecond(), product.getCategoryCodeThird())), executor);
         CompletableFutureUtil.allOf("异步获取商品附加信息异常",baseProductFuture,skuListFuture);
-        //3.构建数据
         return  buildProductDetailInfoBO(product, productSkus,
                 productStockListFuture.join(), productDetailFuture.join(),
                 productSpecificationsFuture.join(),productTagsFuture.join(),
@@ -205,6 +206,7 @@ public class ProductServiceImpl implements ProductService {
         List<String> skuImageList = productSkus.stream().map(ProductSku::getMainImage).collect(Collectors.toList());
         baseInfoDTO.setProductImageList(skuImageList);
         baseInfoDTO.setAvailableStock(100);
+        baseInfoDTO.setSkuCode(defaultSku.getSkuCode());
         return baseInfoDTO;
     }
 

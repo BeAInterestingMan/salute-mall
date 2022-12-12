@@ -18,10 +18,6 @@ import java.util.List;
 @FeignClient(value = "mall-product", contextId = "saluteProductClient", fallbackFactory = ProductDetailInfoClientFallback.class)
 public interface ProductClient {
 
-    @GetMapping("/product/customer/getProductDetail")
-    @ApiOperation("获取小程序的商品详情信息")
-    Result<ProductDetailCustomInfoResponse> getProductDetail(@NotBlank @RequestParam(name = "productCode") String productCode);
-
     @PostMapping("/product/customer/queryProductSkuDetail")
     @ApiOperation("根据skuCodeList获取sku商品详情信息")
     Result<List<ProductSkuResponse>> queryProductSkuDetail(@NotEmpty @RequestBody List<String> skuCodeList);

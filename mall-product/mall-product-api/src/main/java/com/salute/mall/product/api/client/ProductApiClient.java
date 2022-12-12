@@ -21,10 +21,6 @@ public interface ProductApiClient {
     @GetMapping("/product/api/queryProductPage")
     Result<Page<List<ProductResponse>>> queryProductPage(QueryProductPageRequest request);
 
-    @GetMapping("/product/api/getProductDetail")
-    @ApiOperation("获取小程序的商品详情信息")
-    Result<ProductInfoResponse> getProductDetail(@NotBlank @RequestParam(name = "productCode") String productCode);
-
     @GetMapping("/product/api/queryProductSkuList")
     Result<List<ProductSkuResponse>> queryProductSkuList(List<String> productCodeList);
 }

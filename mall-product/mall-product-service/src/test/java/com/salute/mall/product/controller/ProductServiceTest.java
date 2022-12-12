@@ -21,13 +21,13 @@ public class ProductServiceTest {
 
     @Test
     public void searchProduct(){
-        ProductDetailInfoBO productDetail = productService.getProductDetail("12545544787551");
+        ProductDetailInfoBO productDetail = productService.getProductDetail("12545544787551","");
         log.info("execute searchProduct info:{}", JSON.toJSONString(productDetail));
     }
 
     @Test
     public void getProductDetail(){
-        ProductDetailInfoBO productDetail = productService.getProductDetail("122343545544787551");
+        ProductDetailInfoBO productDetail = productService.getProductDetail("122343545544787551","");
         log.info("execute searchProduct info:{}", JSON.toJSONString(productDetail));
     }
 }

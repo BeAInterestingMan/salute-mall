@@ -1,9 +1,9 @@
-package com.salute.mall.mq.consumer.sync;
+package com.salute.mall.product.service.consumer;
 
 import com.salute.mall.common.core.entity.Result;
-import com.salute.mall.mq.consumer.converter.ProductDetailSyncFaceConverter;
 import com.salute.mall.product.api.client.ProductApiClient;
 import com.salute.mall.product.api.response.*;
+import com.salute.mall.product.service.converter.ProductDetailSyncFaceConverter;
 import com.salute.mall.search.api.client.ProductSearchClient;
 import com.salute.mall.search.api.pojo.request.ProductSaveEsRequest;
 import com.salute.mall.search.api.pojo.request.ProductSkuSaveEsRequest;
@@ -18,24 +18,21 @@ import java.util.Objects;
 public class ProductDetailSyncConsumer {
 
     @Autowired
-    private ProductApiClient commonApiClient;
-
-    @Autowired
     private ProductSearchClient productSearchClient;
 
     @Autowired
     private ProductDetailSyncFaceConverter productDetailSyncFaceConverter;
 
     public void execute(List<String> arrayList){
-        for (String code : arrayList) {
-            Result<ProductInfoResponse> result = commonApiClient.getProductDetail(code);
-            if(Objects.isNull(result) || Objects.equals(result.isSuccess(),Boolean.FALSE)){
-                return;
-            }
-            ProductInfoResponse productInfoResponse = result.getResult();
-            ProductSaveEsRequest request =  buildProductSaveEsRequest(productInfoResponse);
-            productSearchClient.saveEsProduct(request);
-        }
+//        for (String code : arrayList) {
+//            Result<ProductInfoResponse> result = commonApiClient.getProductDetail(code);
+//            if(Objects.isNull(result) || Objects.equals(result.isSuccess(),Boolean.FALSE)){
+//                return;
+//            }
+//            ProductInfoResponse productInfoResponse = result.getResult();
+//            ProductSaveEsRequest request =  buildProductSaveEsRequest(productInfoResponse);
+//            productSearchClient.saveEsProduct(request);
+//        }
     }
 
     private ProductSaveEsRequest buildProductSaveEsRequest( ProductInfoResponse productInfoResponse) {

@@ -36,9 +36,6 @@ public class ProductApiController {
     private ProductApiService productApiService;
 
     @Autowired
-    private ProductService productService;
-
-    @Autowired
     private ProductApiFaceConverter productApiFaceConverter;
 
     @GetMapping("queryProductPage")
@@ -57,15 +54,5 @@ public class ProductApiController {
         List<ProductSkuResponse> productResponseList = productApiFaceConverter.convertToProductSkuResponse(productSkuBaseDTOList);
         log.info("execute queryProductList req:{} resp:{}", JSON.toJSONString(productCodeList),JSON.toJSONString(productResponseList));
         return Result.success(productResponseList);
-    }
-
-    @GetMapping("getProductDetail")
-    @ApiOperation("获取小程序的商品详情信息")
-    public Result<ProductInfoResponse> getProductDetail(@NotBlank @RequestParam(name = "productCode") String productCode){
-        log.info("execute getProductBySpuCode info,req:{}", JSON.toJSONString(productCode));
-        ProductDetailInfoBO productDetail = productService.getProductDetail(productCode);
-        ProductInfoResponse response = productApiFaceConverter.convertToProductInfoResponse(productDetail);
-        log.info("execute getProductBySpuCode info,req:{},resp:{}", JSON.toJSONString(productCode), JSON.toJSONString(response));
-        return Result.success(response);
     }
 }

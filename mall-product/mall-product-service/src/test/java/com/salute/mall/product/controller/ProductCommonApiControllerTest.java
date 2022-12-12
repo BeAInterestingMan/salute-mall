@@ -33,10 +33,4 @@ public class ProductCommonApiControllerTest {
         Result<Page<List<ProductResponse>>> result = commonApiController.queryProductPage(request);
         log.info(JSON.toJSONString(result));
     }
-
-    @Test
-    public void getProductDetail(){
-        Result<ProductInfoResponse> productDetail = commonApiController.getProductDetail("1376373278360207360");
-        log.info(JSON.toJSONString(productDetail));
-    }
 }

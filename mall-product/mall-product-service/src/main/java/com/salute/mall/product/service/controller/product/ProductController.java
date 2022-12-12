@@ -46,9 +46,10 @@ public class ProductController {
 
     @GetMapping("getProductDetail")
     @ApiOperation("获取小程序的商品详情信息")
-    public Result<ProductDetailCustomInfoResponse> getProductDetail(@NotBlank @RequestParam(name = "productCode") String productCode){
+    public Result<ProductDetailCustomInfoResponse> getProductDetail(@NotBlank @RequestParam(name = "productCode") String productCode,
+                                                                    @NotBlank @RequestParam(name = "skuCode") String skuCode){
         log.info("execute getProductBySpuCode info,req:{}", JSON.toJSONString(productCode));
-        ProductDetailInfoBO productDetail = productService.getProductDetail(productCode);
+        ProductDetailInfoBO productDetail = productService.getProductDetail(productCode,skuCode);
         ProductDetailCustomInfoResponse response = productFaceConverter.convertToProductDetailInfoResponse(productDetail);
         log.info("execute getProductBySpuCode info,req:{},resp:{}", JSON.toJSONString(productCode), JSON.toJSONString(response));
         return Result.success(response);

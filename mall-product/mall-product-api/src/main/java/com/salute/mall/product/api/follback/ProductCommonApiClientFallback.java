@@ -29,12 +29,6 @@ public class ProductCommonApiClientFallback implements FallbackFactory<ProductAp
           }
 
           @Override
-          public Result<ProductInfoResponse> getProductDetail(@NotBlank String productCode) {
-              log.error("execute ProductApiClient getProductDetail error,request:{}", JSON.toJSONString(productCode),throwable);
-              return Result.error("500","服务繁忙");
-          }
-
-          @Override
           public Result<List<ProductSkuResponse>> queryProductSkuList(List<String> productCodeList) {
               log.error("execute ProductApiClient getProductDetail error,request:{}", JSON.toJSONString(productCodeList),throwable);
               return Result.error("500","服务繁忙");

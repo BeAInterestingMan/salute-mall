@@ -19,7 +19,7 @@ public interface ProductService {
      * @date 2022/11/29 20:01
      * @return com.salute.mall.product.service.pojo.bo.ProductDetailInfoBO
      */
-    ProductDetailInfoBO getProductDetail(String productCode);
+    ProductDetailInfoBO getProductDetail(String productCode,String skuCode);
 
     /**
      * @Description 小程序查询分页

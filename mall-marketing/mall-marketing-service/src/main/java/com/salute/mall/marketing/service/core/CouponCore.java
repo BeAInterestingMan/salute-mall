@@ -8,13 +8,11 @@ import com.salute.mall.marketing.service.enums.CouponUseRuleCouponTypeEnum;
 import com.salute.mall.marketing.service.enums.CouponUserRecordUseTypeEnum;
 import com.salute.mall.marketing.service.pojo.context.OrderContext;
 import com.salute.mall.marketing.service.pojo.context.OrderDetailContext;
+import com.salute.mall.marketing.service.pojo.context.ProductContext;
 import com.salute.mall.marketing.service.pojo.dto.AvailableCouponDetailInfoDTO;
 import com.salute.mall.marketing.service.pojo.dto.AvailableCouponDiscountInfoDTO;
 import com.salute.mall.marketing.service.pojo.dto.AvailableCouponInfoDTO;
-import com.salute.mall.marketing.service.pojo.entity.MarketingCouponStock;
-import com.salute.mall.marketing.service.pojo.entity.MarketingCouponUseRule;
-import com.salute.mall.marketing.service.pojo.entity.MarketingCouponUseRuleDetail;
-import com.salute.mall.marketing.service.pojo.entity.MarketingCouponUserRecord;
+import com.salute.mall.marketing.service.pojo.entity.*;
 import com.salute.mall.marketing.service.repository.MarketingCouponStockRepository;
 import com.salute.mall.marketing.service.repository.MarketingCouponUseRuleDetailRepository;
 import com.salute.mall.marketing.service.repository.MarketingCouponUseRuleRepository;
@@ -68,7 +66,7 @@ public class CouponCore {
         //2.过滤有效券实例
         List<MarketingCouponUserRecord> couponInstanceAvailableRecordList = filerCouponInstanceAvailable(couponUserRecordList);
         //3.过滤库存有效
-        List<MarketingCouponUserRecord> stockAvailableRecordList = filerMatchStockLimit(couponInstanceAvailableRecordList, couponActivityCodeList);
+        List<MarketingCouponUserRecord> stockAvailableRecordList = filerMatchUserRecordStockLimit(couponInstanceAvailableRecordList, couponActivityCodeList);
         //4.过滤使用规则符合
         return filterMatchSendRule(stockAvailableRecordList,orderContext);
 
@@ -330,6 +328,7 @@ public class CouponCore {
         }).collect(Collectors.toList());
     }
 
+
     /**
      * @Description  过滤库存不足的优惠券
      * @author liuhu
@@ -338,13 +337,13 @@ public class CouponCore {
      * @date 2022/12/9 17:28
      * @return java.util.List<com.salute.mall.marketing.service.pojo.entity.MarketingCouponUserRecord>
      */
-    private List<MarketingCouponUserRecord> filerMatchStockLimit(List<MarketingCouponUserRecord> couponUserRecordList,
-                                         List<String> couponActivityCodeList) {
+    private List<MarketingCouponUserRecord> filerMatchUserRecordStockLimit(List<MarketingCouponUserRecord> couponUserRecordList,
+                                                                 List<String> couponActivityCodeList) {
         List<MarketingCouponStock> couponStockList = couponStockRepository.queryByActivityCodeList(couponActivityCodeList);
         List<String> stockNotAvailableCouponActivityCodeList = couponStockList.stream()
-                    .filter(couponStock -> couponStock.getAvailableStock() <= 0)
-                    .map(MarketingCouponStock::getCouponActivityCode)
-                    .collect(Collectors.toList());
+                .filter(couponStock -> couponStock.getAvailableStock() <= 0)
+                .map(MarketingCouponStock::getCouponActivityCode)
+                .collect(Collectors.toList());
         if(CollectionUtils.isEmpty(stockNotAvailableCouponActivityCodeList)){
             return couponUserRecordList;
         }
@@ -352,4 +351,120 @@ public class CouponCore {
                 .filter(couponUserRecord->stockNotAvailableCouponActivityCodeList.contains(couponUserRecord.getCouponActivityCode()))
                 .collect(Collectors.toList());
     }
+
+    /**
+     * @Description 过滤优惠券活动库存不满足的
+     * @author liuhu
+     * @param marketingCouponActivityList
+     * @param couponActivityCodeList
+     * @date 2022/12/12 11:09
+     * @return java.util.List<com.salute.mall.marketing.service.pojo.entity.MarketingCouponActivity>
+     */
+    private List<MarketingCouponActivity> filerMatchCouponActivityStockAvailable(List<MarketingCouponActivity> marketingCouponActivityList,
+                                                               List<String> couponActivityCodeList) {
+
+        List<MarketingCouponStock> couponStockList = couponStockRepository.queryByActivityCodeList(couponActivityCodeList);
+        List<String> stockNotAvailableCouponActivityCodeList = couponStockList.stream()
+                .filter(couponStock -> couponStock.getAvailableStock() <= 0)
+                .map(MarketingCouponStock::getCouponActivityCode)
+                .collect(Collectors.toList());
+        if(CollectionUtils.isEmpty(stockNotAvailableCouponActivityCodeList)){
+            return marketingCouponActivityList;
+        }
+        return marketingCouponActivityList.stream()
+                .filter(couponActivity->stockNotAvailableCouponActivityCodeList.contains(couponActivity.getCouponActivityCode()))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * @Description 商品维度获取可领的优惠券活动
+     * @author liuhu
+     * @param couponActivityList
+     * @param productContext
+     * @date 2022/12/12 13:42
+     * @return void
+     */
+    public List<MarketingCouponActivity> queryAvailableCouponInstanceInProductContext(List<MarketingCouponActivity> couponActivityList,
+                                                             ProductContext productContext) {
+        List<String> couponActivityCodeList = couponActivityList.stream().map(MarketingCouponActivity::getCouponActivityCode).collect(Collectors.toList());
+        //1.过滤库存有效
+        List<MarketingCouponActivity> stockAvailableRecordList = filerMatchCouponActivityStockAvailable(couponActivityList,couponActivityCodeList);
+        //2.过滤规则不满足的
+        return filerMatchCouponActivitySendRuleAvailable(stockAvailableRecordList, productContext);
+    }
+
+    /**
+     * @Description 过滤出商品可用的优惠券活动
+     * @author liuhu
+     * @param couponActivityList
+     * @param productContext
+     * @date 2022/12/12 13:57
+     * @return java.util.List<com.salute.mall.marketing.service.pojo.entity.MarketingCouponActivity>
+     */
+    private List<MarketingCouponActivity> filerMatchCouponActivitySendRuleAvailable(List<MarketingCouponActivity> couponActivityList, ProductContext productContext) {
+        List<String> couponActivityCodeList = couponActivityList.stream().map(MarketingCouponActivity::getCouponActivityCode).distinct().collect(Collectors.toList());
+        List<MarketingCouponUseRule> couponUseRules = couponUseRuleRepository.queryByActivityCodeList(couponActivityCodeList);
+        Map<String, MarketingCouponUseRule> useRuleMap = couponUseRules.stream().collect(Collectors.toMap(MarketingCouponUseRule::getCouponActivityCode, Function.identity(), (k1, k2) -> k1));
+        List<MarketingCouponUseRuleDetail> couponUseRuleDetails = couponUseRuleDetailRepository.queryByActivityCodeList(couponActivityCodeList);
+        Map<String, List<MarketingCouponUseRuleDetail>> useRuleDetailMap = couponUseRuleDetails.stream().collect(Collectors.groupingBy(MarketingCouponUseRuleDetail::getCouponActivityCode));
+        return  couponActivityList.stream().filter(couponActivity->{
+            // 1.获取当前券实例的使用规则
+            MarketingCouponUseRule couponUseRule = useRuleMap.get(couponActivity.getCouponActivityCode());
+            // 2.获取当前券实例的使用规则详情
+            List<MarketingCouponUseRuleDetail> useRuleDetailList = useRuleDetailMap.get(couponActivity.getCouponActivityCode());
+            // 3.匹配
+            return matchProductCoupon(couponUseRule,useRuleDetailList,productContext);
+        }).collect(Collectors.toList());
+    }
+
+
+    public boolean matchProductCoupon(MarketingCouponUseRule couponUseRule,
+                                      List<MarketingCouponUseRuleDetail> useRuleDetailList,
+                                      ProductContext productContext){
+        CouponUserRecordUseTypeEnum typeEnum = CouponUserRecordUseTypeEnum.getByValue(couponUseRule.getUseType());
+        if(Objects.isNull(typeEnum)){
+            return false;
+        }
+        switch (typeEnum){
+            case ALL_PRODUCT:
+                return true;
+            case CATEGORY:
+                return matchActivityCategory(useRuleDetailList,productContext);
+            case PRODUCT:
+                return matchActivityProduct(useRuleDetailList,productContext);
+            default:
+                log.info("当前优惠券使用规则类型未配置,rule:{}", JSON.toJSONString(couponUseRule));
+                break;
+        }
+        return false;
+    }
+
+    /**
+     * @Description 指定商品
+     * @author liuhu
+     * @param useRuleDetailList
+     * @param productContext
+     * @date 2022/12/12 13:55
+     * @return boolean
+     */
+    private boolean matchActivityProduct(List<MarketingCouponUseRuleDetail> useRuleDetailList,
+                                         ProductContext productContext) {
+        Set<String> skuCodeSet = useRuleDetailList.stream().map(MarketingCouponUseRuleDetail::getSpecificCode).collect(Collectors.toSet());
+        return skuCodeSet.contains(productContext.getCategoryCodeThird());
+    }
+
+    /**
+     * @Description 指定分类
+     * @author liuhu
+     * @param useRuleDetailList
+     * @param productContext
+     * @date 2022/12/12 13:55
+     * @return boolean
+     */
+    private boolean matchActivityCategory(List<MarketingCouponUseRuleDetail> useRuleDetailList,
+                                          ProductContext productContext) {
+        Set<String> categorySet = useRuleDetailList.stream().map(MarketingCouponUseRuleDetail::getSpecificCode).collect(Collectors.toSet());
+        return categorySet.contains(productContext.getCategoryCodeThird());
+    }
+
 }

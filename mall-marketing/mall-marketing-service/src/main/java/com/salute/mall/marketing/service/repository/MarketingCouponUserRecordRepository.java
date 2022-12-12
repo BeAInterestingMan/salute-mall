@@ -3,6 +3,7 @@ package com.salute.mall.marketing.service.repository;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.salute.mall.common.core.utils.SaluteAssertUtil;
+import com.salute.mall.common.datasource.helper.MybatisBatchHelper;
 import com.salute.mall.marketing.service.enums.CouponUserRecordStatusEnum;
 import com.salute.mall.marketing.service.mapper.MarketingCouponUserRecordMapper;
 import com.salute.mall.marketing.service.pojo.dto.UseCouponServiceDTO;
@@ -22,6 +23,9 @@ public class MarketingCouponUserRecordRepository {
 
     @Autowired
     private MarketingCouponUserRecordMapper marketingCouponUserRecordMapper;
+
+    @Autowired
+    private MybatisBatchHelper mybatisBatchHelper;
 
     public MarketingCouponUserRecord getByCouponCode(String couponCode) {
         if(StringUtils.isNotBlank(couponCode)){
@@ -97,12 +101,34 @@ public class MarketingCouponUserRecordRepository {
      * @return java.util.List<com.salute.mall.marketing.service.pojo.entity.MarketingCouponUserRecord>
      */
     public List<MarketingCouponUserRecord> queryByUseCodeAndStatus(String userCode) {
-        SaluteAssertUtil.isTrue(StringUtils.isAnyBlank(userCode),"参数异常");
+        SaluteAssertUtil.isTrue(StringUtils.isNotBlank(userCode),"参数异常");
         LambdaQueryWrapper<MarketingCouponUserRecord> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(MarketingCouponUserRecord::getUserCode,userCode)
                 .eq(MarketingCouponUserRecord::getStatus, CouponUserRecordStatusEnum.RECEIVED.getValue())
                 .le(MarketingCouponUserRecord::getStartTime,new Date())
                 .ge(MarketingCouponUserRecord::getEndTime,new Date());
         return marketingCouponUserRecordMapper.selectList(queryWrapper);
+    }
+
+    /**
+     * @Description 获取用户在优惠券活动的已领券实例
+     * @author liuhu
+     * @param couponActivityCode
+     * @param userCode
+     * @date 2022/12/12 15:04
+     * @return java.util.List<com.salute.mall.marketing.service.pojo.entity.MarketingCouponUserRecord>
+     */
+    public List<MarketingCouponUserRecord> queryByActivityCodeAndUserCode(String couponActivityCode, String userCode) {
+        SaluteAssertUtil.isTrue(!StringUtils.isAnyBlank(couponActivityCode,userCode),"参数异常");
+        LambdaQueryWrapper<MarketingCouponUserRecord> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper
+                .eq(MarketingCouponUserRecord::getCouponActivityCode,couponActivityCode)
+                .eq(MarketingCouponUserRecord::getUserCode,userCode);
+        return marketingCouponUserRecordMapper.selectList(queryWrapper);
+    }
+
+    public void batchInsert(List<MarketingCouponUserRecord> couponUserRecordList) {
+        SaluteAssertUtil.isTrue(CollectionUtils.isNotEmpty(couponUserRecordList),"参数异常");
+        mybatisBatchHelper.batchInsertOrUpdate(couponUserRecordList,MarketingCouponUserRecordMapper.class,MarketingCouponUserRecordMapper::insert);
     }
 }

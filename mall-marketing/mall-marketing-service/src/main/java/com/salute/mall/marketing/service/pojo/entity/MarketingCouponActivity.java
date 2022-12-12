@@ -14,7 +14,7 @@ import java.util.Date;
 
 @Data
 @TableName("marketing_coupon_activity")
-@ApiModel(value = "")
+@ApiModel(value = "优惠券活动表")
 public class MarketingCouponActivity implements Serializable {
 
     @TableId
@@ -28,6 +28,14 @@ public class MarketingCouponActivity implements Serializable {
     @ApiModelProperty(value = "优惠券活动名称",name = "couponActivityName")
     @TableField("coupon_activity_name")
     private String couponActivityName;
+
+    @ApiModelProperty(value = "门店编号",name = "shopCode")
+    @TableField("shop_code")
+    private String shopCode;
+
+    @ApiModelProperty(value = "门店名称",name = "shopName")
+    @TableField("shop_name")
+    private String shopName;
 
     @ApiModelProperty(value = "开始时间",name = "startTime")
     @TableField("start_time")
@@ -49,9 +57,9 @@ public class MarketingCouponActivity implements Serializable {
     @TableField("use_type")
     private String useType;
 
-    @ApiModelProperty(value = "使用类型  满减券  无门槛",name = "coupnType")
-    @TableField("coupn_type")
-    private String coupnType;
+    @ApiModelProperty(value = "使用类型  满减券  无门槛",name = "couponType")
+    @TableField("coupon_type")
+    private String couponType;
 
     @ApiModelProperty(value = "状态 ON上架 DOWN下架",name = "status")
     @TableField("status")
