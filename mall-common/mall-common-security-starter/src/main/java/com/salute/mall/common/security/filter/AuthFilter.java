@@ -10,11 +10,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.util.Base64Utils;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,15 +46,30 @@ public class AuthFilter implements Filter {
             HttpResponseUtil.responseToWeb(Result.error("401","Unauthorized"));
             return;
         }
+        //判断是会员还是后台用户 会员只需要校验是否登录   后台用户需要校验权限
+        String userTypeStr = Base64Utils.encodeToString("MEMBER".getBytes(StandardCharsets.UTF_8));
         try {
-            //3.校验token
+            // 3.会员校验
+            if (accessToken.contains(userTypeStr)) {
+                if (validMember(accessToken)) {
+                    filterChain.doFilter(request, response);
+                    return;
+                }
+                HttpResponseUtil.responseToWeb(Result.error("401", "Unauthorized"));
+                return;
+            }
+            // 4.PC后台用户校验
             AuthUserContext.setUser(new AuthUserEntity());
-            //4.校验角色权限(用户的角色是否设置了改访问权限)
-            filterChain.doFilter(request, response);
-        }finally {
+        } finally {
             AuthUserContext.clear();
         }
     }
+
+    public boolean validMember(String accessToken){
+        return true;
+    }
+
+
 
     public boolean isWhiteList(String uri){
         List<String> whiteUrlList = Arrays.stream(mallSecurityProperties.getWhiteUrlList().split(",")).collect(Collectors.toList());
@@ -63,6 +80,11 @@ public class AuthFilter implements Filter {
                 return true;
             }
         }
+        return false;
+    }
+
+    public boolean checkPermission(){
+
         return false;
     }
 

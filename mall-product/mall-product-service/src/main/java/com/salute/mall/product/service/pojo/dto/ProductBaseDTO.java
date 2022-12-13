@@ -128,7 +128,6 @@ public class ProductBaseDTO implements Serializable {
     @ApiModelProperty(value = "图片集合",name = "skuImageList")
     private List<String> productImageList;
 
-
     @ApiModelProperty(value = "可用库存",name = "availableStock")
     private Integer availableStock;
 

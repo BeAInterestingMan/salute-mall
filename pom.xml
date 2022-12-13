@@ -15,6 +15,7 @@
         <module>mall-auth</module>
         <module>mall-user</module>
         <module>mall-ability-center</module>
+        <module>mall-member</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

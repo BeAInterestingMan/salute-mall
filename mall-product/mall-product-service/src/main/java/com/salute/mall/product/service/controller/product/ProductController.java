@@ -7,13 +7,11 @@ import com.salute.mall.common.core.entity.Result;
 import com.salute.mall.product.api.response.ProductCustomInfoResponse;
 import com.salute.mall.product.api.response.ProductDetailCustomInfoResponse;
 import com.salute.mall.product.api.response.ProductSkuResponse;
+import com.salute.mall.product.api.response.ProductSpecificationResponse;
 import com.salute.mall.product.service.converter.ProductFaceConverter;
 import com.salute.mall.product.service.pojo.bo.ProductDetailInfoBO;
 import com.salute.mall.product.service.pojo.bo.ProductListInfoBO;
-import com.salute.mall.product.service.pojo.dto.ProductAssociatedDTO;
-import com.salute.mall.product.service.pojo.dto.ProductAssociatedQueryDTO;
-import com.salute.mall.product.service.pojo.dto.ProductCustomerInfoQueryDTO;
-import com.salute.mall.product.service.pojo.dto.ProductSkuDTO;
+import com.salute.mall.product.service.pojo.dto.*;
 import com.salute.mall.product.service.pojo.request.ProductAssociatedRequest;
 import com.salute.mall.product.service.pojo.request.ProductCustomerInfoRequest;
 import com.salute.mall.product.service.pojo.response.ProductAssociatedResponse;
@@ -30,6 +28,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/product/customer/")
@@ -50,9 +49,44 @@ public class ProductController {
                                                                     @NotBlank @RequestParam(name = "skuCode") String skuCode){
         log.info("execute getProductBySpuCode info,req:{}", JSON.toJSONString(productCode));
         ProductDetailInfoBO productDetail = productService.getProductDetail(productCode,skuCode);
-        ProductDetailCustomInfoResponse response = productFaceConverter.convertToProductDetailInfoResponse(productDetail);
+        ProductDetailCustomInfoResponse response = buildProductDetailResponse(productDetail);
         log.info("execute getProductBySpuCode info,req:{},resp:{}", JSON.toJSONString(productCode), JSON.toJSONString(response));
         return Result.success(response);
+    }
+
+    private ProductDetailCustomInfoResponse buildProductDetailResponse(ProductDetailInfoBO productDetail) {
+        ProductDetailCustomInfoResponse response = new ProductDetailCustomInfoResponse();
+        ProductCustomInfoResponse customInfoResponse = new ProductCustomInfoResponse();
+        ProductBaseDTO detail = productDetail.getProductDetail();
+        List<ProductSkuDTO> productSkuList = productDetail.getProductSkuList();
+         List<ProductSkuResponse> skuResponseList = productSkuList.stream().map(v -> {
+            ProductSkuResponse skuResponse = new ProductSkuResponse();
+            skuResponse.setSkuId(v.getSkuCode());
+            skuResponse.setQuantity(v.getAvailableStock());
+            List<ProductSkuSpecificationDTO> specificationList = v.getSkuSpecificationList();
+            List<ProductSpecificationResponse> responses = specificationList.stream().map(k -> {
+                ProductSpecificationResponse specificationResponse = new ProductSpecificationResponse();
+                specificationResponse.setSpecName(k.getSpecificationName());
+                specificationResponse.setSpecValue(k.getSpecificationValue());
+                return specificationResponse;
+            }).collect(Collectors.toList());
+            skuResponse.setSpecValues(responses);
+            return skuResponse;
+        }).collect(Collectors.toList());
+        response.setSpecs(skuResponseList);
+        customInfoResponse.setGoodsId(detail.getProductCode());
+        customInfoResponse.setPromotionFlag(false);
+        customInfoResponse.setGoodsName(detail.getProductName());
+        customInfoResponse.setId(detail.getSkuCode());
+        customInfoResponse.setSellingPoint("测试卖点");
+        customInfoResponse.setViewCount(100);
+        customInfoResponse.setBuyCount(200);
+        customInfoResponse.setStoreId("sasaxaxa");
+        customInfoResponse.setSalesModel("RETAIL");
+        customInfoResponse.setGoodsType("PHYSICAL_GOODS");
+        customInfoResponse.setGoodsGalleryList(detail.getProductImageList());
+        customInfoResponse.setSpecList(Lists.newArrayList());
+        return response;
     }
 
     @PostMapping("queryProductSkuDetail")

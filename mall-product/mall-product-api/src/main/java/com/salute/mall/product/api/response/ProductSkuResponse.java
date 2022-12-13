@@ -4,7 +4,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -15,42 +14,12 @@ import java.util.List;
 @Data
 public class ProductSkuResponse implements Serializable {
 
-    @ApiModelProperty(value = "sku名称",name = "skuName")
-    private String skuName;
+    @ApiModelProperty(value = "商品skuId")
+    private String skuId;
 
-    @ApiModelProperty(value = "sku编码",name = "skuCode")
-    private String skuCode;
+    @ApiModelProperty(value = "库存")
+    private Integer quantity;
 
-    @ApiModelProperty(value = "门店名称",name = "shopName")
-    private String shopName;
-
-    @ApiModelProperty(value = "门店编码",name = "shopCode")
-    private String shopCode;
-
-    @ApiModelProperty(value = "商品编码",name = "productCode")
-    private String productCode;
-
-    @ApiModelProperty(value = "是否是默认sku  NO-否 YES-是",name = "productCode")
-    private String defaultSkuFlag;
-
-    @ApiModelProperty(value = "售卖价",name = "salePrice")
-    private BigDecimal salePrice;
-
-    @ApiModelProperty(value = "市场价",name = "marketPrice")
-    private BigDecimal marketPrice;
-
-    @ApiModelProperty(value = "成本价",name = "costPrice")
-    private BigDecimal costPrice;
-
-    @ApiModelProperty(value = "可用库存",name = "availableStock")
-    private Integer availableStock;
-
-    @ApiModelProperty(value = "状态",name = "status")
-    private String status;
-
-    @ApiModelProperty(value = "排序",name = "sort")
-    private Integer sort;
-
-    @ApiModelProperty(value = "sku规格信息",name = "skuSpecificationList")
-    private List<ProductSkuSpecificationResponse> skuSpecificationList;
+    @ApiModelProperty(value = "sku规格信息",name = "specValues")
+    private List<ProductSpecificationResponse> specValues;
 }

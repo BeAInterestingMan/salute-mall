@@ -5,20 +5,16 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 @Data
 public class ProductDetailCustomInfoResponse implements Serializable {
 
      @ApiModelProperty(value = "商品基本信息",name = "productDetail")
-     private ProductCustomInfoResponse productDetail;
+     private ProductCustomInfoResponse data;
 
-     @ApiModelProperty(value = "商品sku信息",name = "productSkuList")
-     private List<ProductSkuResponse> productSkuList;
+     @ApiModelProperty(value = "商品sku信息",name = "specs")
+     private List<ProductSkuResponse> specs;
 
-     @ApiModelProperty(value = "商品规格信息",name = "productSpecificationList")
-     private List<ProductSpecificationResponse> productSpecificationList;
-
-     @ApiModelProperty(value = "商品标签信息",name = "productTagBaseList")
-     private List<ProductTagResponse> productTagBaseList;
-
+     private Map<String, Object> promotionMap;
 }
