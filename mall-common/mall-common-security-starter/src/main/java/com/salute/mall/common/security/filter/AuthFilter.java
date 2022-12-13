@@ -1,5 +1,6 @@
 package com.salute.mall.common.security.filter;
 
+import com.alibaba.fastjson.JSON;
 import com.salute.mall.common.core.entity.Result;
 import com.salute.mall.common.redis.helper.RedisHelper;
 import com.salute.mall.common.security.context.AuthUserContext;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -53,9 +55,10 @@ public class AuthFilter implements Filter {
         //判断是会员还是后台用户 会员只需要校验是否登录   后台用户需要校验权限
         String userTypeStr = Base64Utils.encodeToString("MEMBER".getBytes(StandardCharsets.UTF_8));
         try {
+            AuthUserEntity userEntity = getUser(userTypeStr, accessToken);
             // 3.会员校验
             if (accessToken.contains(userTypeStr)) {
-                if (validMember(accessToken)) {
+                if (Objects.nonNull(userEntity)) {
                     filterChain.doFilter(request, response);
                     return;
                 }
@@ -69,8 +72,12 @@ public class AuthFilter implements Filter {
         }
     }
 
-    public boolean validMember(String accessToken){
-        return true;
+    public AuthUserEntity getUser(String userTypeStr,String accessToken){
+        String redisTokenInfo = (String) redisHelper.get(userTypeStr + accessToken);
+        if(StringUtils.isBlank(redisTokenInfo)){
+            return null;
+        }
+        return JSON.parseObject(redisTokenInfo,AuthUserEntity.class);
     }
 
 
