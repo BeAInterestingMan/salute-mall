@@ -1,6 +1,7 @@
 package com.salute.mall.common.security.filter;
 
 import com.salute.mall.common.core.entity.Result;
+import com.salute.mall.common.redis.helper.RedisHelper;
 import com.salute.mall.common.security.context.AuthUserContext;
 import com.salute.mall.common.security.dto.AuthUserEntity;
 import com.salute.mall.common.security.properties.MallSecurityProperties;
@@ -28,6 +29,9 @@ public class AuthFilter implements Filter {
 
     @Autowired
     private MallSecurityProperties mallSecurityProperties;
+
+    @Autowired
+    private RedisHelper redisHelper;
 
     public static final String  AUTHORIZATION = "Authorization";
 

@@ -16,6 +16,7 @@
         <module>mall-user</module>
         <module>mall-ability-center</module>
         <module>mall-member</module>
+        <module>mall-cms</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -44,6 +45,7 @@
         <xxl.job.version>2.3.0</xxl.job.version>
         <jjwt.version>0.9.1</jjwt.version>
         <redission.version>3.16.8</redission.version>
+        <minio.version>8.3.4</minio.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -155,6 +157,12 @@
                 <groupId>org.redisson</groupId>
                 <artifactId>redisson</artifactId>
                 <version>${redission.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.minio</groupId>
+                <artifactId>minio</artifactId>
+                <version>${minio.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
