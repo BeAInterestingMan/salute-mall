@@ -4,6 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.salute.mall.common.core.entity.Page;
 import com.salute.mall.common.core.entity.Result;
+import com.salute.mall.common.redis.helper.RedisHelper;
+import com.salute.mall.common.security.context.AuthUserContext;
+import com.salute.mall.common.security.dto.AuthUserEntity;
 import com.salute.mall.product.api.response.ProductCustomInfoResponse;
 import com.salute.mall.product.api.response.ProductDetailCustomInfoResponse;
 import com.salute.mall.product.api.response.ProductSkuResponse;
@@ -41,6 +44,9 @@ public class ProductController {
 
     @Autowired
     private ProductFaceConverter productFaceConverter;
+
+    @Autowired
+    private RedisHelper redisHelper;
 
 
     @GetMapping("getProductDetail")

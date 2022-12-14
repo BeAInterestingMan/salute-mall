@@ -6,6 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 public class JWTUtil {
@@ -13,11 +14,11 @@ public class JWTUtil {
     public static final String SECRET = "ukc8BDbRigUDaY6pZFfWus2jZWLPHO";
 
 
-    public String generateToken(Map<String, Object> claims) {
+    public static String generateToken(Map<String, Object> claims) {
         return doGenerateToken(claims, (String) claims.get("userName"));
     }
 
-    private String doGenerateToken(Map<String, Object> claims, String username) {
+    private static String doGenerateToken(Map<String, Object> claims, String username) {
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(username)
@@ -26,7 +27,7 @@ public class JWTUtil {
                 .compact();
     }
 
-    public Claims getAllClaimsFromToken(String token) {
+    public static Claims getAllClaimsFromToken(String token) {
         return Jwts.parser()
                 .setSigningKey(Base64.getEncoder().encodeToString(SECRET.getBytes()))
                 .parseClaimsJws(token)
