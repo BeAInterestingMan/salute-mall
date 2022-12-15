@@ -1,5 +1,6 @@
-package com.salute.mall.common.core.utils;
+package com.salute.mall.common.security.utils;
 
+import com.salute.mall.common.security.dto.AuthUserEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -13,9 +14,10 @@ public class JWTUtil {
 
     public static final String SECRET = "ukc8BDbRigUDaY6pZFfWus2jZWLPHO";
 
-
-    public static String generateToken(Map<String, Object> claims) {
-        return doGenerateToken(claims, (String) claims.get("userName"));
+    public static String generateToken(AuthUserEntity authUserEntity) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("user",authUserEntity);
+        return doGenerateToken(claims, authUserEntity.getUserName());
     }
 
     private static String doGenerateToken(Map<String, Object> claims, String username) {
@@ -34,7 +36,7 @@ public class JWTUtil {
                 .getBody();
     }
 
-    public String getUsernameFromToken(String token) {
-        return getAllClaimsFromToken(token).getSubject();
+    public static AuthUserEntity getUserInfoFromToken(String token) {
+        return (AuthUserEntity)getAllClaimsFromToken(token).get("user");
     }
 }

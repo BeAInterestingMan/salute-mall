@@ -34,6 +34,10 @@ public class Member implements Serializable {
     @TableField("member_name")
     private String memberName;
 
+    @ApiModelProperty(value = "密码",name = "password")
+    @TableField("password")
+    private String password;
+
     @ApiModelProperty(value = "昵称",name = "nickName")
     @TableField("nick_name")
     private String nickName;

@@ -3,6 +3,7 @@ package com.salute.mall.common.security.filter;
 import com.alibaba.fastjson.JSON;
 import com.salute.mall.common.core.entity.Result;
 import com.salute.mall.common.redis.helper.RedisHelper;
+import com.salute.mall.common.security.constants.SecurityConstants;
 import com.salute.mall.common.security.context.AuthUserContext;
 import com.salute.mall.common.security.dto.AuthUserEntity;
 import com.salute.mall.common.security.dto.AuthUserPermissionEntity;
@@ -39,8 +40,6 @@ public class AuthFilter implements Filter {
     @Autowired
     private RedisHelper redisHelper;
 
-    public static final String  AUTHORIZATION = "Authorization";
-
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
@@ -57,7 +56,7 @@ public class AuthFilter implements Filter {
             return;
         }
         //3.获取accessToken
-        String accessToken = request.getHeader(AUTHORIZATION);
+        String accessToken = request.getHeader(SecurityConstants.AUTHORIZATION);
         if(StringUtils.isBlank(accessToken)){
             HttpResponseUtil.responseToWeb(Result.error("401","请先登陆"));
             return;
@@ -89,7 +88,7 @@ public class AuthFilter implements Filter {
      * @return com.salute.mall.common.security.dto.AuthUserEntity
      */
     public AuthUserEntity getUser(String accessToken){
-        String redisTokenInfo = (String) redisHelper.hGet("MALL_TOKEN",accessToken);
+        String redisTokenInfo = (String) redisHelper.hGet(SecurityConstants.ACCESS_TOKEN_PREFIX,accessToken);
         if(StringUtils.isBlank(redisTokenInfo)){
             return null;
         }
@@ -133,7 +132,7 @@ public class AuthFilter implements Filter {
         if(!accessToken.contains(pc)){
             return true;
         }
-        String redisPermission = (String) redisHelper.hGet("MALL_PERMISSION",authUserEntity.getUserCode());
+        String redisPermission = (String) redisHelper.hGet(SecurityConstants.PERMISSION_PREFIX,authUserEntity.getUserCode());
         if(StringUtils.isBlank(redisPermission)){
             return false;
         }
