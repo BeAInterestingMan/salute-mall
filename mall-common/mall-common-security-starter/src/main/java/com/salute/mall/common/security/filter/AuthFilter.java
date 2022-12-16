@@ -44,11 +44,6 @@ public class AuthFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
-        // 1.未开启权限验证
-        if(Objects.equals(mallSecurityProperties.isEnableSecurity(),Boolean.FALSE)){
-            filterChain.doFilter(request, response);
-            return;
-        }
         //2.校验请求是否白名单  直接放行
         String uri = request.getRequestURI();
         if(isWhiteList(uri)){

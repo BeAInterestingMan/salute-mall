@@ -2,14 +2,13 @@ package com.salute.mall.marketing.service.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.salute.mall.common.core.entity.Result;
-import com.salute.mall.marketing.api.request.PrepareOrderRequest;
-import com.salute.mall.marketing.api.request.QueryProductCouponInfoRequest;
-import com.salute.mall.marketing.api.request.ReceiveCouponRequest;
-import com.salute.mall.marketing.api.request.UseCouponRequest;
+import com.salute.mall.marketing.api.request.*;
 import com.salute.mall.marketing.api.response.PrepareOrderResponse;
 import com.salute.mall.marketing.api.response.QueryProductCouponInfoResponse;
+import com.salute.mall.marketing.api.response.SubmitOrderResponse;
 import com.salute.mall.marketing.service.converter.MarketingApiFaceConverter;
 import com.salute.mall.marketing.service.pojo.dto.*;
+import com.salute.mall.marketing.service.pojo.dto.discount.SubmitOrderResultDTO;
 import com.salute.mall.marketing.service.service.MarketingApiService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -84,6 +83,17 @@ public class MarketingApiController {
         PrepareOrderDTO orderDTO = marketingApiService.prepareOrder(dto);
         PrepareOrderResponse response = marketingApiFaceConverter.convertToPrepareOrderResponse(orderDTO);
         log.info("execute prepareOrder info,req:{},resp:{}", JSON.toJSONString(request), JSON.toJSONString(response));
+        return Result.success(response);
+    }
+
+    @PostMapping("submitOrder")
+    @ApiOperation("提交订单使用优惠券、计算优惠分摊")
+    public Result<SubmitOrderResponse> submitOrder(@Valid SubmitOrderRequest request){
+        log.info("execute submitOrder info,req:{}", JSON.toJSONString(request));
+        SubmitOrderDTO dto = marketingApiFaceConverter.convertToSubmitOrderDTO(request);
+        SubmitOrderResultDTO orderResultDTO = marketingApiService.submitOrder(dto);
+        SubmitOrderResponse response = marketingApiFaceConverter.convertToSubmitOrderResponse(orderResultDTO);
+        log.info("execute submitOrder info,req:{},resp:{}", JSON.toJSONString(request), JSON.toJSONString(response));
         return Result.success(response);
     }
 }

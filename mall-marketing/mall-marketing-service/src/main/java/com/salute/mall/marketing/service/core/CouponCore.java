@@ -9,9 +9,8 @@ import com.salute.mall.marketing.service.enums.CouponUserRecordUseTypeEnum;
 import com.salute.mall.marketing.service.pojo.context.OrderContext;
 import com.salute.mall.marketing.service.pojo.context.OrderDetailContext;
 import com.salute.mall.marketing.service.pojo.context.ProductContext;
-import com.salute.mall.marketing.service.pojo.dto.AvailableCouponDetailInfoDTO;
-import com.salute.mall.marketing.service.pojo.dto.AvailableCouponDiscountInfoDTO;
-import com.salute.mall.marketing.service.pojo.dto.AvailableCouponInfoDTO;
+import com.salute.mall.marketing.service.pojo.dto.*;
+import com.salute.mall.marketing.service.pojo.dto.discount.SubmitOrderResultDTO;
 import com.salute.mall.marketing.service.pojo.entity.*;
 import com.salute.mall.marketing.service.repository.MarketingCouponStockRepository;
 import com.salute.mall.marketing.service.repository.MarketingCouponUseRuleDetailRepository;
@@ -24,10 +23,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -76,18 +72,14 @@ public class CouponCore {
      * @Description 计算优惠券的优惠金额
      * @author liuhu
      * @param availableCouponInfoDTOS
-     * @param orderContext
      * @date 2022/12/10 13:06
      * @return java.util.List<com.salute.mall.marketing.service.pojo.dto.AvailableCouponDiscountInfoDTO>
      */
     public List<AvailableCouponDiscountInfoDTO> queryCouponInstanceDiscountInOrderContext(List<AvailableCouponInfoDTO> availableCouponInfoDTOS,
-                                                                         OrderContext orderContext){
-        SaluteAssertUtil.isTrue(CollectionUtils.isNotEmpty(availableCouponInfoDTOS) && Objects.nonNull(orderContext),"参数异常");
+                                                                                          BigDecimal orderOriginTotalAmount){
+        SaluteAssertUtil.isTrue(CollectionUtils.isNotEmpty(availableCouponInfoDTOS) && Objects.nonNull(orderOriginTotalAmount),"参数异常");
         //1.订单原始总金额
-        BigDecimal orderOriginTotalAmount = orderContext.getOrderDetailContextList().stream()
-                .map(v -> new BigDecimal(v.getBuyQty()).multiply(v.getSalePrice()))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-       return   availableCouponInfoDTOS.stream().map(infoDTO -> {
+       return  availableCouponInfoDTOS.stream().map(infoDTO -> {
              AvailableCouponDiscountInfoDTO dto = new AvailableCouponDiscountInfoDTO();
              //2.可用优惠券的商品满足总金额
              BigDecimal productTotalAmount = infoDTO.getAvailableSkuList().stream().map(v -> new BigDecimal(v.getBuyCount()).multiply(v.getSalePrice())).reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -467,4 +459,136 @@ public class CouponCore {
         return categorySet.contains(productContext.getCategoryCodeThird());
     }
 
+    /**
+     * @Description 计算分摊
+     * @author liuhu
+     * @param userRecord
+     * @param orderContext
+     * @date 2022/12/16 17:40
+     * @return com.salute.mall.marketing.service.pojo.dto.discount.SubmitOrderResultDTO
+     */
+    public SubmitOrderResultDTO calculationApportionment(MarketingCouponUserRecord userRecord,
+                                                         OrderContext orderContext) {
+        //1.判断优惠券是否可用
+        List<AvailableCouponInfoDTO> availableCouponInfoDTOS = queryAvailableCouponInstanceInOrderContext(Lists.newArrayList(userRecord), orderContext);
+        //2.获取当前优惠券在订单维度的优惠信息
+        List<AvailableCouponDiscountInfoDTO> discountInfoDTOS = queryCouponInstanceDiscountInOrderContext(availableCouponInfoDTOS, orderContext.getOrderOriginTotalAmount());
+        AvailableCouponInfoDTO couponInfoDTO = availableCouponInfoDTOS.get(0);
+        AvailableCouponDiscountInfoDTO discountInfoDTO = discountInfoDTOS.get(0);
+        //3获得商品维度的优惠分摊信息
+        List<ProductDiscountPreferentialDTO> discountPreferentialDTOS = calculationProductDiscountPreferentialDTOList(couponInfoDTO, discountInfoDTO);
+        //4.保存分摊记录
+
+        //5.返回分摊信息
+         return null;
+    }
+
+    /**
+     * @Description 获得参与优惠券商品的优惠分摊
+     * @author liuhu
+     * @param couponInfoDTO
+     * @param discountInfoDTO
+     * @date 2022/12/16 16:17
+     * @return java.util.List<com.salute.mall.marketing.service.pojo.dto.ProductDiscountPreferentialDTO>
+     */
+    private List<ProductDiscountPreferentialDTO> calculationProductDiscountPreferentialDTOList(AvailableCouponInfoDTO couponInfoDTO,
+                                                                                               AvailableCouponDiscountInfoDTO discountInfoDTO) {
+        List<ProductDiscountPreferentialDTO> preferentialDTOList = new ArrayList<>();
+        BigDecimal couponDiscountAmount = discountInfoDTO.getCouponDiscountAmount();
+        //已经优惠的金额
+        BigDecimal discountAmount = new BigDecimal(0);
+        //商品的优惠金额
+        BigDecimal productDiscountAmount =new BigDecimal(0);
+        for (int i = 0; i < couponInfoDTO.getAvailableSkuList().size(); i++) {
+            AvailableCouponDetailInfoDTO infoDTO = couponInfoDTO.getAvailableSkuList().get(i);
+            BigDecimal productAmount = new BigDecimal(infoDTO.getBuyCount()).multiply(infoDTO.getSalePrice());
+            productDiscountAmount = productAmount.divide(couponDiscountAmount, 2, BigDecimal.ROUND_DOWN).multiply(couponDiscountAmount);
+            discountAmount = discountAmount.add(productDiscountAmount);
+            // 最后一位 减法兜底
+            if(i == couponInfoDTO.getAvailableSkuList().size()-1){
+                productDiscountAmount = couponDiscountAmount.subtract(discountAmount);
+            }
+            //商品分摊金额已经大于商品的总金额了
+            // 类似 商品A 1分钱，商品B 5分钱 优惠6分钱。按比例计算后 商品A分摊为 0分，商品B分摊为6分
+            if(productDiscountAmount.compareTo(productAmount)>0){
+                productDiscountAmount = productAmount;
+            }
+            ProductDiscountPreferentialDTO dto =  buildProductDiscountPreferentialDTO(infoDTO,productDiscountAmount,productAmount);
+            preferentialDTOList.add(dto);
+        }
+        // 2.修正数据 上一步会导致 优惠总金额和所有商品累计优惠金额对不上
+        fixProductDiscountPreferentialDTOList(preferentialDTOList,couponDiscountAmount);
+        // 3.校验金额正确信息
+        checkPreferentialAvailable(preferentialDTOList,couponInfoDTO.getCouponAmount());
+        return preferentialDTOList;
+    }
+
+    /**
+     * @Description 分摊金额校验
+     * @author liuhu
+     * @param preferentialDTOList
+     * @param couponAmount
+     * @date 2022/12/16 17:15
+     * @return void
+     */
+    private void checkPreferentialAvailable(List<ProductDiscountPreferentialDTO> preferentialDTOList, BigDecimal couponAmount) {
+        for (ProductDiscountPreferentialDTO dto : preferentialDTOList) {
+            SaluteAssertUtil.isTrue(dto.getTotalAmount().compareTo(dto.getTotalPreferentialAmount()) >= 0, "商品优惠总金额应该小于等于商品总金额");
+        }
+        BigDecimal totalPreferentialAmount = preferentialDTOList.stream().map(ProductDiscountPreferentialDTO::getTotalPreferentialAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+        SaluteAssertUtil.isTrue(couponAmount.compareTo(totalPreferentialAmount) >= 0, "优惠券金额应大于等于总优惠分摊金额");
+    }
+
+    /**
+     * @Description 修正异常情况金额
+     * @author liuhu
+     * @param preferentialDTOList
+     * @param couponDiscountAmount
+     * @date 2022/12/16 17:10
+     * @return void
+     */
+    private void fixProductDiscountPreferentialDTOList(List<ProductDiscountPreferentialDTO> preferentialDTOList,
+                                                       BigDecimal couponDiscountAmount) {
+        BigDecimal alreadyDiscountAmount = preferentialDTOList.stream().map(ProductDiscountPreferentialDTO::getTotalPreferentialAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+        //未正确分摊需要修复的优惠金额
+        BigDecimal needFixDiscountAmount = couponDiscountAmount.subtract(alreadyDiscountAmount);
+        if (needFixDiscountAmount.compareTo(BigDecimal.ZERO) == 0) {
+            return;
+        }
+        //商品A 1分钱，商品B 5分钱 优惠6分钱 商品A分摊为 0分，商品B分摊为6分
+        for (ProductDiscountPreferentialDTO dto : preferentialDTOList) {
+            SaluteAssertUtil.isTrue(dto.getTotalAmount().compareTo(dto.getTotalPreferentialAmount()) > 0, "商品优惠总金额大于商品总金额");
+            if (dto.getTotalAmount().compareTo(dto.getTotalPreferentialAmount()) < 0) {
+                boolean canFix = needFixDiscountAmount.compareTo(dto.getTotalAmount()) >= 0;
+                if (canFix) {
+                    dto.setTotalPreferentialAmount(dto.getTotalAmount());
+                    needFixDiscountAmount = needFixDiscountAmount.subtract(dto.getTotalAmount());
+                }
+            }
+            SaluteAssertUtil.isTrue(needFixDiscountAmount.compareTo(BigDecimal.ZERO) >= 0, "计算金额异常");
+        }
+
+    }
+
+    /**
+     * @Description 获取商品优惠分摊
+     * @author liuhu
+     * @param infoDTO
+     * @param productDiscountAmount
+     * @param totalAmount
+     * @date 2022/12/16 16:29
+     * @return com.salute.mall.marketing.service.pojo.dto.ProductDiscountPreferentialDTO
+     */
+    private ProductDiscountPreferentialDTO buildProductDiscountPreferentialDTO(AvailableCouponDetailInfoDTO infoDTO,
+                                                                               BigDecimal productDiscountAmount,
+                                                                               BigDecimal totalAmount) {
+        ProductDiscountPreferentialDTO dto = new ProductDiscountPreferentialDTO();
+        dto.setCouponCode(dto.getCouponCode());
+        dto.setSkuCode(infoDTO.getSkuCode());
+        dto.setSalePrice(infoDTO.getSalePrice());
+        dto.setBuyCount(infoDTO.getBuyCount());
+        dto.setTotalPreferentialAmount(productDiscountAmount);
+        dto.setTotalAmount(totalAmount);
+        return dto;
+    }
 }

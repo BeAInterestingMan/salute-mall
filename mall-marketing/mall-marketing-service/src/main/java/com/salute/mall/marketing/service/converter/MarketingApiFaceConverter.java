@@ -1,12 +1,11 @@
 package com.salute.mall.marketing.service.converter;
 
-import com.salute.mall.marketing.api.request.PrepareOrderRequest;
-import com.salute.mall.marketing.api.request.QueryProductCouponInfoRequest;
-import com.salute.mall.marketing.api.request.ReceiveCouponRequest;
-import com.salute.mall.marketing.api.request.UseCouponRequest;
+import com.salute.mall.marketing.api.request.*;
 import com.salute.mall.marketing.api.response.PrepareOrderResponse;
 import com.salute.mall.marketing.api.response.QueryProductCouponInfoResponse;
+import com.salute.mall.marketing.api.response.SubmitOrderResponse;
 import com.salute.mall.marketing.service.pojo.dto.*;
+import com.salute.mall.marketing.service.pojo.dto.discount.SubmitOrderResultDTO;
 import org.mapstruct.Mapper;
 
 import java.util.List;
@@ -24,4 +23,8 @@ public interface MarketingApiFaceConverter {
     List<QueryProductCouponInfoResponse> convertToQueryProductCouponInfoResponse(List<ProductCouponInfoDTO> productCouponInfoDTOS);
 
     ReceiveCouponDTO convertToReceiveCouponDTO(ReceiveCouponRequest request);
+
+    SubmitOrderDTO convertToSubmitOrderDTO(SubmitOrderRequest request);
+
+    SubmitOrderResponse convertToSubmitOrderResponse(SubmitOrderResultDTO orderResultDTO);
 }

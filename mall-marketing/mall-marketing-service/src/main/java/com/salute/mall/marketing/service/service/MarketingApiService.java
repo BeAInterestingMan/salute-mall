@@ -1,6 +1,7 @@
 package com.salute.mall.marketing.service.service;
 
 import com.salute.mall.marketing.service.pojo.dto.*;
+import com.salute.mall.marketing.service.pojo.dto.discount.SubmitOrderResultDTO;
 
 import java.util.List;
 
@@ -22,6 +23,15 @@ public interface MarketingApiService {
       * @return com.salute.mall.marketing.service.pojo.dto.PrepareOrderDTO
       */
      PrepareOrderDTO prepareOrder(PrepareOrderServiceDTO dto);
+
+    /**
+     * @Description 提交订单计算分摊
+     * @author liuhu
+     * @param dto
+     * @date 2022/12/10 13:24
+     * @return com.salute.mall.marketing.service.pojo.dto.PrepareOrderDTO
+     */
+    SubmitOrderResultDTO submitOrder(SubmitOrderDTO dto);
     /**
      * @Description 获取商品维度可参与优惠券活动
      * @author liuhu

@@ -10,6 +10,4 @@ import java.io.Serializable;
 public class MallSecurityProperties implements Serializable {
 
     private String whiteUrlList;
-
-    private boolean enableSecurity=true;
 }
