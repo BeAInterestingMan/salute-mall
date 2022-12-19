@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.salute.mall.marketing.service.mapper.MarketingPreferentialRecordMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.salute.mall.marketing.service.pojo.entity.MarketingPreferentialRecord" id="baseMap">
+        <result property="id"  column="id"/>
+        <result property="preferentialRecordCode"  column="preferential_record_code"/>
+        <result property="preferentialType"  column="preferential_type"/>
+        <result property="preferentialCode"  column="preferential_code"/>
+        <result property="preferentialName"  column="preferential_name"/>
+        <result property="saleOrderCode"  column="sale_order_code"/>
+        <result property="skuCode"  column="sku_code"/>
+        <result property="skuName"  column="sku_name"/>
+        <result property="buyQty"  column="buy_qty"/>
+        <result property="preferentialStatus"  column="preferential_status"/>
+        <result property="salePrice"  column="sale_price"/>
+        <result property="totalOriginAmount"  column="total_origin_amount"/>
+        <result property="totalPreferentialAmount"  column="total_preferential_amount"/>
+        <result property="totalPreferentialAfterAmount"  column="total_preferential_after_amount"/>
+        <result property="sort"  column="sort"/>
+        <result property="version"  column="version"/>
+        <result property="creator"  column="creator"/>
+        <result property="creatorCode"  column="creator_code"/>
+        <result property="createdTime"  column="created_time"/>
+        <result property="modifier"  column="modifier"/>
+        <result property="modifierCode"  column="modifier_code"/>
+        <result property="modifiedTime"  column="modified_time"/>
+    </resultMap>
+
+    <sql id="baseColumn">
+        id,
+        preferential_record_code,
+        preferential_type,
+        preferential_code,
+        preferential_name,
+        sale_order_code,
+        sku_code,
+        sku_name,
+        buy_qty,
+        preferential_status,
+        sale_price,
+        total_origin_amount,
+        total_preferential_amount,
+        total_preferential_after_amount,
+        sort,
+        version,
+        creator,
+        creator_code,
+        created_time,
+        modifier,
+        modifier_code,
+        modified_time
+    </sql>
+</mapper>

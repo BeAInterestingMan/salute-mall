@@ -10,6 +10,6 @@ import javax.validation.constraints.NotBlank;
 @FeignClient(value = "mall-member", contextId = "saluteMemberClient", fallbackFactory = MemberClientFallback.class)
 public interface MemberClient {
 
-    @PostMapping("getMemberSimpleInfoByMemberCode")
+    @PostMapping("/member/getByMemberCode")
     Result<MemberSimpleInfoResponse> getMemberSimpleInfoByMemberCode(@NotBlank String memberCode);
 }

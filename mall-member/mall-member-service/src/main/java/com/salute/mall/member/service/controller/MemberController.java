@@ -8,6 +8,7 @@ import com.salute.mall.member.service.pojo.dto.MemberBaseDTO;
 import com.salute.mall.member.service.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +31,7 @@ public class MemberController {
       return  memberService.login(encrypt);
     }
 
-    @PostMapping("getMemberSimpleInfoByMemberCode")
+    @GetMapping("getByMemberCode")
     public Result<MemberSimpleInfoResponse> getMemberSimpleInfoByMemberCode(@NotBlank String memberCode){
         log.info("execute getMemberSimpleInfoByMemberCode info,req:{}",memberCode);
         MemberBaseDTO memberBaseDTO = memberService.getMemberInfoByMemberCode(memberCode);
