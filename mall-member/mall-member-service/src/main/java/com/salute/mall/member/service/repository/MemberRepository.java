@@ -21,4 +21,11 @@ public class MemberRepository {
         queryWrapper.eq(Member::getMemberName,username);
         return memberMapper.selectOne(queryWrapper);
     }
+
+    public Member getByMemberCode(String memberCode) {
+        SaluteAssertUtil.isTrue(StringUtils.isNotBlank(memberCode),"会员编号不能为空");
+        LambdaQueryWrapper<Member> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Member::getMemberCode,memberCode);
+        return memberMapper.selectOne(queryWrapper);
+    }
 }

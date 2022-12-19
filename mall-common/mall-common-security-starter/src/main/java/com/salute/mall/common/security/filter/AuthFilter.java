@@ -1,6 +1,9 @@
 package com.salute.mall.common.security.filter;
 
 import com.alibaba.fastjson.JSON;
+import com.salute.mall.auth.api.client.AuthenticateClient;
+import com.salute.mall.auth.api.request.MallAuthenticateRequest;
+import com.salute.mall.auth.api.response.SimpleUserInfoResponse;
 import com.salute.mall.common.core.entity.Result;
 import com.salute.mall.common.redis.helper.RedisHelper;
 import com.salute.mall.common.security.constants.SecurityConstants;
@@ -9,6 +12,7 @@ import com.salute.mall.common.security.dto.AuthUserEntity;
 import com.salute.mall.common.security.dto.AuthUserPermissionEntity;
 import com.salute.mall.common.security.properties.MallSecurityProperties;
 import com.salute.mall.common.security.utils.HttpResponseUtil;
+import com.salute.mall.common.security.utils.JWTUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -40,6 +44,9 @@ public class AuthFilter implements Filter {
     @Autowired
     private RedisHelper redisHelper;
 
+    @Autowired
+    private AuthenticateClient authenticateClient;
+
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
@@ -58,7 +65,7 @@ public class AuthFilter implements Filter {
         }
         //4.判断是会员还是后台用户 会员只需要校验是否登录   后台用户需要校验权限
         try {
-            AuthUserEntity userEntity = getUser(accessToken);
+            AuthUserEntity userEntity = getUserInfo(accessToken);
             if (Objects.isNull(userEntity)) {
                 HttpResponseUtil.responseToWeb(Result.error("401", "用户身份已失效"));
                 return;
@@ -82,12 +89,38 @@ public class AuthFilter implements Filter {
      * @date 2022/12/14 19:46
      * @return com.salute.mall.common.security.dto.AuthUserEntity
      */
-    public AuthUserEntity getUser(String accessToken){
-        String redisTokenInfo = (String) redisHelper.hGet(SecurityConstants.ACCESS_TOKEN_PREFIX,accessToken);
-        if(StringUtils.isBlank(redisTokenInfo)){
+    public AuthUserEntity getUserInfo(String accessToken){
+        AuthUserEntity tokenInfo = JWTUtil.getUserInfoFromToken(accessToken);
+        if(Objects.isNull(tokenInfo)){
+            log.error("jwt中获取用户信息异常,accessToken:{}",accessToken);
             return null;
         }
-        return JSON.parseObject(redisTokenInfo,AuthUserEntity.class);
+        MallAuthenticateRequest request = new MallAuthenticateRequest();
+        request.setUserCode(tokenInfo.getUserCode());
+        request.setSystemUserType(tokenInfo.getSystemUserType());
+        log.error("execute authenticate info ,req:{}",JSON.toJSONString(request));
+        Result<SimpleUserInfoResponse> result = authenticateClient.authenticate(request);
+        if(Objects.isNull(result) || !Objects.equals(result.isSuccess(),Boolean.TRUE) || Objects.isNull(result.getResult())){
+            log.error("execute authenticate info ,req:{},resp:{}",JSON.toJSONString(request),JSON.toJSONString(result));
+            return null;
+        }
+        return buildAuthUserEntity(result.getResult());
+    }
+
+    /**
+     * @Description 构建用户信息
+     * @author liuhu
+     * @param result
+     * @date 2022/12/19 18:54
+     * @return com.salute.mall.common.security.dto.AuthUserEntity
+     */
+    private AuthUserEntity buildAuthUserEntity(SimpleUserInfoResponse result) {
+        AuthUserEntity entity = new AuthUserEntity();
+        entity.setUserName(result.getUserName());
+        entity.setUserCode(result.getUserCode());
+        entity.setSystemUserType(result.getSystemUserType());
+        entity.setAvatar(result.getAvatar());
+        return entity;
     }
 
     /**

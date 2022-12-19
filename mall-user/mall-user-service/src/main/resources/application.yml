@@ -1,0 +1,45 @@
+server:
+  port: 8881
+
+
+spring:
+  application:
+    name: mall-user
+  redis:
+    host: 114.116.105.15
+    jedis:
+      pool:
+        max-active: 8
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 114.116.105.15:8848
+  datasource:
+    username: root
+    password: 123456
+    url: jdbc:mysql://114.116.105.15:3306/salute?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8&allowMultiQueries=true&allowPublicKeyRetrieval=true&useAffectedRows=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.salute.mall.user.service.pojo.entity
+  configuration:
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    com.salute.mall.product.service.mapper: debug
+
+## http://localhost:8080/doc.html knif4J 地址
+mall:
+  swagger:
+    enable: true
+    basePackage: com.salute.mall.user.service.controller
+    title: mall-user
+    description: salute-mall后台用户模块接口文档
+    contact: melo-lh
+    version: 1.0
+
+  redisson:
+    address: 114.116.105.15:6379

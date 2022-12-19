@@ -23,5 +23,5 @@ public class AuthUserEntity implements Serializable {
     private String avatar;
 
     /**用户类型 MEMBER会员 PC 后台用户*/
-    private String userType;
+    private String systemUserType;
 }

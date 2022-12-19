@@ -50,9 +50,9 @@ public class MybatisBatchHelper {
             // 如果sql 不一样 比如update table set entity where id = ? 如果entity中有属性为null则会导致sql不一样 则batchResults size会有多个
             List<BatchResult> batchResults = sqlSession.flushStatements();
             int batchUpdateCounts = batchResults.stream().flatMapToInt(v -> Arrays.stream(v.getUpdateCounts())).sum();
-            updateCounts+=batchUpdateCounts;
             // 非事务环境下强制commit，事务情况下该commit相当于无效
             sqlSession.commit(!TransactionSynchronizationManager.isSynchronizationActive());
+            return batchUpdateCounts;
         } catch (Exception e) {
             sqlSession.rollback();
             log.error("批处理执行异常",e);
@@ -60,6 +60,5 @@ public class MybatisBatchHelper {
         }finally {
             sqlSession.close();
         }
-        return updateCounts;
     }
 }
