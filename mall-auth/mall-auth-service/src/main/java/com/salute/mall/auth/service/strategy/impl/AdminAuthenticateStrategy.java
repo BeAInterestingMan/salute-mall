@@ -1,6 +1,8 @@
 package com.salute.mall.auth.service.strategy.impl;
 
+import com.salute.mall.auth.service.adapt.AdminUserAdapt;
 import com.salute.mall.auth.service.adapt.MemberAdapt;
+import com.salute.mall.auth.service.adapt.dto.AdminUserSimpleInfoDTO;
 import com.salute.mall.auth.service.adapt.dto.MemberSimpleInfoDTO;
 import com.salute.mall.auth.service.converter.AuthenticateStrategyConverter;
 import com.salute.mall.auth.service.dto.SimpleUserInfoDTO;
@@ -23,7 +25,7 @@ import java.util.Objects;
 public class AdminAuthenticateStrategy implements AuthenticateStrategy {
 
     @Autowired
-    private MemberAdapt memberAdapt;
+    private AdminUserAdapt adminUserAdapt;
 
     @Autowired
     private AuthenticateStrategyConverter strategyConverter;
@@ -33,9 +35,9 @@ public class AdminAuthenticateStrategy implements AuthenticateStrategy {
     public SimpleUserInfoDTO doAuthenticate(String userCode, String systemUserType) {
         // TODO 是否需要加缓存
         SaluteAssertUtil.isTrue(Objects.equals(systemUserType, SystemUserTypeEnum.ADMIN.getValue()),"用户类型异常");
-        MemberSimpleInfoDTO memberSimpleInfo = memberAdapt.getMemberSimpleInfoByMemberCode(userCode);
-        if(Objects.isNull(memberSimpleInfo)){
-            log.info("为查询到当前会员信息,userCode:{}",userCode);
+        AdminUserSimpleInfoDTO userSimpleInfo = adminUserAdapt.getAdminUserSimpleInfoByUserCode(userCode);
+        if(Objects.isNull(userSimpleInfo)){
+            log.info("为查询到当前用户信息,userCode:{}",userCode);
             return null;
         }
         return strategyConverter.convertToSimpleUserInfoDTO(userCode);
