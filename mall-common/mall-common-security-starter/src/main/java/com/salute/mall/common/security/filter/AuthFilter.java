@@ -1,32 +1,27 @@
 package com.salute.mall.common.security.filter;
 
 import com.alibaba.fastjson.JSON;
-import com.salute.mall.auth.api.client.AuthenticateClient;
-import com.salute.mall.auth.api.request.MallAuthenticateRequest;
+import com.salute.mall.auth.api.client.BaseAuthInfoClient;
+import com.salute.mall.auth.api.request.MallAuthenticationRequest;
+import com.salute.mall.auth.api.request.MallAuthorizationRequest;
 import com.salute.mall.auth.api.response.SimpleUserInfoResponse;
 import com.salute.mall.common.core.entity.Result;
-import com.salute.mall.common.redis.helper.RedisHelper;
 import com.salute.mall.common.security.constants.SecurityConstants;
 import com.salute.mall.common.security.context.AuthUserContext;
 import com.salute.mall.common.security.dto.AuthUserEntity;
-import com.salute.mall.common.security.dto.AuthUserPermissionEntity;
 import com.salute.mall.common.security.properties.MallSecurityProperties;
 import com.salute.mall.common.security.utils.HttpResponseUtil;
-import com.salute.mall.common.security.utils.JWTUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
-import org.springframework.util.Base64Utils;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -42,10 +37,7 @@ public class AuthFilter implements Filter {
     private MallSecurityProperties mallSecurityProperties;
 
     @Autowired
-    private RedisHelper redisHelper;
-
-    @Autowired
-    private AuthenticateClient authenticateClient;
+    private BaseAuthInfoClient baseAuthInfoClient;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -63,19 +55,32 @@ public class AuthFilter implements Filter {
             HttpResponseUtil.responseToWeb(Result.error("401","请先登陆"));
             return;
         }
-        //4.判断是会员还是后台用户 会员只需要校验是否登录   后台用户需要校验权限
         try {
-            AuthUserEntity userEntity = getUserInfo(accessToken);
-            if (Objects.isNull(userEntity)) {
-                HttpResponseUtil.responseToWeb(Result.error("401", "用户身份已失效"));
+            // 1.登录认证
+            MallAuthenticationRequest authenticationRequest = new MallAuthenticationRequest();
+            authenticationRequest.setAccessToken(accessToken);
+            log.error("execute authentication info ,req:{}",JSON.toJSONString(request));
+            Result<SimpleUserInfoResponse> result = baseAuthInfoClient.authentication(authenticationRequest);
+            if(Objects.isNull(result) || !Objects.equals(result.isSuccess(),Boolean.TRUE) || Objects.isNull(result.getResult())){
+                log.warn("execute authentication info ,req:{},resp:{}",JSON.toJSONString(request),JSON.toJSONString(result));
+                HttpResponseUtil.responseToWeb(Result.error(result.getCode(), result.getMessage()));
                 return;
             }
-            // 5.pc后台用户需要权限校验
-            if(!checkPermission(userEntity,uri,accessToken)){
-                HttpResponseUtil.responseToWeb(Result.error("403", "无权访问"));
+            SimpleUserInfoResponse userInfoResponse = result.getResult();
+            // 2,权限授权
+            MallAuthorizationRequest authorizationRequest = new MallAuthorizationRequest();
+            authorizationRequest.setUserCode(userInfoResponse.getUserCode());
+            authorizationRequest.setUri(uri);
+            Result<Void> authorizationResult = baseAuthInfoClient.authorization(authorizationRequest);
+            if(Objects.isNull(authorizationResult) || !Objects.equals(authorizationResult.isSuccess(),Boolean.TRUE)){
+                log.warn("execute authorization info ,req:{},resp:{}",JSON.toJSONString(request),JSON.toJSONString(result));
+                HttpResponseUtil.responseToWeb(Result.error(authorizationResult.getCode(), authorizationResult.getMessage()));
                 return;
             }
-            AuthUserContext.setUser(userEntity);
+            AuthUserEntity authUserEntity = buildAuthUserEntity(userInfoResponse);
+            // 3.保存用户信息进入threadLocal
+            log.info("execute authFilter success,accessToken:{},uri:{},resp:{}",accessToken,uri,JSON.toJSONString(authUserEntity));
+            AuthUserContext.setUser(authUserEntity);
             filterChain.doFilter(request, response);
         } finally {
             AuthUserContext.clear();
@@ -83,43 +88,18 @@ public class AuthFilter implements Filter {
     }
 
     /**
-     * @Description 获得用户信息
-     * @author liuhu
-     * @param accessToken
-     * @date 2022/12/14 19:46
-     * @return com.salute.mall.common.security.dto.AuthUserEntity
-     */
-    public AuthUserEntity getUserInfo(String accessToken){
-        AuthUserEntity tokenInfo = JWTUtil.getUserInfoFromToken(accessToken);
-        if(Objects.isNull(tokenInfo)){
-            log.error("jwt中获取用户信息异常,accessToken:{}",accessToken);
-            return null;
-        }
-        MallAuthenticateRequest request = new MallAuthenticateRequest();
-        request.setUserCode(tokenInfo.getUserCode());
-        request.setSystemUserType(tokenInfo.getSystemUserType());
-        log.error("execute authenticate info ,req:{}",JSON.toJSONString(request));
-        Result<SimpleUserInfoResponse> result = authenticateClient.authenticate(request);
-        if(Objects.isNull(result) || !Objects.equals(result.isSuccess(),Boolean.TRUE) || Objects.isNull(result.getResult())){
-            log.error("execute authenticate info ,req:{},resp:{}",JSON.toJSONString(request),JSON.toJSONString(result));
-            return null;
-        }
-        return buildAuthUserEntity(result.getResult());
-    }
-
-    /**
      * @Description 构建用户信息
      * @author liuhu
-     * @param result
+     * @param userInfoResponse
      * @date 2022/12/19 18:54
      * @return com.salute.mall.common.security.dto.AuthUserEntity
      */
-    private AuthUserEntity buildAuthUserEntity(SimpleUserInfoResponse result) {
+    private AuthUserEntity buildAuthUserEntity(SimpleUserInfoResponse userInfoResponse) {
         AuthUserEntity entity = new AuthUserEntity();
-        entity.setUserName(result.getUserName());
-        entity.setUserCode(result.getUserCode());
-        entity.setSystemUserType(result.getSystemUserType());
-        entity.setAvatar(result.getAvatar());
+        entity.setUserName(userInfoResponse.getUserName());
+        entity.setUserCode(userInfoResponse.getUserCode());
+        entity.setSystemUserType(userInfoResponse.getSystemUserType());
+        entity.setAvatar(userInfoResponse.getAvatar());
         return entity;
     }
 
@@ -144,31 +124,4 @@ public class AuthFilter implements Filter {
         }
         return false;
     }
-
-    /**
-     * @Description 校验是否有菜单按钮权限
-     * @author liuhu
-     * @param authUserEntity
-     * @param uri
-     * @param accessToken
-     * @date 2022/12/14 19:45
-     * @return boolean
-     */
-    public boolean checkPermission(AuthUserEntity authUserEntity,String uri,String accessToken){
-        String pc = Base64Utils.encodeToString("PC".getBytes(StandardCharsets.UTF_8));
-        // 只有PC用户需要鉴权
-        if(!accessToken.contains(pc)){
-            return true;
-        }
-        String redisPermission = (String) redisHelper.hGet(SecurityConstants.PERMISSION_PREFIX,authUserEntity.getUserCode());
-        if(StringUtils.isBlank(redisPermission)){
-            return false;
-        }
-        AuthUserPermissionEntity permissionEntity = JSON.parseObject(redisPermission, AuthUserPermissionEntity.class);
-        if(Objects.isNull(permissionEntity) || CollectionUtils.isEmpty(permissionEntity.getPermissionList())){
-            return false;
-        }
-        return permissionEntity.getPermissionList().contains(uri);
-    }
-
 }

@@ -4,6 +4,14 @@ public class RedisConstants {
 
     public static String SALUTE_MALL = "SALUTE_MALL_";
 
+    public  interface  AuthCacheKey{
+
+        String MALL_AUTH_USER_INFO = SALUTE_MALL + "MALL_AUTH_USER_INFO:";
+        String MALL_AUTH_TOKEN_PREFIX = SALUTE_MALL + "MALL_AUTH_TOKEN_PREFIX:";
+
+        String MALL_AUTH_USER_PERMISSION_INFO = SALUTE_MALL + "MALL_AUTH_USER_PERMISSION_INFO:";
+    }
+
     public  interface  LockKey{
         String SHOPPING_CART_ADD = SALUTE_MALL + "SHOPPING_CART_ADD:";
 
