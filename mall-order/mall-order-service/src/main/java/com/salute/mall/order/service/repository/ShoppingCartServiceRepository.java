@@ -1,9 +1,9 @@
-package com.salute.mall.ploy.repository;
+package com.salute.mall.order.service.repository;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.salute.mall.common.core.utils.SaluteAssertUtil;
-import com.salute.mall.ploy.mapper.ShoppingCartMapper;
-import com.salute.mall.ploy.pojo.entity.ShoppingCart;
+import com.salute.mall.order.service.mapper.ShoppingCartMapper;
+import com.salute.mall.order.service.pojo.entity.ShoppingCart;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

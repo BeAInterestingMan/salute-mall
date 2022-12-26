@@ -23,7 +23,6 @@ public class ProductControllerTest {
 
     @Test
     public void searchProduct(){
-        Result<ProductSkuResponse> skuDetail = productController.getProductSkuDetail("122343545544787551");
-        log.info("execute searchProduct info:{}", JSON.toJSONString(skuDetail));
+         productController.getProductSkuDetail("122343545544787551");
     }
 }

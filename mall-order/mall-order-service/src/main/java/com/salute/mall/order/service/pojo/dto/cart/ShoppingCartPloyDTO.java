@@ -1,4 +1,4 @@
-package com.salute.mall.ploy.pojo.dto;
+package com.salute.mall.order.service.pojo.dto.cart;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

@@ -28,7 +28,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 
-@Component
 @Slf4j
 @EnableConfigurationProperties(value = MallSecurityProperties.class)
 public class AuthFilter implements Filter {

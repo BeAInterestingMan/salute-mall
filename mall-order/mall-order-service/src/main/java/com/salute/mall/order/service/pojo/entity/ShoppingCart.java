@@ -1,17 +1,15 @@
-package com.salute.mall.ploy.pojo.entity;
+package com.salute.mall.order.service.pojo.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import java.io.Serializable;
 
-import java.math.BigDecimal;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
-import lombok.Data;
 
 
 @Data

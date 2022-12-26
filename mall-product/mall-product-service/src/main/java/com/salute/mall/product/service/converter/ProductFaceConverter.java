@@ -3,6 +3,7 @@ package com.salute.mall.product.service.converter;
 import com.salute.mall.common.core.entity.Page;
 import com.salute.mall.product.api.response.ProductCustomInfoResponse;
 import com.salute.mall.product.api.response.ProductDetailCustomInfoResponse;
+import com.salute.mall.product.api.response.ProductSkuPloyDetailResponse;
 import com.salute.mall.product.api.response.ProductSkuResponse;
 import com.salute.mall.product.service.pojo.bo.ProductDetailInfoBO;
 import com.salute.mall.product.service.pojo.bo.ProductListInfoBO;
@@ -33,4 +34,8 @@ public interface ProductFaceConverter {
     ProductAssociatedQueryDTO convertToProductAssociatedQueryDTO(ProductAssociatedRequest request);
 
     ProductCustomInfoResponse convertToProductCustomInfoResponse(ProductBaseDTO productBaseInfo);
+
+    ProductSkuPloyDetailResponse convertToProductSkuPloyDetailResponse(ProductSkuDTO ploySkuInfoDTO);
+
+    List<ProductSkuPloyDetailResponse> convertToProductSkuPloyDetailResponseList(List<ProductSkuDTO> ploySkuInfoDTOS);
 }

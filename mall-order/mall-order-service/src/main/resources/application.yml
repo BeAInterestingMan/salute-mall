@@ -5,6 +5,11 @@ server:
 spring:
   application:
     name: mall-order
+  redis:
+    host: 114.116.105.15
+    jedis:
+      pool:
+        max-active: 8
   cloud:
     nacos:
       discovery:
@@ -36,3 +41,7 @@ mall:
     description: salute-mall订单模块接口文档
     contact: melo-lh
     version: 1.0
+
+
+  redisson:
+    address: 114.116.105.15:6379

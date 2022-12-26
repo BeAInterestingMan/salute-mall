@@ -1,7 +1,6 @@
-package com.salute.mall.ploy.pojo.dto;
+package com.salute.mall.order.service.pojo.dto.cart;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.salute.mall.ploy.pojo.response.ProductSkuSpecificationResponse;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 

@@ -7,10 +7,7 @@ import com.salute.mall.common.core.entity.Result;
 import com.salute.mall.common.redis.helper.RedisHelper;
 import com.salute.mall.common.security.context.AuthUserContext;
 import com.salute.mall.common.security.dto.AuthUserEntity;
-import com.salute.mall.product.api.response.ProductCustomInfoResponse;
-import com.salute.mall.product.api.response.ProductDetailCustomInfoResponse;
-import com.salute.mall.product.api.response.ProductSkuResponse;
-import com.salute.mall.product.api.response.ProductSpecificationResponse;
+import com.salute.mall.product.api.response.*;
 import com.salute.mall.product.service.converter.ProductFaceConverter;
 import com.salute.mall.product.service.pojo.bo.ProductDetailInfoBO;
 import com.salute.mall.product.service.pojo.bo.ProductListInfoBO;
@@ -80,10 +77,12 @@ public class ProductController {
             return skuResponse;
         }).collect(Collectors.toList());
         response.setSpecs(skuResponseList);
+
         customInfoResponse.setGoodsId(detail.getProductCode());
         customInfoResponse.setPromotionFlag(false);
         customInfoResponse.setGoodsName(detail.getProductName());
         customInfoResponse.setId(detail.getSkuCode());
+//        customInfoResponse.setPrice(detail.getSalePrice().doubleValue());
         customInfoResponse.setSellingPoint("测试卖点");
         customInfoResponse.setViewCount(100);
         customInfoResponse.setBuyCount(200);
@@ -91,26 +90,27 @@ public class ProductController {
         customInfoResponse.setSalesModel("RETAIL");
         customInfoResponse.setGoodsType("PHYSICAL_GOODS");
         customInfoResponse.setGoodsGalleryList(detail.getProductImageList());
-        customInfoResponse.setSpecList(Lists.newArrayList());
+        customInfoResponse.setSpecList(Lists.newArrayList(skuResponseList.get(0).getSpecValues()));
+        response.setData(customInfoResponse);
         return response;
     }
 
     @PostMapping("queryProductSkuDetail")
     @ApiOperation("根据skuCodeList获取sku商品详情信息")
-    public Result<List<ProductSkuResponse>> queryProductSkuDetail(@NotEmpty @RequestBody List<String> skuCodeList){
+    public Result<List<ProductSkuPloyDetailResponse>> queryProductSkuDetail(@NotEmpty @RequestBody List<String> skuCodeList){
         log.info("execute getProductBySpuCode info,req:{}", JSON.toJSONString(skuCodeList));
         List<ProductSkuDTO> ploySkuInfoDTOS = productService.queryProductSkuDetail(skuCodeList);
-        List<ProductSkuResponse> response = productFaceConverter.convertToProductPloySkuInfoResponseList(ploySkuInfoDTOS);
+        List<ProductSkuPloyDetailResponse> response = productFaceConverter.convertToProductSkuPloyDetailResponseList(ploySkuInfoDTOS);
         log.info("execute getProductBySpuCode info,req:{},resp:{}", JSON.toJSONString(skuCodeList), JSON.toJSONString(response));
         return Result.success(response);
     }
 
     @GetMapping("getProductSkuDetail")
     @ApiOperation("根据skuCode获取sku商品详情信息")
-    public Result<ProductSkuResponse> getProductSkuDetail(@NotBlank @RequestParam(name = "skuCode") String skuCode){
+    public Result<ProductSkuPloyDetailResponse> getProductSkuDetail(@NotBlank @RequestParam(name = "skuCode") String skuCode){
         log.info("execute queryProductSkuDetail info,req:{}", JSON.toJSONString(skuCode));
         ProductSkuDTO ploySkuInfoDTO = productService.getProductSkuDetail(skuCode);
-        ProductSkuResponse response = productFaceConverter.convertToProductPloySkuInfoResponse(ploySkuInfoDTO);
+        ProductSkuPloyDetailResponse response = productFaceConverter.convertToProductSkuPloyDetailResponse(ploySkuInfoDTO);
         log.info("execute queryProductSkuDetail info,req:{},resp:{}", JSON.toJSONString(skuCode), JSON.toJSONString(response));
         return Result.success(response);
     }

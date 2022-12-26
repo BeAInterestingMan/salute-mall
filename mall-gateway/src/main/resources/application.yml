@@ -40,3 +40,10 @@ spring:
             - Path=/mall_search/**
           filters:
             - StripPrefix=1
+
+        - id: mall-order
+          uri: lb://mall-order
+          predicates:
+            - Path=/mall_order/**
+          filters:
+            - StripPrefix=1

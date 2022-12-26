@@ -1,4 +1,4 @@
-package com.salute.mall.ploy.pojo.request;
+package com.salute.mall.order.service.pojo.request;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -6,7 +6,6 @@ import lombok.Data;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.util.List;
 
 @Data
 @ApiModel("购物车修改购买数量入参")

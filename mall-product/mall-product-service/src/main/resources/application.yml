@@ -41,7 +41,5 @@ mall:
     contact: melo-lh
     version: 1.0
 
-  security:
-    enableSecurity: true
   redisson:
     address: 114.116.105.15:6379

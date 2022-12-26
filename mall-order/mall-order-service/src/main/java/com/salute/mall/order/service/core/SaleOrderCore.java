@@ -16,7 +16,7 @@ import com.salute.mall.product.api.client.ProductApiClient;
 import com.salute.mall.product.api.client.ProductStockApiClient;
 import com.salute.mall.product.api.request.OperateFreezeStockRequest;
 import com.salute.mall.product.api.request.OperateFreezeStockSkuRequest;
-import com.salute.mall.product.api.response.ProductSkuResponse;
+import com.salute.mall.product.api.response.ProductSkuPloyDetailResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -55,21 +55,21 @@ public class SaleOrderCore {
     public void doCreateSaleOrder(CreateSaleOrderDTO dto) {
         List<String> skuCodeList = dto.getProductSkuList().stream().map(CreateSaleOrderProductSkuDTO::getSkuCode).collect(Collectors.toList());
         //1.获取订单商品信息
-        Result<List<ProductSkuResponse>> result = productApiClient.queryProductSkuList(skuCodeList);
-        //2.获取订单营销信息
-        List<ProductSkuResponse> skuResponses = result.getResult();
-        //1.业务校验
-        validOrderBusinessAvailable(dto,skuResponses);
-        try {
-            //2.使用优惠券
-            usedCoupon(dto);
-            //3.扣库存
-            operateStock(dto);
-            //4.创建订单
-            saveSaleOrder(dto,skuResponses);
-        } catch (Exception e) {
-            // TODO 丢消息 异步归还
-        }
+//        Result<List<ProductSkuPloyDetailResponse>> result = productApiClient.queryProductSkuList(skuCodeList);
+//        //2.获取订单营销信息
+//        List<ProductSkuPloyDetailResponse> skuResponses = result.getResult();
+//        //1.业务校验
+//        validOrderBusinessAvailable(dto,skuResponses);
+//        try {
+//            //2.使用优惠券
+//            usedCoupon(dto);
+//            //3.扣库存
+//            operateStock(dto);
+//            //4.创建订单
+//            saveSaleOrder(dto,skuResponses);
+//        } catch (Exception e) {
+//            // TODO 丢消息 异步归还
+//        }
     }
 
     /**
@@ -96,7 +96,7 @@ public class SaleOrderCore {
      * @date 2022/12/9 15:52
      * @return void
      */
-    private void saveSaleOrder(CreateSaleOrderDTO dto,List<ProductSkuResponse> skuResponses) {
+    private void saveSaleOrder(CreateSaleOrderDTO dto,List<ProductSkuPloyDetailResponse> skuResponses) {
         List<SaleOrderDetail> saleOrderDetails = buildInsertSaleOrderDetail(dto, skuResponses);
         SaleOrder saleOrder = buildInsertSaleOrder(dto, saleOrderDetails);
         transactionTemplate.execute(ts->{
@@ -162,10 +162,10 @@ public class SaleOrderCore {
 
 
     private List<SaleOrderDetail> buildInsertSaleOrderDetail(CreateSaleOrderDTO dto,
-                                                             List<ProductSkuResponse> skuResponses) {
-        Map<String, ProductSkuResponse> skuResponseMap = skuResponses.stream().collect(Collectors.toMap(ProductSkuResponse::getSkuCode, Function.identity(), (k1, k2) -> k1));
+                                                             List<ProductSkuPloyDetailResponse> skuResponses) {
+        Map<String, ProductSkuPloyDetailResponse> skuResponseMap = skuResponses.stream().collect(Collectors.toMap(ProductSkuPloyDetailResponse::getSkuCode, Function.identity(), (k1, k2) -> k1));
         return  dto.getProductSkuList().stream().map(productSku->{
-            ProductSkuResponse skuResponse = skuResponseMap.get(productSku.getSkuCode());
+            ProductSkuPloyDetailResponse skuResponse = skuResponseMap.get(productSku.getSkuCode());
             if(Objects.isNull(skuResponse)){
                 log.error("skuCode获取商品信息为空，skuCode:{}",productSku.getSkuCode());
                 throw new BusinessException("500","商品不存在");
@@ -208,7 +208,7 @@ public class SaleOrderCore {
      * @date 2022/12/9 15:53
      * @return void
      */
-    private void validOrderBusinessAvailable(CreateSaleOrderDTO dto,List<ProductSkuResponse> skuResponses) {
+    private void validOrderBusinessAvailable(CreateSaleOrderDTO dto,List<ProductSkuPloyDetailResponse> skuResponses) {
         //1,校验商品信息是否正确
         validProductAvailable(dto.getProductSkuList(),skuResponses);
         //2.校验营销是否正确
@@ -217,7 +217,7 @@ public class SaleOrderCore {
         validOrderAmountAvailable(dto,skuResponses);
     }
 
-    private void validMarketAvailable(CreateSaleOrderDTO dto, List<ProductSkuResponse> skuResponses) {
+    private void validMarketAvailable(CreateSaleOrderDTO dto, List<ProductSkuPloyDetailResponse> skuResponses) {
     }
 
     /**
@@ -228,8 +228,8 @@ public class SaleOrderCore {
      * @date 2022/12/9 15:54
      * @return void
      */
-    private void validOrderAmountAvailable(CreateSaleOrderDTO dto, List<ProductSkuResponse> skuResponses) {
-        BigDecimal totalProductAmount = skuResponses.stream().map(ProductSkuResponse::getSalePrice).reduce(BigDecimal.ZERO,BigDecimal::add);
+    private void validOrderAmountAvailable(CreateSaleOrderDTO dto, List<ProductSkuPloyDetailResponse> skuResponses) {
+        BigDecimal totalProductAmount = skuResponses.stream().map(ProductSkuPloyDetailResponse::getSalePrice).reduce(BigDecimal.ZERO,BigDecimal::add);
         if(totalProductAmount.compareTo(dto.getOrderAmount()) != 0){
             log.error("订单金额异常,订单总金额不等于商品总金额，orderInfo:{}",JSON.toJSONString(dto));
             throw new BusinessException("500","订单金额异常，请刷新购物车重新下单");
@@ -259,10 +259,10 @@ public class SaleOrderCore {
      * @date 2022/12/9 15:54
      * @return void
      */
-    private void validProductAvailable(List<CreateSaleOrderProductSkuDTO> productSkuList, List<ProductSkuResponse> skuResponses) {
-        Map<String, ProductSkuResponse> skuResponseMap = skuResponses.stream().collect(Collectors.toMap(ProductSkuResponse::getSkuCode, Function.identity(), (k1, k2) -> k1));
+    private void validProductAvailable(List<CreateSaleOrderProductSkuDTO> productSkuList, List<ProductSkuPloyDetailResponse> skuResponses) {
+        Map<String, ProductSkuPloyDetailResponse> skuResponseMap = skuResponses.stream().collect(Collectors.toMap(ProductSkuPloyDetailResponse::getSkuCode, Function.identity(), (k1, k2) -> k1));
         for (CreateSaleOrderProductSkuDTO dto : productSkuList) {
-            ProductSkuResponse skuResponse = skuResponseMap.get(dto.getSkuCode());
+            ProductSkuPloyDetailResponse skuResponse = skuResponseMap.get(dto.getSkuCode());
             if(Objects.isNull(skuResponse)){
                 log.error("skuCode获取商品信息为空，skuCode:{}",dto.getSkuCode());
                 throw new BusinessException("500","商品不存在");

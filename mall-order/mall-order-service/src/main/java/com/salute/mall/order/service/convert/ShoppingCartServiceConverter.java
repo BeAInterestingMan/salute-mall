@@ -1,8 +1,9 @@
-package com.salute.mall.ploy.converter;
+package com.salute.mall.order.service.convert;
 
-import com.salute.mall.ploy.pojo.dto.ProductSkuSpecificationPloyDTO;
-import com.salute.mall.ploy.pojo.dto.ShoppingCartDetailDTO;
-import com.salute.mall.ploy.pojo.entity.ShoppingCart;
+
+import com.salute.mall.order.service.pojo.dto.cart.ProductSkuSpecificationPloyDTO;
+import com.salute.mall.order.service.pojo.dto.cart.ShoppingCartDetailDTO;
+import com.salute.mall.order.service.pojo.entity.ShoppingCart;
 import com.salute.mall.product.api.response.ProductSkuSpecificationResponse;
 import org.mapstruct.Mapper;
 

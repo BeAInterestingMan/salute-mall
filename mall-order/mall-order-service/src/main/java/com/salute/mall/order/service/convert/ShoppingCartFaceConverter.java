@@ -1,8 +1,7 @@
-package com.salute.mall.ploy.converter;
+package com.salute.mall.order.service.convert;
 
-import com.salute.mall.ploy.pojo.dto.ShoppingCartPloyDTO;
-import com.salute.mall.ploy.pojo.response.ShoppingCartDetailResponse;
-import com.salute.mall.ploy.pojo.response.ShoppingCartPloyResponse;
+import com.salute.mall.order.service.pojo.dto.cart.ShoppingCartPloyDTO;
+import com.salute.mall.order.service.pojo.response.ShoppingCartPloyResponse;
 import org.mapstruct.Mapper;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.salute.mall.ploy.pojo.response;
+package com.salute.mall.order.service.pojo.response;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModelProperty;

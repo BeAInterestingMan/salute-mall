@@ -7,7 +7,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
 @MapperScan("com.salute.mall.order.service.mapper")
-@EnableFeignClients
+@EnableFeignClients(basePackages = {"com.salute.mall.product.api.client","com.salute.mall.marketing.api.client"})
 public class MallOrderApplication {
     public static void main(String[] args) {
         SpringApplication.run(MallOrderApplication.class,args);

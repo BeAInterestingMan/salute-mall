@@ -1,4 +1,4 @@
-package com.salute.mall.ploy.pojo.request;
+package com.salute.mall.order.service.pojo.request;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

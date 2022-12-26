@@ -1,9 +1,8 @@
-package com.salute.mall.ploy.mapper;
+package com.salute.mall.order.service.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.salute.mall.ploy.pojo.entity.ShoppingCart;
+import com.salute.mall.order.service.pojo.entity.ShoppingCart;
 import org.springframework.stereotype.Repository;
-
 
 
 @Repository
