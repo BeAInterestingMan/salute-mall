@@ -1,16 +1,17 @@
-package com.salute.mall.ploy.controller.cart;
+package com.salute.mall.order.service.controller;
 
 import com.salute.mall.common.core.constants.RedisConstants;
 import com.salute.mall.common.core.entity.Result;
 import com.salute.mall.common.core.exception.BusinessException;
 import com.salute.mall.common.redis.helper.RedisHelper;
-import com.salute.mall.ploy.converter.ShoppingCartFaceConverter;
-import com.salute.mall.ploy.pojo.dto.ShoppingCartPloyDTO;
-import com.salute.mall.ploy.pojo.request.AddShoppingCartRequest;
-import com.salute.mall.ploy.pojo.request.DeleteShoppingCartSkuRequest;
-import com.salute.mall.ploy.pojo.request.UpdateShoppingCartSkuRequest;
-import com.salute.mall.ploy.pojo.response.ShoppingCartPloyResponse;
-import com.salute.mall.ploy.service.ShoppingCartService;
+import com.salute.mall.order.service.convert.ShoppingCartFaceConverter;
+import com.salute.mall.order.service.pojo.dto.cart.ShoppingCartPloyDTO;
+import com.salute.mall.order.service.pojo.request.AddShoppingCartRequest;
+import com.salute.mall.order.service.pojo.request.DeleteShoppingCartSkuRequest;
+import com.salute.mall.order.service.pojo.request.UpdateShoppingCartSkuRequest;
+
+import com.salute.mall.order.service.pojo.response.ShoppingCartPloyResponse;
+import com.salute.mall.order.service.service.ShoppingCartService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @RestController
-@RequestMapping("/h5/cart/")
+@RequestMapping("/order/custom/cart/")
 @Api(tags = "购物车前端控制器")
 public class ShoppingCartController {
 
@@ -74,13 +75,13 @@ public class ShoppingCartController {
     @PostMapping ("addShoppingCart")
     @ApiOperation("添加购物车信息")
     public Result<Void> addShoppingCart(@Valid AddShoppingCartRequest request){
-        String userCode="";
+        String userCode="test";
         String key = RedisConstants.LockKey.SHOPPING_CART_ADD+userCode;
         Boolean block = redisHelper.setNx(key, "block", 1L, TimeUnit.HOURS);
         if(Objects.equals(block,Boolean.FALSE)){
             throw new BusinessException("500","请稍后点击");
         }
-        shoppingCartService.addShoppingCart(userCode,request.getSkuCode(),request.getBuyQty());
+        shoppingCartService.addShoppingCart(userCode,request.getSkuCode(),request.getNum());
         return Result.success();
     }
 

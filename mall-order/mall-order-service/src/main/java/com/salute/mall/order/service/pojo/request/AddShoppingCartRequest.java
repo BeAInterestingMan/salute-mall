@@ -1,4 +1,4 @@
-package com.salute.mall.ploy.pojo.request;
+package com.salute.mall.order.service.pojo.request;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -16,9 +16,9 @@ public class AddShoppingCartRequest implements Serializable {
     @Size(max = 30)
     private String skuCode;
 
-    @ApiModelProperty(value = "购买数量",name = "buyQty")
+    @ApiModelProperty(value = "购买数量",name = "num")
     @Max(100000)
     @Min(1)
     @NotNull
-    private Integer buyQty;
+    private Integer num;
 }

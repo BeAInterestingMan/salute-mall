@@ -1,17 +1,17 @@
-package com.salute.mall.ploy.service.impl;
+package com.salute.mall.order.service.service.impl;
 
 import com.google.common.collect.Lists;
 import com.salute.mall.common.core.entity.Result;
 import com.salute.mall.common.core.utils.SaluteAssertUtil;
-import com.salute.mall.ploy.converter.ShoppingCartServiceConverter;
-import com.salute.mall.ploy.pojo.dto.ProductSkuSpecificationPloyDTO;
-import com.salute.mall.ploy.pojo.dto.ShoppingCartDetailDTO;
-import com.salute.mall.ploy.pojo.dto.ShoppingCartPloyDTO;
-import com.salute.mall.ploy.pojo.entity.ShoppingCart;
-import com.salute.mall.ploy.repository.ShoppingCartServiceRepository;
-import com.salute.mall.ploy.service.ShoppingCartService;
+import com.salute.mall.order.service.convert.ShoppingCartServiceConverter;
+import com.salute.mall.order.service.pojo.dto.cart.ProductSkuSpecificationPloyDTO;
+import com.salute.mall.order.service.pojo.dto.cart.ShoppingCartDetailDTO;
+import com.salute.mall.order.service.pojo.dto.cart.ShoppingCartPloyDTO;
+import com.salute.mall.order.service.pojo.entity.ShoppingCart;
+import com.salute.mall.order.service.repository.ShoppingCartServiceRepository;
+import com.salute.mall.order.service.service.ShoppingCartService;
 import com.salute.mall.product.api.client.ProductClient;
-import com.salute.mall.product.api.response.ProductSkuResponse;
+import com.salute.mall.product.api.response.ProductSkuPloyDetailResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -46,11 +46,11 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
             return Lists.newArrayList();
         }
         List<String> skuCodeList = shoppingCartList.stream().map(ShoppingCart::getSkuCode).collect(Collectors.toList());
-        Result<List<ProductSkuResponse>> listResult = productClient.queryProductSkuDetail(skuCodeList);
+        Result<List<ProductSkuPloyDetailResponse>> listResult = productClient.queryProductSkuDetail(skuCodeList);
         SaluteAssertUtil.isTrue(Objects.nonNull(listResult) && Objects.equals(listResult.isSuccess(),Boolean.TRUE),"查询商品详情失败");
         SaluteAssertUtil.isTrue(CollectionUtils.isNotEmpty(listResult.getResult()),"查询商品详情失败");
-        List<ProductSkuResponse> skuInfoResponseList = listResult.getResult();
-        Map<String, ProductSkuResponse> skuInfoMap = skuInfoResponseList.stream().collect(Collectors.toMap(ProductSkuResponse::getSkuCode, Function.identity(), (k1, k2) -> k1));
+        List<ProductSkuPloyDetailResponse> skuInfoResponseList = listResult.getResult();
+        Map<String, ProductSkuPloyDetailResponse> skuInfoMap = skuInfoResponseList.stream().collect(Collectors.toMap(ProductSkuPloyDetailResponse::getSkuCode, Function.identity(), (k1, k2) -> k1));
         Map<String, List<ShoppingCart>> shopShoppingCartMap = shoppingCartList.stream().collect(Collectors.groupingBy(v -> v.getShopCode() + "_" + v.getShopName()));
         return buildShoppingCartPloyDTOList(skuInfoMap,shopShoppingCartMap);
     }
@@ -58,9 +58,9 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     public void addShoppingCart(String userCode, String skuCode, Integer buyQty) {
         SaluteAssertUtil.isTrue(!StringUtils.isAnyBlank(userCode,skuCode) && Objects.nonNull(buyQty),"参数异常");
-        Result<ProductSkuResponse> result = productClient.getProductSkuDetail(skuCode);
+        Result<ProductSkuPloyDetailResponse> result = productClient.getProductSkuDetail(skuCode);
         SaluteAssertUtil.isTrue(Objects.nonNull(result) && Objects.equals(result.isSuccess(),Boolean.TRUE),"查询商品详情失败");
-        ProductSkuResponse ploySkuInfoResponse = result.getResult();
+        ProductSkuPloyDetailResponse ploySkuInfoResponse = result.getResult();
         SaluteAssertUtil.isTrue(Objects.nonNull(ploySkuInfoResponse),"商品已失效");
         SaluteAssertUtil.isTrue(ploySkuInfoResponse.getAvailableStock()>=buyQty,"商品库存不足");
         saveShoppingCart(userCode,buyQty,ploySkuInfoResponse);
@@ -71,9 +71,9 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         SaluteAssertUtil.isTrue(!StringUtils.isAnyBlank(userCode,skuCode) && Objects.nonNull(updateBuyQty),"参数异常");
         ShoppingCart existShoppingCart = shoppingCartServiceRepository.getByUserCodeAndSkuCode(userCode,skuCode);
         SaluteAssertUtil.isTrue(Objects.nonNull(existShoppingCart) ,"购物车不存在该商品");
-        Result<ProductSkuResponse> result = productClient.getProductSkuDetail(skuCode);
+        Result<ProductSkuPloyDetailResponse> result = productClient.getProductSkuDetail(skuCode);
         SaluteAssertUtil.isTrue(Objects.nonNull(result) && Objects.equals(result.isSuccess(),Boolean.TRUE),"查询商品详情失败");
-        ProductSkuResponse ploySkuInfoResponse = result.getResult();
+        ProductSkuPloyDetailResponse ploySkuInfoResponse = result.getResult();
         SaluteAssertUtil.isTrue(Objects.nonNull(ploySkuInfoResponse),"商品已失效");
         SaluteAssertUtil.isTrue(ploySkuInfoResponse.getAvailableStock()>=updateBuyQty,"商品库存不足");
         updateShoppingCart(existShoppingCart,updateBuyQty);
@@ -118,17 +118,16 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
      * @date 2022/12/1 17:13
      * @return void
      */
-    private void saveShoppingCart(String userCode, Integer buyQty, ProductSkuResponse ploySkuInfoResponse) {
+    private void saveShoppingCart(String userCode, Integer buyQty, ProductSkuPloyDetailResponse ploySkuInfoResponse) {
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.setCreatorCode(userCode);
         shoppingCart.setCreator("");
         shoppingCart.setModifier("");
         shoppingCart.setModifierCode(userCode);
-        shoppingCart.setShopCode(ploySkuInfoResponse.getShopCode());
-        shoppingCart.setShopName(ploySkuInfoResponse.getShopName());
+//        shoppingCart.setShopCode(ploySkuInfoResponse.getShopCode());
+//        shoppingCart.setShopName(ploySkuInfoResponse.getShopName());
         shoppingCart.setAddCartPrice(ploySkuInfoResponse.getSalePrice());
         shoppingCart.setSkuCode(ploySkuInfoResponse.getSkuCode());
-        shoppingCart.setShopName(ploySkuInfoResponse.getShopName());
         shoppingCart.setProductCode(ploySkuInfoResponse.getProductCode());
         shoppingCart.setBuyQty(buyQty);
         shoppingCartServiceRepository.save(shoppingCart);
@@ -142,7 +141,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
      * @date 2022/12/1 16:36
      * @return java.util.List<com.salute.mall.ploy.pojo.dto.ShoppingCartPloyDTO>
      */
-    private List<ShoppingCartPloyDTO> buildShoppingCartPloyDTOList(Map<String, ProductSkuResponse> skuInfoMap,
+    private List<ShoppingCartPloyDTO> buildShoppingCartPloyDTOList(Map<String, ProductSkuPloyDetailResponse> skuInfoMap,
                                                                    Map<String, List<ShoppingCart>> shopShoppingCartMap) {
         List<ShoppingCartPloyDTO> dtoList = new ArrayList<>();
         for (Map.Entry<String, List<ShoppingCart>> entry : shopShoppingCartMap.entrySet()) {
@@ -166,10 +165,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
      * @date 2022/12/1 16:31
      * @return com.salute.mall.ploy.pojo.dto.ShoppingCartDetailDTO
      */
-    private List<ShoppingCartDetailDTO> buildShoppingCartDTO(List<ShoppingCart> shoppingCartList, Map<String, ProductSkuResponse> skuInfoMap) {
+    private List<ShoppingCartDetailDTO> buildShoppingCartDTO(List<ShoppingCart> shoppingCartList, Map<String, ProductSkuPloyDetailResponse> skuInfoMap) {
       return shoppingCartList.stream().map(shoppingCart->{
             ShoppingCartDetailDTO dto = shoppingCartServiceConverter.convertToShoppingCartDetailDTO(shoppingCart);
-            ProductSkuResponse infoResponse = skuInfoMap.get(dto.getSkuCode());
+            ProductSkuPloyDetailResponse infoResponse = skuInfoMap.get(dto.getSkuCode());
             dto.setStatus(Boolean.TRUE);
             if(Objects.isNull(infoResponse)){
                 log.info("当前商品已失效，skuCode:{}",dto.getSkuCode());

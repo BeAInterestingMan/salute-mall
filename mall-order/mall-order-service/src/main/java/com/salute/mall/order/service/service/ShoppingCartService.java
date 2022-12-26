@@ -1,6 +1,7 @@
-package com.salute.mall.ploy.service;
+package com.salute.mall.order.service.service;
 
-import com.salute.mall.ploy.pojo.dto.ShoppingCartPloyDTO;
+
+import com.salute.mall.order.service.pojo.dto.cart.ShoppingCartPloyDTO;
 
 import java.util.List;
 
