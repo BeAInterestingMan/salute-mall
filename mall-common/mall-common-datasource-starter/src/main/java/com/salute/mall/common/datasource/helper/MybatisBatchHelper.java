@@ -35,16 +35,15 @@ public class MybatisBatchHelper {
      * @date 2022/11/22 21:59
      * @return int
      */
-    public <T,V> int batchInsertOrUpdate(List<T> recordList,Class<V> mapper, BiConsumer<V,T> biConsumer){
+    public <D,M> int batchInsertOrUpdate(List<D> recordList,Class<M> mapper, BiConsumer<D,M> biConsumer){
         SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH);
-        int updateCounts =0;
         try {
             // 获取mapper实例
-            V sessionMapper = sqlSession.getMapper(mapper);
+            M sessionMapper = sqlSession.getMapper(mapper);
             // 数据批量处理
-            for (T record : recordList) {
+            for (D record : recordList) {
                  // 执行biConsumer方法
-                 biConsumer.accept(sessionMapper,record);
+                 biConsumer.accept(record,sessionMapper);
             }
             // 输出sql  batchResults 如果sql完全一样，只是值不一样则batchResults size为1
             // 如果sql 不一样 比如update table set entity where id = ? 如果entity中有属性为null则会导致sql不一样 则batchResults size会有多个

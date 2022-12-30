@@ -21,8 +21,8 @@ public class PrepareOrderDTO implements Serializable {
     @ApiModelProperty(value = "使用的优惠券单号",name = "couponCode")
     private String couponCode;
 
-    @ApiModelProperty(value = "订单金额",name = "couponCode")
-    private BigDecimal orderAmount;
+    @ApiModelProperty(value = "订单金额",name = "orderOriginAmount")
+    private BigDecimal orderOriginAmount;
 
     @ApiModelProperty(value = "优惠券折扣金额",name = "couponDiscountAmount")
     private BigDecimal couponDiscountAmount;

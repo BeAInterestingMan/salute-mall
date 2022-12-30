@@ -1,6 +1,7 @@
 package com.salute.mall.order.service.service;
 
 import com.salute.mall.order.service.pojo.dto.CreateSaleOrderDTO;
+import com.salute.mall.order.service.pojo.dto.CreateSaleOrderResultDTO;
 
 public interface SaleOrderCustomerService {
     /**
@@ -11,5 +12,12 @@ public interface SaleOrderCustomerService {
      */
     String getSaleOrderCode();
 
-    void createSaleOrder(CreateSaleOrderDTO dto);
+    /**
+     * @Description 创建订单
+     * @author liuhu
+     * @param dto
+     * @date 2022/12/30 17:30
+     * @return void
+     */
+    CreateSaleOrderResultDTO createSaleOrder(CreateSaleOrderDTO dto);
 }

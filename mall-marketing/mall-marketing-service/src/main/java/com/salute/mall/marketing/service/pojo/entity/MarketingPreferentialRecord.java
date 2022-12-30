@@ -1,16 +1,15 @@
 package com.salute.mall.marketing.service.pojo.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import java.io.Serializable;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
-import lombok.Data;
 
 
 @Data
@@ -60,19 +59,19 @@ public class MarketingPreferentialRecord implements Serializable {
 
     @ApiModelProperty(value = "商品价格",name = "salePrice")
     @TableField("sale_price")
-    private Long salePrice;
+    private BigDecimal salePrice;
 
     @ApiModelProperty(value = "商品原价总额",name = "totalOriginAmount")
     @TableField("total_origin_amount")
-    private Long totalOriginAmount;
+    private BigDecimal totalOriginAmount;
 
     @ApiModelProperty(value = "商品分摊的优惠金额",name = "totalPreferentialAmount")
     @TableField("total_preferential_amount")
-    private Long totalPreferentialAmount;
+    private BigDecimal totalPreferentialAmount;
 
     @ApiModelProperty(value = "优惠后金额",name = "totalPreferentialAfterAmount")
     @TableField("total_preferential_after_amount")
-    private Long totalPreferentialAfterAmount;
+    private BigDecimal totalPreferentialAfterAmount;
 
     @ApiModelProperty(value = "排序",name = "sort")
     @TableField("sort")

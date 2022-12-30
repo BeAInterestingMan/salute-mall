@@ -1,6 +1,5 @@
 package com.salute.mall.product.service.repository;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.salute.mall.common.core.utils.SaluteAssertUtil;
 import com.salute.mall.common.datasource.helper.MybatisBatchHelper;
 import com.salute.mall.product.service.mapper.ProductStockTransactionMapper;
@@ -29,6 +28,6 @@ public class ProductStockTransactionRepository {
      */
     public int batchInsert(List<ProductStockTransaction> stockTransactions) {
         SaluteAssertUtil.isTrue(CollectionUtils.isNotEmpty(stockTransactions),"批量新增库存流水异常");
-        return batchHelper.batchInsertOrUpdate(stockTransactions, ProductStockTransactionMapper.class, BaseMapper::insert);
+        return batchHelper.batchInsertOrUpdate(stockTransactions, ProductStockTransactionMapper.class, (record,mapper)->mapper.insert(record));
     }
 }

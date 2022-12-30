@@ -50,7 +50,7 @@ public class ProductStockRepository {
     * @return int
     */
     public int batchOperateFreezeStock(List<OperateFreezeStockDaoDTO> dtoList) {
-       return batchHelper.batchInsertOrUpdate(dtoList, ProductStockMapper.class, ProductStockMapper::doOperateFreezeStock);
+       return batchHelper.batchInsertOrUpdate(dtoList, ProductStockMapper.class,(record,mapper)-> mapper.doOperateFreezeStock(record));
     }
 
 

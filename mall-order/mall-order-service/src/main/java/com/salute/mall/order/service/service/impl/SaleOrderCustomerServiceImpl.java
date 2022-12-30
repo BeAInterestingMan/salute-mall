@@ -11,6 +11,7 @@ import com.salute.mall.order.service.core.SaleOrderCore;
 import com.salute.mall.order.service.enums.SaleOrderStatusEnum;
 import com.salute.mall.order.service.pojo.dto.CreateSaleOrderDTO;
 import com.salute.mall.order.service.pojo.dto.CreateSaleOrderProductSkuDTO;
+import com.salute.mall.order.service.pojo.dto.CreateSaleOrderResultDTO;
 import com.salute.mall.order.service.pojo.entity.SaleOrder;
 import com.salute.mall.order.service.pojo.entity.SaleOrderDetail;
 import com.salute.mall.order.service.repository.SaleOrderDetailRepository;
@@ -61,7 +62,7 @@ public class SaleOrderCustomerServiceImpl implements SaleOrderCustomerService {
     }
 
     @Override
-    public void createSaleOrder(CreateSaleOrderDTO dto) {
+    public CreateSaleOrderResultDTO createSaleOrder(CreateSaleOrderDTO dto) {
         String key  = RedisConstants.LockKey.SHOPPING_CREATE_SALE_ORDER+dto.getSaleOrderCode();
         RLock lock = redissonClient.getLock(key);
         try {
@@ -70,7 +71,7 @@ public class SaleOrderCustomerServiceImpl implements SaleOrderCustomerService {
             if(!lockFlag){
                 throw new BusinessException("500","手速太快了，请稍后操作");
             }
-            saleOrderCore.doCreateSaleOrder(dto);
+           return saleOrderCore.doCreateSaleOrder(dto);
         } catch (InterruptedException e) {
             log.error("创建订单获取锁失败,req:{}", JSON.toJSONString(dto));
             throw new BusinessException("500","创建订单获取锁异常");

@@ -18,11 +18,14 @@ public class AvailableCouponDiscountInfoDTO implements Serializable {
     @ApiModelProperty(value = "优惠券编号",name = "couponCode")
     private String couponCode;
 
+    @ApiModelProperty(value = "优惠券活动名称",name = "couponName")
+    private String couponName;
+
     @ApiModelProperty(value = "订单金额",name = "couponCode")
     private BigDecimal orderAmount;
 
-    @ApiModelProperty(value = "优惠券折扣金额",name = "couponDiscountAmount")
-    private BigDecimal couponDiscountAmount;
+    @ApiModelProperty(value = "优惠券折扣金额",name = "couponPreferentialAmount")
+    private BigDecimal couponPreferentialAmount;
 
     @ApiModelProperty(value = "订单最终金额",name = "orderFinalAmount")
     private BigDecimal orderFinalAmount;

@@ -129,6 +129,6 @@ public class MarketingCouponUserRecordRepository {
 
     public void batchInsert(List<MarketingCouponUserRecord> couponUserRecordList) {
         SaluteAssertUtil.isTrue(CollectionUtils.isNotEmpty(couponUserRecordList),"参数异常");
-        mybatisBatchHelper.batchInsertOrUpdate(couponUserRecordList,MarketingCouponUserRecordMapper.class,MarketingCouponUserRecordMapper::insert);
+        mybatisBatchHelper.batchInsertOrUpdate(couponUserRecordList,MarketingCouponUserRecordMapper.class,(record,mapper)->mapper.insert(record));
     }
 }

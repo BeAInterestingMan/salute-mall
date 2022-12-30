@@ -23,17 +23,23 @@ public class CreateSaleOrderDTO implements Serializable {
     @Min(1)
     private BigDecimal payableAmount;
 
-    @ApiModelProperty(value = "订单金额",name = "orderAmount")
+    @ApiModelProperty(value = "订单原始金额",name = "orderOriginAmount")
     @NotNull
     @Max(10000)
-    @Min(1)
-    private BigDecimal orderAmount;
+    @Min(0)
+    private BigDecimal orderOriginAmount;
 
     @ApiModelProperty(value = "优惠券金额",name = "couponAmount")
     @NotNull
     @Max(10000)
-    @Min(1)
+    @Min(0)
     private BigDecimal couponAmount;
+
+    @ApiModelProperty(value = "优惠券优惠金额",name = "couponPreferentialAmount")
+    @NotNull
+    @Max(10000)
+    @Min(0)
+    private BigDecimal couponPreferentialAmount;
 
     @ApiModelProperty(value = "释放使用优惠券",name = "couponFlag")
     @NotNull

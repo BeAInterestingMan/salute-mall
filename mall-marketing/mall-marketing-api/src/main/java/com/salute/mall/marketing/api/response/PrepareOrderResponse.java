@@ -14,11 +14,11 @@ public class PrepareOrderResponse implements Serializable {
     @ApiModelProperty(value = "使用的优惠券单号",name = "couponCode")
     private String couponCode;
 
-    @ApiModelProperty(value = "订单金额",name = "couponCode")
-    private String orderAmount;
+    @ApiModelProperty(value = "订单金额",name = "orderOriginAmount")
+    private String orderOriginAmount;
 
-    @ApiModelProperty(value = "优惠券折扣金额",name = "couponDiscountAmount")
-    private String couponDiscountAmount;
+    @ApiModelProperty(value = "优惠券折扣金额",name = "couponPreferentialAmount")
+    private String couponPreferentialAmount;
 
     @ApiModelProperty(value = "订单最终金额",name = "orderFinalAmount")
     private String orderFinalAmount;

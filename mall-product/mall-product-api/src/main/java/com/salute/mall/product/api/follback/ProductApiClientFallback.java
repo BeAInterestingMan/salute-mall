@@ -7,6 +7,7 @@ import com.salute.mall.product.api.client.ProductApiClient;
 import com.salute.mall.product.api.request.QueryProductPageRequest;
 import com.salute.mall.product.api.response.ProductInfoResponse;
 import com.salute.mall.product.api.response.ProductResponse;
+import com.salute.mall.product.api.response.ProductSkuBaseInfoResponse;
 import com.salute.mall.product.api.response.ProductSkuResponse;
 import feign.hystrix.FallbackFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,7 @@ import java.util.List;
 
 @Component
 @Slf4j
-public class ProductCommonApiClientFallback implements FallbackFactory<ProductApiClient> {
+public class ProductApiClientFallback implements FallbackFactory<ProductApiClient> {
 
     @Override
     public ProductApiClient create(Throwable throwable) {
@@ -29,8 +30,8 @@ public class ProductCommonApiClientFallback implements FallbackFactory<ProductAp
           }
 
           @Override
-          public Result<List<ProductSkuResponse>> queryProductSkuList(List<String> productCodeList) {
-              log.error("execute ProductApiClient getProductDetail error,request:{}", JSON.toJSONString(productCodeList),throwable);
+          public Result<List<ProductSkuBaseInfoResponse>> queryProductSkuList(List<String> productCodeList) {
+              log.error("execute ProductApiClient queryProductSkuList error,request:{}", JSON.toJSONString(productCodeList),throwable);
               return Result.error("500","服务繁忙");
           }
       };

@@ -21,6 +21,6 @@ public class OrderDetailContext implements Serializable {
     @ApiModelProperty(value = "商品购买数量",name = "buyQty")
     private Integer buyQty;
 
-    @ApiModelProperty(value = "商品购买数量",name = "bugQty")
+    @ApiModelProperty(value = "商品三级分类编号",name = "categoryCodeThird")
     private String categoryCodeThird;
 }

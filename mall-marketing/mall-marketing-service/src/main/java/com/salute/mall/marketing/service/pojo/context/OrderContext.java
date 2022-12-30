@@ -20,7 +20,7 @@ public class OrderContext implements Serializable {
     private String userCode;
 
     @ApiModelProperty(value = "订单原始金额",name = "orderOriginTotalAmount")
-    private BigDecimal orderOriginTotalAmount;
+    private BigDecimal orderOriginAmount;
 
     @ApiModelProperty(value = "商品详情",name = "orderDetailContextList")
     private List<OrderDetailContext> orderDetailContextList;

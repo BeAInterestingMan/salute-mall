@@ -5,26 +5,31 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 @Data
-@ApiModel("提交订单计算优惠入参")
+@ApiModel("提交订单计算优惠商品详情")
 public class SubmitOrderSkuResponse implements Serializable {
 
-    @ApiModelProperty(value = "使用的优惠券单号",name = "couponCode")
-    private String couponCode;
+    @ApiModelProperty(value = "sku编号",name = "skuCode")
+    private String skuCode;
 
-    @ApiModelProperty(value = "订单金额",name = "couponCode")
-    private String orderAmount;
+    @ApiModelProperty(value = "商品名称",name = "productName")
+    private String skuName;
 
-    @ApiModelProperty(value = "优惠券折扣金额",name = "couponDiscountAmount")
-    private String couponDiscountAmount;
+    @ApiModelProperty(value = "商品金额",name = "salePrice")
+    private BigDecimal salePrice;
 
-    @ApiModelProperty(value = "订单最终金额",name = "orderFinalAmount")
-    private String orderFinalAmount;
+    @ApiModelProperty(value = "商品购买数量",name = "bugQty")
+    private Integer bugQty;
 
-    @ApiModelProperty(value = "优惠券原始金额",name = "couponAmount")
-    private String couponAmount;
+    @ApiModelProperty(value = "商品总金额",name = "productOriginAmount")
+    private BigDecimal productOriginAmount;
 
+    @ApiModelProperty(value = "商品优惠金额",name = "productPreferentialAmount")
+    private BigDecimal productPreferentialAmount;
 
+    @ApiModelProperty(value = "商品优惠后金额",name = "productFinalAmount")
+    private BigDecimal productFinalAmount;
 
 }

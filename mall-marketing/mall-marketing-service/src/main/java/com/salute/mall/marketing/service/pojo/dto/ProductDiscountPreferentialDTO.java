@@ -21,13 +21,15 @@ public class ProductDiscountPreferentialDTO implements Serializable {
 
     private String couponCode;
 
+    private String couponName;
+
     private String skuCode;
 
     private Integer buyCount;
 
     private BigDecimal salePrice;
 
-    private BigDecimal totalAmount;
+    private BigDecimal productOriginAmount;
 
-    private BigDecimal totalPreferentialAmount;
+    private BigDecimal productPreferentialAmount;
 }

@@ -3,11 +3,18 @@ package com.salute.mall.order.service.core;
 import com.alibaba.fastjson.JSON;
 import com.salute.mall.common.core.entity.Result;
 import com.salute.mall.common.core.exception.BusinessException;
+import com.salute.mall.common.core.utils.BigDecimalUtil;
+import com.salute.mall.common.security.context.AuthUserContext;
 import com.salute.mall.marketing.api.client.MarketingApiClient;
+import com.salute.mall.marketing.api.request.PrepareOrderDetailRequest;
+import com.salute.mall.marketing.api.request.SubmitOrderRequest;
 import com.salute.mall.marketing.api.request.UseCouponRequest;
+import com.salute.mall.marketing.api.response.SubmitOrderResponse;
+import com.salute.mall.marketing.api.response.SubmitOrderSkuResponse;
 import com.salute.mall.order.service.enums.SaleOrderStatusEnum;
 import com.salute.mall.order.service.pojo.dto.CreateSaleOrderDTO;
 import com.salute.mall.order.service.pojo.dto.CreateSaleOrderProductSkuDTO;
+import com.salute.mall.order.service.pojo.dto.CreateSaleOrderResultDTO;
 import com.salute.mall.order.service.pojo.entity.SaleOrder;
 import com.salute.mall.order.service.pojo.entity.SaleOrderDetail;
 import com.salute.mall.order.service.repository.SaleOrderDetailRepository;
@@ -16,13 +23,15 @@ import com.salute.mall.product.api.client.ProductApiClient;
 import com.salute.mall.product.api.client.ProductStockApiClient;
 import com.salute.mall.product.api.request.OperateFreezeStockRequest;
 import com.salute.mall.product.api.request.OperateFreezeStockSkuRequest;
-import com.salute.mall.product.api.response.ProductSkuPloyDetailResponse;
+import com.salute.mall.product.api.response.ProductSkuBaseInfoResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -37,10 +46,10 @@ public class SaleOrderCore {
     private ProductApiClient productApiClient;
 
     @Autowired
-    private ProductStockApiClient productStockApiClient;
+    private MarketingApiClient marketingApiClient;
 
     @Autowired
-    private MarketingApiClient marketingApiClient;
+    private ProductStockApiClient productStockApiClient;
 
     @Autowired
     private TransactionTemplate transactionTemplate;
@@ -51,25 +60,53 @@ public class SaleOrderCore {
     @Autowired
     private SaleOrderRepository saleOrderRepository;
 
-
-    public void doCreateSaleOrder(CreateSaleOrderDTO dto) {
+    /**
+     * @Description 创建订单
+     * @author liuhu
+     * @param dto
+     * @date 2022/12/30 17:30
+     * @return void
+     */
+    public CreateSaleOrderResultDTO doCreateSaleOrder(CreateSaleOrderDTO dto) {
         List<String> skuCodeList = dto.getProductSkuList().stream().map(CreateSaleOrderProductSkuDTO::getSkuCode).collect(Collectors.toList());
         //1.获取订单商品信息
-//        Result<List<ProductSkuPloyDetailResponse>> result = productApiClient.queryProductSkuList(skuCodeList);
-//        //2.获取订单营销信息
-//        List<ProductSkuPloyDetailResponse> skuResponses = result.getResult();
-//        //1.业务校验
-//        validOrderBusinessAvailable(dto,skuResponses);
-//        try {
-//            //2.使用优惠券
-//            usedCoupon(dto);
-//            //3.扣库存
-//            operateStock(dto);
-//            //4.创建订单
-//            saveSaleOrder(dto,skuResponses);
-//        } catch (Exception e) {
-//            // TODO 丢消息 异步归还
-//        }
+        Result<List<ProductSkuBaseInfoResponse>> result = productApiClient.queryProductSkuList(skuCodeList);
+        log.error("execute queryProductSkuList info,req:{}，resp：{}",JSON.toJSONString(skuCodeList),JSON.toJSONString(result));
+        if(Objects.isNull(result) || !Objects.equals(result.isSuccess(),Boolean.TRUE) || CollectionUtils.isEmpty(result.getResult())){
+            throw new BusinessException("500","获取下单商品异常");
+        }
+        List<ProductSkuBaseInfoResponse> skuResponses = result.getResult();
+        //2.校验商品状态 价格  库存
+        validOrderBusinessAvailable(dto,skuResponses);
+        //3.调用营销计算商品维度优惠分摊
+        SubmitOrderResponse productMarketingInfo = getOrderProductMarketingInfo(dto);
+        //4,校验 优惠金额是否正确
+        validOrderProductMarketingBusinessAvailable(dto,productMarketingInfo);
+        try {
+            //2.使用优惠券
+            usedCoupon(dto);
+            //3.扣库存
+            operateStock(dto);
+            //4.创建订单
+            saveSaleOrder(dto,skuResponses,productMarketingInfo);
+            //5.TODO 发送延迟消息 订单半小时未支付自动取消
+
+            return CreateSaleOrderResultDTO.builder().saleOrderCode(dto.getSaleOrderCode()).createTime(new Date()).build();
+        } catch (Exception e) {
+            // TODO 丢消息 异步归还
+            return null;
+        }
+    }
+
+    private void validOrderProductMarketingBusinessAvailable(CreateSaleOrderDTO dto, SubmitOrderResponse submitOrderResponse) {
+        if(submitOrderResponse.getOrderOriginAmount().compareTo(dto.getOrderOriginAmount()) !=0){
+            log.error("订单金额异常,订单原始金额不等于营销域原始金额，orderInfo:{}，submitOrderResponse：{}",JSON.toJSONString(dto),JSON.toJSONString(submitOrderResponse));
+            throw new BusinessException("500","订单金额异常，请刷新购物车重新下单");
+        }
+        if(submitOrderResponse.getCouponPreferentialAmount().compareTo(dto.getCouponPreferentialAmount()) !=0){
+            log.error("订单金额异常,订单优惠金额不等于营销域优惠金额，orderInfo:{}，submitOrderResponse：{}",JSON.toJSONString(dto),JSON.toJSONString(submitOrderResponse));
+            throw new BusinessException("500","订单金额异常，请刷新购物车重新下单");
+        }
     }
 
     /**
@@ -96,8 +133,8 @@ public class SaleOrderCore {
      * @date 2022/12/9 15:52
      * @return void
      */
-    private void saveSaleOrder(CreateSaleOrderDTO dto,List<ProductSkuPloyDetailResponse> skuResponses) {
-        List<SaleOrderDetail> saleOrderDetails = buildInsertSaleOrderDetail(dto, skuResponses);
+    private void saveSaleOrder(CreateSaleOrderDTO dto,List<ProductSkuBaseInfoResponse> skuResponses,SubmitOrderResponse productMarketingInfo) {
+        List<SaleOrderDetail> saleOrderDetails = buildInsertSaleOrderDetail(dto, skuResponses,productMarketingInfo);
         SaleOrder saleOrder = buildInsertSaleOrder(dto, saleOrderDetails);
         transactionTemplate.execute(ts->{
             try {
@@ -162,20 +199,34 @@ public class SaleOrderCore {
 
 
     private List<SaleOrderDetail> buildInsertSaleOrderDetail(CreateSaleOrderDTO dto,
-                                                             List<ProductSkuPloyDetailResponse> skuResponses) {
-        Map<String, ProductSkuPloyDetailResponse> skuResponseMap = skuResponses.stream().collect(Collectors.toMap(ProductSkuPloyDetailResponse::getSkuCode, Function.identity(), (k1, k2) -> k1));
+                                                             List<ProductSkuBaseInfoResponse> skuResponses,
+                                                             SubmitOrderResponse productMarketingInfo) {
+        Map<String, ProductSkuBaseInfoResponse> skuResponseMap = skuResponses.stream().collect(Collectors.toMap(ProductSkuBaseInfoResponse::getSkuCode, Function.identity(), (k1, k2) -> k1));
+        final Map<String, SubmitOrderSkuResponse> orderSkuResponseMap = productMarketingInfo.getSkuPreferentialList().stream().collect(Collectors.toMap(SubmitOrderSkuResponse::getSkuCode, Function.identity(), (k1, k2) -> k1));
         return  dto.getProductSkuList().stream().map(productSku->{
-            ProductSkuPloyDetailResponse skuResponse = skuResponseMap.get(productSku.getSkuCode());
+            ProductSkuBaseInfoResponse skuResponse = skuResponseMap.get(productSku.getSkuCode());
             if(Objects.isNull(skuResponse)){
                 log.error("skuCode获取商品信息为空，skuCode:{}",productSku.getSkuCode());
                 throw new BusinessException("500","商品不存在");
+            }
+            SubmitOrderSkuResponse orderSkuResponse = orderSkuResponseMap.get(productSku.getSkuCode());
+            if(Objects.isNull(orderSkuResponse)){
+                log.error("skuCode获取商品优惠信息为空，skuCode:{}",productSku.getSkuCode());
+                throw new BusinessException("500","商品优惠信息不存在");
             }
             SaleOrderDetail saleOrderDetail = new SaleOrderDetail();
             saleOrderDetail.setSaleOrderCode(dto.getSaleOrderCode());
             saleOrderDetail.setBuyQty(productSku.getBuyQty());
             saleOrderDetail.setCostPrice(skuResponse.getCostPrice());
+            saleOrderDetail.setSalePrice(skuResponse.getSalePrice());
             saleOrderDetail.setMarketingPrice(skuResponse.getMarketPrice());
-            saleOrderDetail.setMainImage("");
+            saleOrderDetail.setSkuCode(skuResponse.getSkuCode());
+            saleOrderDetail.setSkuName(skuResponse.getSkuName());
+            saleOrderDetail.setPayableAmount(orderSkuResponse.getProductFinalAmount());
+            saleOrderDetail.setCouponAmount(orderSkuResponse.getProductPreferentialAmount());
+            saleOrderDetail.setPaymentAmount(BigDecimal.ZERO);
+            saleOrderDetail.setTransactionPrice(BigDecimalUtil.divide(saleOrderDetail.getPayableAmount(),new BigDecimal(saleOrderDetail.getBuyQty())));
+            saleOrderDetail.setMainImage(skuResponse.getMainImage());
             saleOrderDetail.setSkuCode(skuResponse.getSkuCode());
             saleOrderDetail.setSkuName(skuResponse.getSkuName());
             return saleOrderDetail;
@@ -208,16 +259,34 @@ public class SaleOrderCore {
      * @date 2022/12/9 15:53
      * @return void
      */
-    private void validOrderBusinessAvailable(CreateSaleOrderDTO dto,List<ProductSkuPloyDetailResponse> skuResponses) {
+    private void validOrderBusinessAvailable(CreateSaleOrderDTO dto,List<ProductSkuBaseInfoResponse> skuResponses) {
         //1,校验商品信息是否正确
         validProductAvailable(dto.getProductSkuList(),skuResponses);
-        //2.校验营销是否正确
-        validMarketAvailable(dto,skuResponses);
-        //3.校验订单金额是否正确
+        //2.校验订单金额是否正确
         validOrderAmountAvailable(dto,skuResponses);
     }
 
-    private void validMarketAvailable(CreateSaleOrderDTO dto, List<ProductSkuPloyDetailResponse> skuResponses) {
+    private SubmitOrderResponse getOrderProductMarketingInfo(CreateSaleOrderDTO dto) {
+        SubmitOrderRequest request = new SubmitOrderRequest();
+        request.setCouponCode(dto.getCouponCode());
+        request.setOrderCode(dto.getSaleOrderCode());
+        request.setUserCode(AuthUserContext.getUser().getUserCode());
+        request.setUserName(AuthUserContext.getUser().getUserName());
+        List<PrepareOrderDetailRequest> orderDetailRequests = dto.getProductSkuList().stream().map(skuDto -> {
+            PrepareOrderDetailRequest detailRequest = new PrepareOrderDetailRequest();
+            detailRequest.setSkuCode(skuDto.getSkuCode());
+            detailRequest.setSkuName(skuDto.getSkuName());
+            detailRequest.setBuyQty(skuDto.getBuyQty());
+            detailRequest.setSalePrice(skuDto.getSalePrice());
+            return detailRequest;
+        }).collect(Collectors.toList());
+        request.setDetailList(orderDetailRequests);
+        Result<SubmitOrderResponse> result = marketingApiClient.submitOrder(request);
+        log.info("execute submitOrder info,req:{}，resp：{}",JSON.toJSONString(request),JSON.toJSONString(result));
+        if(Objects.isNull(result) || !Objects.equals(result.isSuccess(),Boolean.TRUE) || Objects.isNull(result.getResult())){
+            throw new BusinessException("500","下单提交优惠信息异常");
+        }
+       return result.getResult();
     }
 
     /**
@@ -228,9 +297,9 @@ public class SaleOrderCore {
      * @date 2022/12/9 15:54
      * @return void
      */
-    private void validOrderAmountAvailable(CreateSaleOrderDTO dto, List<ProductSkuPloyDetailResponse> skuResponses) {
-        BigDecimal totalProductAmount = skuResponses.stream().map(ProductSkuPloyDetailResponse::getSalePrice).reduce(BigDecimal.ZERO,BigDecimal::add);
-        if(totalProductAmount.compareTo(dto.getOrderAmount()) != 0){
+    private void validOrderAmountAvailable(CreateSaleOrderDTO dto, List<ProductSkuBaseInfoResponse> skuResponses) {
+        BigDecimal totalProductAmount = skuResponses.stream().map(ProductSkuBaseInfoResponse::getSalePrice).reduce(BigDecimal.ZERO,BigDecimal::add);
+        if(totalProductAmount.compareTo(dto.getOrderOriginAmount()) != 0){
             log.error("订单金额异常,订单总金额不等于商品总金额，orderInfo:{}",JSON.toJSONString(dto));
             throw new BusinessException("500","订单金额异常，请刷新购物车重新下单");
         }
@@ -259,10 +328,10 @@ public class SaleOrderCore {
      * @date 2022/12/9 15:54
      * @return void
      */
-    private void validProductAvailable(List<CreateSaleOrderProductSkuDTO> productSkuList, List<ProductSkuPloyDetailResponse> skuResponses) {
-        Map<String, ProductSkuPloyDetailResponse> skuResponseMap = skuResponses.stream().collect(Collectors.toMap(ProductSkuPloyDetailResponse::getSkuCode, Function.identity(), (k1, k2) -> k1));
+    private void validProductAvailable(List<CreateSaleOrderProductSkuDTO> productSkuList, List<ProductSkuBaseInfoResponse> skuResponses) {
+        Map<String, ProductSkuBaseInfoResponse> skuResponseMap = skuResponses.stream().collect(Collectors.toMap(ProductSkuBaseInfoResponse::getSkuCode, Function.identity(), (k1, k2) -> k1));
         for (CreateSaleOrderProductSkuDTO dto : productSkuList) {
-            ProductSkuPloyDetailResponse skuResponse = skuResponseMap.get(dto.getSkuCode());
+            ProductSkuBaseInfoResponse skuResponse = skuResponseMap.get(dto.getSkuCode());
             if(Objects.isNull(skuResponse)){
                 log.error("skuCode获取商品信息为空，skuCode:{}",dto.getSkuCode());
                 throw new BusinessException("500","商品不存在");
@@ -273,7 +342,7 @@ public class SaleOrderCore {
             }
             if(dto.getSalePrice().compareTo(skuResponse.getSalePrice()) != 0){
                 log.error("skuCode价格已发生变更，skuCode:{}",dto.getSkuCode());
-                throw new BusinessException("500",skuResponse.getSkuName()+"商品已失效，请刷新购物车重新下单");
+                throw new BusinessException("500",skuResponse.getSkuName()+"商品价格发生变动，请刷新购物车重新下单");
             }
         }
     }

@@ -28,6 +28,6 @@ public class SaleOrderDetailRepository {
      */
     public void insertBatch(List<SaleOrderDetail> saleOrderDetails) {
         SaluteAssertUtil.isTrue(CollectionUtils.isNotEmpty(saleOrderDetails),"参数异常");
-        mybatisBatchHelper.batchInsertOrUpdate(saleOrderDetails,SaleOrderDetailMapper.class,SaleOrderDetailMapper::insert);
+        mybatisBatchHelper.batchInsertOrUpdate(saleOrderDetails,SaleOrderDetailMapper.class,(record,mapper)->mapper.insert(record));
     }
 }

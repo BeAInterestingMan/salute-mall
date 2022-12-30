@@ -8,7 +8,8 @@ import com.salute.mall.common.core.exception.BusinessException;
 import com.salute.mall.common.core.utils.SaluteAssertUtil;
 import com.salute.mall.common.redis.helper.RedisHelper;
 import com.salute.mall.marketing.service.converter.MarketingApiServiceConverter;
-import com.salute.mall.marketing.service.core.CouponCore;
+import com.salute.mall.marketing.service.core.CouponMatchCore;
+import com.salute.mall.marketing.service.core.PreferentialCalculateCore;
 import com.salute.mall.marketing.service.enums.CouponActivityStatusEnum;
 import com.salute.mall.marketing.service.enums.CouponUserRecordStatusEnum;
 import com.salute.mall.marketing.service.pojo.context.OrderContext;
@@ -53,7 +54,7 @@ public class MarketingApiServiceImpl implements MarketingApiService {
     private RedisHelper redisHelper;
 
     @Autowired
-    private CouponCore couponCore;
+    private CouponMatchCore couponMatchCore;
 
     @Autowired
     private MarketingCouponActivityRepository marketingCouponActivityRepository;
@@ -75,6 +76,9 @@ public class MarketingApiServiceImpl implements MarketingApiService {
 
     @Autowired
     private RedissonClient redissonClient;
+
+    @Autowired
+    private PreferentialCalculateCore preferentialCalculateCore;
 
     /**
      * @Description 使用优惠券
@@ -102,11 +106,11 @@ public class MarketingApiServiceImpl implements MarketingApiService {
         //2.构建订单上下文
         OrderContext orderContext = buildOrderContext(dto);
         //3.获取用户可用优惠券
-        List<AvailableCouponInfoDTO> availableCouponInfoDTOS = couponCore.queryAvailableCouponInstanceInOrderContext(userCouponList, orderContext);
+        List<AvailableCouponInfoDTO> availableCouponInfoDTOS = couponMatchCore.queryAvailableCouponInstanceInOrderContext(userCouponList, orderContext);
         if(CollectionUtils.isEmpty(availableCouponInfoDTOS)){
             return PrepareOrderDTO.builder()
                     .couponCode(dto.getCouponCode())
-                    .orderAmount(orderContext.getOrderOriginTotalAmount())
+                    .orderOriginAmount(orderContext.getOrderOriginAmount())
                     .couponAmount(BigDecimal.ZERO)
                     .couponDiscountAmount(BigDecimal.ZERO)
                     .orderFinalAmount(BigDecimal.ZERO)
@@ -120,9 +124,10 @@ public class MarketingApiServiceImpl implements MarketingApiService {
                 .map(MarketingCouponUserRecord::getCouponCode)
                 .filter(s -> !availableCouponCodeList.contains(s)).collect(Collectors.toList());
         // 5.计算出可用优惠券 对于订单的优惠金额
-        List<AvailableCouponDiscountInfoDTO> discountInfoDTOS = couponCore.queryCouponInstanceDiscountInOrderContext(availableCouponInfoDTOS, orderContext.getOrderOriginTotalAmount());
+        List<AvailableCouponDiscountInfoDTO> discountInfoDTOS = preferentialCalculateCore.queryCouponInstanceDiscountInOrderContext(availableCouponInfoDTOS, orderContext.getOrderOriginAmount());
+        // 获得最优惠的优惠券
         AvailableCouponDiscountInfoDTO infoDTO = discountInfoDTOS.stream()
-                .max(Comparator.comparing(AvailableCouponDiscountInfoDTO::getCouponDiscountAmount))
+                .max(Comparator.comparing(AvailableCouponDiscountInfoDTO::getCouponPreferentialAmount))
                 .orElse(null);
         // 6.构造数据返回
         PrepareOrderDTO prepareOrderDTO =  marketingApiServiceConverter.convertToPrepareOrderDTO(infoDTO);
@@ -143,8 +148,11 @@ public class MarketingApiServiceImpl implements MarketingApiService {
         SaluteAssertUtil.isTrue(!Objects.equals(userRecord.getStatus(), CouponUserRecordStatusEnum.RECEIVED.getValue()),"优惠券已失效");
         //2.构建订单上下文
         OrderContext orderContext = buildSubmitOrderContext(dto);
-        //3. 计算分摊
-        return couponCore.calculationApportionment(userRecord, orderContext);
+        //3.判断优惠券是否可用
+        List<AvailableCouponInfoDTO> availableCouponInfoDTOS = couponMatchCore.queryAvailableCouponInstanceInOrderContext(Lists.newArrayList(userRecord), orderContext);
+        SaluteAssertUtil.isTrue(CollectionUtils.size(availableCouponInfoDTOS) ==1,"当前订单不可使用优惠券"+dto.getOrderCode()+"_"+dto.getCouponCode());
+        //3.计算分摊
+        return preferentialCalculateCore.calculationApportionment(availableCouponInfoDTOS.get(0),orderContext);
     }
 
     private OrderContext buildSubmitOrderContext(SubmitOrderDTO dto) {
@@ -152,7 +160,7 @@ public class MarketingApiServiceImpl implements MarketingApiService {
         OrderContext orderContext = new OrderContext();
         orderContext.setUserCode(dto.getUserCode());
         orderContext.setUserName(dto.getUserName());
-        orderContext.setOrderOriginTotalAmount(orderAmount);
+        orderContext.setOrderOriginAmount(orderAmount);
         List<OrderDetailContext> detailContexts = dto.getDetailList().stream().map(detail -> {
             OrderDetailContext orderDetailContext = new OrderDetailContext();
             orderDetailContext.setBuyQty(detail.getBugQty());
@@ -170,7 +178,7 @@ public class MarketingApiServiceImpl implements MarketingApiService {
     public List<ProductCouponInfoDTO> queryProductCouponInfo(ProductCouponInfoServiceDTO dto) {
         List<MarketingCouponActivity> couponActivities = marketingCouponActivityRepository.queryShopAvailableCouponList(dto.getShopCode());
         ProductContext productContext = marketingApiServiceConverter.convertToProductContext(dto);
-        List<MarketingCouponActivity> couponActivityList = couponCore.queryAvailableCouponInstanceInProductContext(couponActivities, productContext);
+        List<MarketingCouponActivity> couponActivityList = couponMatchCore.queryAvailableCouponInstanceInProductContext(couponActivities, productContext);
         return marketingApiServiceConverter.convertToProductCouponInfoDTOList(couponActivityList);
     }
 
@@ -296,7 +304,7 @@ public class MarketingApiServiceImpl implements MarketingApiService {
         OrderContext orderContext = new OrderContext();
         orderContext.setUserCode(dto.getUserCode());
         orderContext.setUserName(dto.getUserName());
-        orderContext.setOrderOriginTotalAmount(orderAmount);
+        orderContext.setOrderOriginAmount(orderAmount);
         List<OrderDetailContext> detailContexts = dto.getDetailList().stream().map(detail -> {
             OrderDetailContext orderDetailContext = new OrderDetailContext();
             orderDetailContext.setBuyQty(detail.getBugQty());

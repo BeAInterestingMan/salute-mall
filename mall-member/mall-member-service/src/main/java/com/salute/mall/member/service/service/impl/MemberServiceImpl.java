@@ -1,26 +1,13 @@
 package com.salute.mall.member.service.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.salute.mall.common.redis.helper.RedisHelper;
-import com.salute.mall.common.security.constants.SecurityConstants;
-import com.salute.mall.common.security.utils.JWTUtil;
-import com.salute.mall.common.core.utils.RSAUtil;
-import com.salute.mall.common.core.utils.SaluteAssertUtil;
-import com.salute.mall.common.security.dto.AuthUserEntity;
 import com.salute.mall.member.service.converter.MemberServiceConverter;
-import com.salute.mall.member.service.enums.MemberStatusEnum;
 import com.salute.mall.member.service.pojo.dto.MemberBaseDTO;
-import com.salute.mall.member.service.pojo.dto.MemberLoginDTO;
 import com.salute.mall.member.service.pojo.entity.Member;
 import com.salute.mall.member.service.repository.MemberRepository;
 import com.salute.mall.member.service.service.MemberService;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Base64Utils;
-
-import java.nio.charset.StandardCharsets;
-import java.util.Objects;
 
 @Service
 public class MemberServiceImpl implements MemberService {
