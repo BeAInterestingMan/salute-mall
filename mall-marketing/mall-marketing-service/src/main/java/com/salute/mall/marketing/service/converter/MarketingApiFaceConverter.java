@@ -27,4 +27,6 @@ public interface MarketingApiFaceConverter {
     SubmitOrderDTO convertToSubmitOrderDTO(SubmitOrderRequest request);
 
     SubmitOrderResponse convertToSubmitOrderResponse(SubmitOrderResultDTO orderResultDTO);
+
+    ReturnCouponServiceDTO convertToReturnCouponServiceDTO(ReturnCouponRequest request);
 }

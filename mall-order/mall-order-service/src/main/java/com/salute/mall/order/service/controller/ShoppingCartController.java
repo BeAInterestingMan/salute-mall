@@ -50,7 +50,7 @@ public class ShoppingCartController {
     @ApiOperation("更新购物车信息")
     public Result<Void> updateShoppingCartBuyQty(@Valid UpdateShoppingCartSkuRequest request){
         String userCode="";
-        String key = RedisConstants.LockKey.SHOPPING_CART_UPDATE+userCode;
+        String key = RedisConstants.CartLockKey.SHOPPING_CART_UPDATE+userCode;
         Boolean block = redisHelper.setNx(key, "block", 1L, TimeUnit.HOURS);
         if(Objects.equals(block,Boolean.FALSE)){
             throw new BusinessException("500","请稍后点击");
@@ -63,7 +63,7 @@ public class ShoppingCartController {
     @ApiOperation("删除用户的购物车商品")
     public Result<Void> deleteShoppingCartSku(@Valid DeleteShoppingCartSkuRequest request){
         String userCode="";
-        String key = RedisConstants.LockKey.SHOPPING_CART_DELETE+userCode;
+        String key = RedisConstants.CartLockKey.SHOPPING_CART_DELETE+userCode;
         Boolean block = redisHelper.setNx(key, "block", 1L, TimeUnit.HOURS);
         if(Objects.equals(block,Boolean.FALSE)){
             throw new BusinessException("500","请稍后点击");
@@ -76,7 +76,7 @@ public class ShoppingCartController {
     @ApiOperation("添加购物车信息")
     public Result<Void> addShoppingCart(@Valid AddShoppingCartRequest request){
         String userCode="test";
-        String key = RedisConstants.LockKey.SHOPPING_CART_ADD+userCode;
+        String key = RedisConstants.CartLockKey.SHOPPING_CART_ADD+userCode;
         Boolean block = redisHelper.setNx(key, "block", 1L, TimeUnit.HOURS);
         if(Objects.equals(block,Boolean.FALSE)){
             throw new BusinessException("500","请稍后点击");
@@ -89,7 +89,7 @@ public class ShoppingCartController {
     @ApiOperation("清空购物车信息")
     public Result<Void> clearShoppingCart(){
         String userCode="";
-        String key = RedisConstants.LockKey.SHOPPING_CART_CLEAR+userCode;
+        String key = RedisConstants.CartLockKey.SHOPPING_CART_CLEAR+userCode;
         Boolean block = redisHelper.setNx(key, "block", 1L, TimeUnit.HOURS);
         if(Objects.equals(block,Boolean.FALSE)){
             throw new BusinessException("500","请稍后点击");

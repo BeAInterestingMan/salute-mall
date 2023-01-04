@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.salute.mall.common.core.entity.Result;
 import com.salute.mall.marketing.api.client.MarketingApiClient;
 import com.salute.mall.marketing.api.request.PrepareOrderRequest;
+import com.salute.mall.marketing.api.request.ReturnCouponRequest;
 import com.salute.mall.marketing.api.request.SubmitOrderRequest;
 import com.salute.mall.marketing.api.request.UseCouponRequest;
 import com.salute.mall.marketing.api.response.PrepareOrderResponse;
@@ -24,6 +25,12 @@ public class MarketingApiClientFallback implements FallbackFactory<MarketingApiC
             @Override
             public Result<Void> useCoupon(@Valid UseCouponRequest request) {
                 log.error("execute ProductApiClient useCoupon error,request:{}", JSON.toJSONString(request),throwable);
+                return Result.error("500","服务繁忙");
+            }
+
+            @Override
+            public Result<Void> returnCoupon(@Valid ReturnCouponRequest request) {
+                log.error("execute ProductApiClient returnCoupon error,request:{}", JSON.toJSONString(request),throwable);
                 return Result.error("500","服务繁忙");
             }
 

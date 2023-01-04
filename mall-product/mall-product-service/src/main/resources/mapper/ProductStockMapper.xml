@@ -71,9 +71,6 @@
                 <if test="item.stockNum != null">
                     available_stock = real_stock - freeze_stock,
                 </if>
-                <if test="item.bizCode != null">
-                    biz_code = #{item.bizCode},
-                </if>
                 <if test="item.modifier_code != null">
                     modifier_code = #{item.operateCode},
                 </if>

@@ -37,7 +37,7 @@
         <mybatis-plus.version>3.2.0</mybatis-plus.version>
         <lang3.version>3.5</lang3.version>
         <knife4j.version>2.0.9</knife4j.version>
-        <rocketmq.version>2.1.0</rocketmq.version>
+        <rocketmq.version>2.2.0</rocketmq.version>
         <hutool.version>5.7.5</hutool.version>
         <es.version>7.11.1</es.version>
         <minio.version>8.3.4</minio.version>

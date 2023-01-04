@@ -7,7 +7,7 @@ import com.salute.mall.order.service.pojo.dto.CreateSaleOrderDTO;
 import com.salute.mall.order.service.pojo.dto.CreateSaleOrderResultDTO;
 import com.salute.mall.order.service.pojo.request.CreateSaleOrderRequest;
 import com.salute.mall.order.service.pojo.response.CreateSaleOrderResponse;
-import com.salute.mall.order.service.service.SaleOrderCustomerService;
+import com.salute.mall.order.service.service.SaleOrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -20,10 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("order/customer/")
 @Api(tags = "C端创建订单")
 @Slf4j
-public class SaleOrderCustomerController {
+public class SaleOrderController {
 
     @Autowired
-    private SaleOrderCustomerService saleOrderCustomerService;
+    private SaleOrderService saleOrderService;
 
     @Autowired
     private SaleOrderCustomerFaceConverter saleOrderCustomerFaceConverter;
@@ -31,7 +31,7 @@ public class SaleOrderCustomerController {
     @GetMapping("getSaleOrderCode")
     @ApiOperation("获取订单编号")
     public Result<String> getSaleOrderCode(){
-        return Result.success(saleOrderCustomerService.getSaleOrderCode());
+        return Result.success(saleOrderService.getSaleOrderCode());
     }
 
     @GetMapping("createSaleOrder")
@@ -39,7 +39,7 @@ public class SaleOrderCustomerController {
     public Result<CreateSaleOrderResponse> createSaleOrder(CreateSaleOrderRequest  request){
         log.info("execute createSaleOrder info req:{}", JSON.toJSONString(request));
         CreateSaleOrderDTO dto = saleOrderCustomerFaceConverter.convertToCreateSaleOrderDTO(request);
-        CreateSaleOrderResultDTO saleOrderResultDTO = saleOrderCustomerService.createSaleOrder(dto);
+        CreateSaleOrderResultDTO saleOrderResultDTO = saleOrderService.createSaleOrder(dto);
         CreateSaleOrderResponse response  = saleOrderCustomerFaceConverter.convertToCreateSaleOrderResponse(saleOrderResultDTO);
         log.info("execute createSaleOrder success req:{},resp:{}", JSON.toJSONString(request),JSON.toJSONString(response));
         return Result.success(response);

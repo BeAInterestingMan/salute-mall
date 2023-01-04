@@ -49,4 +49,13 @@ public interface MarketingApiService {
      * @return void
      */
     void receiveCoupon(ReceiveCouponDTO dto);
+
+    /**
+     * @Description 归还优惠券
+     * @author liuhu
+     * @param dto
+     * @date 2023/1/3 16:59
+     * @return void
+     */
+    void returnCoupon(ReturnCouponServiceDTO dto);
 }

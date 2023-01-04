@@ -8,6 +8,7 @@ import com.salute.mall.product.service.enums.StockTransactionOperateTypeEnum;
 import com.salute.mall.product.service.pojo.dto.stock.OperateFreezeStockDTO;
 import com.salute.mall.product.service.pojo.dto.stock.OperateFreezeStockDaoDTO;
 import com.salute.mall.product.service.pojo.dto.stock.OperateFreezeStockSkuDTO;
+import com.salute.mall.product.service.pojo.dto.stock.OperateRealStockDTO;
 import com.salute.mall.product.service.pojo.entity.ProductStock;
 import com.salute.mall.product.service.pojo.entity.ProductStockTransaction;
 import com.salute.mall.product.service.repository.ProductStockRepository;
@@ -51,7 +52,7 @@ public class ProductStockServiceImpl implements ProductStockService {
     @Override
     public void operateFreezeStock(OperateFreezeStockDTO dto) {
         // 订单单号防重锁  控制重复请求
-        String key  = RedisConstants.LockKey.SHOPPING_OPERATE_STOCK+dto.getBizCode();
+        String key  = RedisConstants.CartLockKey.SHOPPING_OPERATE_STOCK+dto.getBizCode();
         RLock lock = redissonClient.getLock(key);
         try {
             //500ms尝试获取锁  获取锁后2s内自动释放锁
@@ -74,6 +75,12 @@ public class ProductStockServiceImpl implements ProductStockService {
         }
     }
 
+    @Override
+    public void operateRealStock(OperateRealStockDTO dto) {
+        //1.查询商品库存流水记录
+        //2.如果没有冻结记录 则不允许处理
+    }
+
     /**
      * @Description 扣减库存
      * @author liuhu
@@ -83,8 +90,11 @@ public class ProductStockServiceImpl implements ProductStockService {
      */
     private void doOperateFreezeStock(OperateFreezeStockDTO dto) {
       List<OperateFreezeStockDaoDTO> daoDTO =  buildOperateFreezeStockDaoDTO(dto);
+      List<String> skuCodeList = dto.getSkuStockList().stream().map(OperateFreezeStockSkuDTO::getSkuCode).collect(Collectors.toList());
+      List<ProductStock> productStocks = productStockRepository.queryBySkuCodeList(skuCodeList);
       transactionTemplate.execute(ts->{
-          int transactionRows = saveProductStockTransaction(dto);
+          // 增加库存流水
+          int transactionRows = saveProductStockTransaction(dto,productStocks);
           // 开启事务 update 如果where条件命中索引则是行级锁
           int rows =  productStockRepository.batchOperateFreezeStock(daoDTO);
           if(rows != CollectionUtils.size(dto.getSkuStockList())){
@@ -108,9 +118,7 @@ public class ProductStockServiceImpl implements ProductStockService {
      * @date 2022/12/6 21:53
      * @return int
      */
-    private int saveProductStockTransaction(OperateFreezeStockDTO dto) {
-        List<String> skuCodeList = dto.getSkuStockList().stream().map(OperateFreezeStockSkuDTO::getSkuCode).collect(Collectors.toList());
-        List<ProductStock> productStocks = productStockRepository.queryBySkuCodeList(skuCodeList);
+    private int saveProductStockTransaction(OperateFreezeStockDTO dto,List<ProductStock> productStocks) {
         List<ProductStockTransaction> stockTransactions = buildInsertProductStockTransaction(dto, productStocks);
         return   productStockTransactionRepository.batchInsert(stockTransactions);
     }
@@ -133,7 +141,7 @@ public class ProductStockServiceImpl implements ProductStockService {
             ProductStockTransaction productStockTransaction = new ProductStockTransaction();
             productStockTransaction.setBizCode(dto.getBizCode());
             productStockTransaction.setOperateTime(new Date());
-            productStockTransaction.setOperateType(StockTransactionOperateTypeEnum.FREEZING_STOCK.getValue());
+            productStockTransaction.setOperateType(dto.getOperateType());
             productStockTransaction.setOperateStock(skuStock.getStockNum());
             productStockTransaction.setBeforeRealStock(stock.getRealStock());
             productStockTransaction.setAfterRealStock(stock.getRealStock());

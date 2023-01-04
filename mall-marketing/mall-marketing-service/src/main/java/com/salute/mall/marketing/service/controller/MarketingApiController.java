@@ -42,6 +42,15 @@ public class MarketingApiController {
         return Result.success();
     }
 
+    @PostMapping("returnCoupon")
+    @ApiOperation("归还优惠券")
+    public Result<Void> returnCoupon(@Valid ReturnCouponRequest request){
+        log.info("execute returnCoupon info,req:{}", JSON.toJSONString(request));
+        ReturnCouponServiceDTO dto = marketingApiFaceConverter.convertToReturnCouponServiceDTO(request);
+        marketingApiService.returnCoupon(dto);
+        return Result.success();
+    }
+
     @PostMapping("queryProductCouponInfo")
     @ApiOperation("获取商品的优惠券信息")
     public Result<List<QueryProductCouponInfoResponse>> queryProductCouponInfo(@Valid QueryProductCouponInfoRequest request){

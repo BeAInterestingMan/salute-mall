@@ -3,7 +3,7 @@ package com.salute.mall.order.service.service;
 import com.salute.mall.order.service.pojo.dto.CreateSaleOrderDTO;
 import com.salute.mall.order.service.pojo.dto.CreateSaleOrderResultDTO;
 
-public interface SaleOrderCustomerService {
+public interface SaleOrderService {
     /**
      * @Description 获取订单编号
      * @author liuhu

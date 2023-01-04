@@ -30,5 +30,5 @@ public class SubmitOrderRequest implements Serializable {
 
     @ApiModelProperty(value = "商品详情",name = "detailList")
     @NotEmpty
-    private List<PrepareOrderDetailRequest> detailList;
+    private List<SubmitOrderDetailRequest> detailList;
 }

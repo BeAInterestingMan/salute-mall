@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.salute.mall.pay.service.mapper.RefundBillMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.salute.mall.pay.service.pojo.entity.RefundBill" id="baseMap">
+        <result property="id"  column="id"/>
+        <result property="refundCode"  column="refund_code"/>
+        <result property="refundSence"  column="refund_sence"/>
+        <result property="refundType"  column="refund_type"/>
+        <result property="refundTime"  column="refund_time"/>
+        <result property="refundStatus"  column="refund_status"/>
+        <result property="returnAmount"  column="return_amount"/>
+        <result property="refundAmount"  column="refund_amount"/>
+        <result property="mainOrderCode"  column="main_order_code"/>
+        <result property="subOrderCode"  column="sub_order_code"/>
+        <result property="payUserCode"  column="pay_user_code"/>
+        <result property="receiveUserCode"  column="receive_user_code"/>
+        <result property="payAccountCode"  column="pay_account_code"/>
+        <result property="receiveAccountCode"  column="receive_account_code"/>
+        <result property="payBillCode"  column="pay_bill_code"/>
+        <result property="outPayCode"  column="out_pay_code"/>
+        <result property="outRefundCode"  column="out_refund_code"/>
+        <result property="sort"  column="sort"/>
+        <result property="version"  column="version"/>
+        <result property="creator"  column="creator"/>
+        <result property="creatorCode"  column="creator_code"/>
+        <result property="createdTime"  column="created_time"/>
+        <result property="modifier"  column="modifier"/>
+        <result property="modifierCode"  column="modifier_code"/>
+        <result property="modifiedTime"  column="modified_time"/>
+    </resultMap>
+
+    <sql id="baseColumn">
+        id,
+        refund_code,
+        refund_sence,
+        refund_type,
+        refund_time,
+        refund_status,
+        return_amount,
+        refund_amount,
+        main_order_code,
+        sub_order_code,
+        pay_user_code,
+        receive_user_code,
+        pay_account_code,
+        receive_account_code,
+        pay_bill_code,
+        out_pay_code,
+        out_refund_code,
+        sort,
+        version,
+        creator,
+        creator_code,
+        created_time,
+        modifier,
+        modifier_code,
+        modified_time
+    </sql>
+</mapper>

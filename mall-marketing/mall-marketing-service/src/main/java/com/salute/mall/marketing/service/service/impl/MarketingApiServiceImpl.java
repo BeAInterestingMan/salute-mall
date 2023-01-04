@@ -36,10 +36,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -89,7 +86,7 @@ public class MarketingApiServiceImpl implements MarketingApiService {
      */
     @Override
     public void useCoupon(UseCouponServiceDTO dto) {
-        String key = RedisConstants.LockKey.SHOPPING_MARKETING_USE_COUPON+dto.getCouponCode();
+        String key = RedisConstants.MarketingLockKey.SHOPPING_MARKETING_USE_COUPON+dto.getCouponCode();
         Boolean block = redisHelper.set(key, "BLOCK", 3L, TimeUnit.SECONDS);
         SaluteAssertUtil.isTrue(Objects.equals(block,Boolean.TRUE),"请勿重试点击");
         MarketingCouponUserRecord userRecord = recordRepository.getByCouponCode(dto.getCouponCode());
@@ -139,7 +136,7 @@ public class MarketingApiServiceImpl implements MarketingApiService {
 
     @Override
     public SubmitOrderResultDTO submitOrder(SubmitOrderDTO dto) {
-        String key = RedisConstants.LockKey.SHOPPING_MARKETING_SUBMIT_ORDER+dto.getOrderCode();
+        String key = RedisConstants.MarketingLockKey.SHOPPING_MARKETING_SUBMIT_ORDER+dto.getOrderCode();
         Boolean block = redisHelper.set(key, "BLOCK", 1000L, TimeUnit.MILLISECONDS);
         SaluteAssertUtil.isTrue(Objects.equals(block,Boolean.TRUE),"请勿重复点击");
         //1.判断当前优惠券是否已被使用
@@ -186,7 +183,7 @@ public class MarketingApiServiceImpl implements MarketingApiService {
     public void receiveCoupon(ReceiveCouponDTO dto) {
         MarketingCouponActivity couponActivity = marketingCouponActivityRepository.getByCouponActivityCodeTE(dto.getCouponActivityCode());
         SaluteAssertUtil.isTrue(!Objects.equals(couponActivity.getStatus(), CouponActivityStatusEnum.RUNNING.getValue()),"优惠券活动已失效");
-        String key = RedisConstants.LockKey.SHOPPING_MARKETING_SEND_COUPON+couponActivity.getCouponActivityCode();
+        String key = RedisConstants.MarketingLockKey.SHOPPING_MARKETING_SEND_COUPON+couponActivity.getCouponActivityCode();
         RLock rLock = redissonClient.getLock(key);
         try {
             boolean lock = rLock.tryLock(500, 1000L, TimeUnit.MILLISECONDS);
@@ -213,6 +210,43 @@ public class MarketingApiServiceImpl implements MarketingApiService {
             }
         }
     }
+
+    @Override
+    public void returnCoupon(ReturnCouponServiceDTO dto) {
+        SaluteAssertUtil.isTrue(Objects.nonNull(dto) && StringUtils.isNotBlank(dto.getBizCode()),"参数异常");
+        String key = RedisConstants.MarketingLockKey.SHOPPING_MARKETING_SUBMIT_ORDER+dto.getBizCode();
+        RLock rLock = redissonClient.getLock(key);
+        try {
+            boolean lock = rLock.tryLock(500, 1000L, TimeUnit.MILLISECONDS);
+            if(!lock){
+                throw new BusinessException("500","请稍后重试");
+            }
+            MarketingCouponUserRecord userRecord = userRecordRepository.getByBizCode(dto.getBizCode());
+            SaluteAssertUtil.isTrue(Objects.nonNull(userRecord),dto.getBizCode()+"当前优惠券不存在");
+            SaluteAssertUtil.isTrue(Objects.equals(userRecord.getStatus(),CouponUserRecordStatusEnum.USED.getValue()),dto.getBizCode()+"当前优惠券未使用");
+            // TODO 应该作废当前优惠券 然后再补发一张  便于后期朔源&数据统计
+            returnUsedCoupon(dto, userRecord.getCouponCode());
+        }catch (Exception e){
+            log.error("归还优惠券异常,req:{}", JSON.toJSONString(dto),e);
+            throw new BusinessException("500","归还优惠券异常");
+        }finally {
+            if(rLock.isLocked() && rLock.isHeldByCurrentThread()){
+                rLock.unlock();
+            }
+        }
+    }
+
+    private void returnUsedCoupon(ReturnCouponServiceDTO dto,String couponCode) {
+        MarketingCouponUserRecord update = new MarketingCouponUserRecord();
+        update.setCouponCode(couponCode);
+        update.setUsingTime(null);
+        update.setStatus(CouponUserRecordStatusEnum.RECEIVED.getValue());
+        update.setModifier(dto.getOperator());
+        update.setModifierCode(dto.getOperateCode());
+        update.setModifiedTime(new Date());
+        userRecordRepository.updateByCouponCode(update);
+    }
+
 
     /**
      * @Description 保存数据

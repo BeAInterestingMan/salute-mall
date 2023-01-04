@@ -3,8 +3,10 @@ package com.salute.mall.product.service.controller.stock;
 import com.alibaba.fastjson.JSON;
 import com.salute.mall.common.core.entity.Result;
 import com.salute.mall.product.api.request.OperateFreezeStockRequest;
+import com.salute.mall.product.api.request.OperateRealStockRequest;
 import com.salute.mall.product.service.converter.ProductStockFaceConverter;
 import com.salute.mall.product.service.pojo.dto.stock.OperateFreezeStockDTO;
+import com.salute.mall.product.service.pojo.dto.stock.OperateRealStockDTO;
 import com.salute.mall.product.service.service.ProductStockService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,7 +35,15 @@ public class ProductStockApiController {
         log.info("execute operateFreezeStock info,req:{}", JSON.toJSONString(request));
         OperateFreezeStockDTO dto = productStockFaceConverter.convertToOperateFreezeStockDTO(request);
         productStockService.operateFreezeStock(dto);
-        log.info("execute operateFreezeStock info,req:{},resp:{}", JSON.toJSONString(request), JSON.toJSONString(""));
+        return Result.success();
+    }
+
+    @PostMapping("operateFreezeStock")
+    @ApiOperation("操作商品真实库存")
+    public Result<Void> operateRealStock(@Valid @RequestBody OperateRealStockRequest request){
+        log.info("execute operateRealStock info,req:{}", JSON.toJSONString(request));
+        OperateRealStockDTO dto = productStockFaceConverter.convertToOperateRealStockDTO(request);
+        productStockService.operateRealStock(dto);
         return Result.success();
     }
 }

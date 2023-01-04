@@ -1,7 +1,9 @@
 package com.salute.mall.marketing.service.repository;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.salute.mall.common.core.exception.BusinessException;
 import com.salute.mall.common.core.utils.SaluteAssertUtil;
 import com.salute.mall.common.datasource.helper.MybatisBatchHelper;
 import com.salute.mall.marketing.service.enums.CouponUserRecordStatusEnum;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Component
@@ -130,5 +133,42 @@ public class MarketingCouponUserRecordRepository {
     public void batchInsert(List<MarketingCouponUserRecord> couponUserRecordList) {
         SaluteAssertUtil.isTrue(CollectionUtils.isNotEmpty(couponUserRecordList),"参数异常");
         mybatisBatchHelper.batchInsertOrUpdate(couponUserRecordList,MarketingCouponUserRecordMapper.class,(record,mapper)->mapper.insert(record));
+    }
+
+    /**
+     * @Description 业务单号查询
+     * @author liuhu
+     * @param couponCode
+     * @param bizCode
+     * @date 2023/1/3 17:04
+     * @return com.salute.mall.marketing.service.pojo.entity.MarketingCouponUserRecord
+     */
+    public MarketingCouponUserRecord getByCouponCodeAndBizCode(String couponCode, String bizCode) {
+        SaluteAssertUtil.isTrue(!StringUtils.isAnyBlank(couponCode,bizCode),"参数异常");
+        LambdaQueryWrapper<MarketingCouponUserRecord> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper
+                .eq(MarketingCouponUserRecord::getCouponCode,couponCode)
+                .eq(MarketingCouponUserRecord::getBizCode,bizCode);
+        return marketingCouponUserRecordMapper.selectOne(queryWrapper);
+    }
+
+    public void updateByCouponCode(MarketingCouponUserRecord update) {
+        SaluteAssertUtil.isTrue(Objects.nonNull(update) && StringUtils.isNotBlank(update.getCouponCode()),"参数异常");
+        LambdaQueryWrapper<MarketingCouponUserRecord> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper
+                .eq(MarketingCouponUserRecord::getCouponCode,update.getCouponCode());
+        int rows = marketingCouponUserRecordMapper.update(update, queryWrapper);
+        if(rows != 1){
+            log.info("归还优惠券失败,req:{}", JSON.toJSONString(update));
+            throw new BusinessException("500","归还优惠券失败");
+        }
+    }
+
+    public MarketingCouponUserRecord getByBizCode(String bizCode) {
+        SaluteAssertUtil.isTrue(StringUtils.isNotBlank(bizCode),"参数异常");
+        LambdaQueryWrapper<MarketingCouponUserRecord> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper
+                .eq(MarketingCouponUserRecord::getBizCode,bizCode);
+        return marketingCouponUserRecordMapper.selectOne(queryWrapper);
     }
 }

@@ -1,10 +1,13 @@
 package com.salute.mall.order.service.repository;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.google.common.collect.Lists;
 import com.salute.mall.common.core.utils.SaluteAssertUtil;
 import com.salute.mall.common.datasource.helper.MybatisBatchHelper;
 import com.salute.mall.order.service.mapper.SaleOrderDetailMapper;
 import com.salute.mall.order.service.pojo.entity.SaleOrderDetail;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,5 +32,14 @@ public class SaleOrderDetailRepository {
     public void insertBatch(List<SaleOrderDetail> saleOrderDetails) {
         SaluteAssertUtil.isTrue(CollectionUtils.isNotEmpty(saleOrderDetails),"参数异常");
         mybatisBatchHelper.batchInsertOrUpdate(saleOrderDetails,SaleOrderDetailMapper.class,(record,mapper)->mapper.insert(record));
+    }
+
+    public List<SaleOrderDetail> queryBySaleOrderCode(String saleOrderCode) {
+        if(StringUtils.isBlank(saleOrderCode)){
+            return Lists.newArrayList();
+        }
+        LambdaQueryWrapper<SaleOrderDetail> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SaleOrderDetail::getSaleOrderCode,saleOrderCode);
+        return saleOrderDetailMapper.selectList(queryWrapper);
     }
 }
